@@ -13,7 +13,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
         
-        /* Barra de Notícias */
+        /* Barra de Notícias superior */
         .ticker-wrap { background: var(--accent); color: #000; padding: 10px 0; font-weight: 800; font-size: 13px; overflow: hidden; white-space: nowrap; position: sticky; top: 0; z-index: 1000; }
         .ticker { display: inline-block; animation: ticker 40s linear infinite; }
         @keyframes ticker { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
@@ -24,7 +24,7 @@
 
         .dashboard { display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 160px); }
         
-        /* Menu Lateral */
+        /* Menu Lateral (Setores) */
         .sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 20px; position: sticky; top: 120px; height: fit-content; }
         .sector-btn { 
             width: 100%; padding: 15px; background: transparent; border: 1px solid var(--border); 
@@ -38,24 +38,28 @@
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
         .card { 
             background: var(--surface); border: 1px solid var(--border); padding: 25px; 
-            border-radius: 8px; position: relative; transition: 0.3s;
+            border-radius: 8px; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden;
         }
-        .card:hover { border-color: var(--accent); transform: translateY(-5px); }
-        .card .symbol { color: #8899b0; font-size: 12px; font-weight: 800; }
-        .card .price { font-family: 'Syne'; font-size: 26px; margin: 10px 0; color: #fff; }
-        .card .name { font-size: 13px; color: #8899b0; margin-bottom: 10px; display: block; height: 32px; overflow: hidden; }
-        .card .change { font-size: 13px; font-weight: bold; padding: 4px 8px; border-radius: 4px; display: inline-block; }
+        .card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .card::before { content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent); opacity: 0; transition: 0.3s; }
+        .card:hover::before { opacity: 1; }
+        
+        .card .symbol { color: #8899b0; font-size: 12px; font-weight: 800; letter-spacing: 1px; }
+        .card .price { font-family: 'Syne'; font-size: 28px; margin: 12px 0; color: #fff; }
+        .card .name { font-size: 14px; color: #8899b0; margin-bottom: 10px; display: block; }
+        .card .change { font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px; display: inline-block; }
         .up { background: rgba(0, 212, 170, 0.1); color: var(--accent); } 
         .down { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
 
-        #last-update { font-size: 11px; color: #55667d; }
+        /* Loader */
+        #loader { display: none; text-align: center; padding: 50px; color: var(--accent); font-family: 'Syne'; }
     </style>
 </head>
 <body>
 
 <div class="ticker-wrap">
     <div class="ticker">
-        ⚠️ TRADEVISION NEWS: CONFLITOS GEOPOLÍTICOS AFETAM CADEIA DE SUPRIMENTOS -- MERCADO EM ALERTA -- TRADEVISION: ENXERGUE O MERCADO ANTES DOS OUTROS.
+        ⚠️ TRADEVISION NEWS: CONFLITOS GEOPOLÍTICOS AFETAM CADEIA DE SUPRIMENTOS -- SANÇÕES ENERGÉTICAS EM ANÁLISE -- VOLATILIDADE ALTA NO SETOR DE DEFESA -- MERCADO EM ALERTA -- TRADEVISION: ENXERGUE O MERCADO ANTES DOS OUTROS.
     </div>
 </div>
 
@@ -65,21 +69,24 @@
         <div class="slogan">📊 “Enxergue o mercado antes dos outros.”</div>
     </div>
     <div style="text-align: right;">
-        <div style="font-size: 12px; color: var(--accent); font-weight: bold;">● TERMINAL ATIVO</div>
-        <div id="last-update">Sincronizando...</div>
+        <div id="status" style="font-size: 12px; color: var(--accent); font-weight: bold;">● TERMINAL ATIVO</div>
+        <div id="last-update" style="font-size: 10px; color: #55667d;">Aguardando dados...</div>
     </div>
 </header>
 
 <div class="dashboard">
     <div class="sidebar" id="sidebar"></div>
     <div class="main-content">
-        <h2 id="current-sector" style="font-family: 'Syne'; font-size: 28px; color: var(--accent); margin-bottom: 30px;">Iniciando...</h2>
+        <div id="sector-info" style="margin-bottom: 30px;">
+            <h2 id="current-sector" style="font-family: 'Syne'; font-size: 28px; color: var(--accent);">Carregando Inteligência...</h2>
+        </div>
+        <div id="loader">PROCESSANDO DADOS DE MERCADO...</div>
         <div class="grid" id="market-grid"></div>
     </div>
 </div>
 
 <script>
-    // Link direto para os dados da sua planilha
+    // 🔗 LINK DA PLANILHA CONFIGURADO CORRETAMENTE
     const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR9hPdpNw-jrALbP32-Pgqhwe_X98uaZht0tjtZXidCFwiXvXTjbJc5diOaI270W8m_hyHYpd5xwlQl/pub?gid=0&single=true&output=csv';
 
     const ramos = ["Tecnologia", "Defesa", "Energia", "Cibersegurança", "Bancos", "Commodities", "Logística", "Saúde", "Varejo", "Refúgio"];
@@ -89,34 +96,36 @@
         try {
             const response = await fetch(SHEET_CSV_URL);
             const data = await response.text();
+            
+            // Divide as linhas, limpa espaços e ignora a primeira linha (cabeçalho)
             const rows = data.split('\n').filter(row => row.trim() !== '').slice(1); 
             
             todosDados = rows.map(row => {
+                // Separa por vírgula, lidando com possíveis aspas
                 const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 return {
-                    ticker: cols[0]?.replace(/"/g, '').trim(),
-                    nome: cols[1]?.replace(/"/g, '').trim(),
-                    preco: cols[2]?.replace(/"/g, '').trim(),
-                    variacao: cols[3]?.replace(/"/g, '').trim(),
+                    ticker: cols[0]?.replace(/"/g, '').trim() || "---",
+                    nome: cols[1]?.replace(/"/g, '').trim() || "---",
+                    preco: cols[2]?.replace(/"/g, '').trim() || "0.00",
+                    variacao: cols[3]?.replace(/"/g, '').trim() || "0%",
                     ramo: cols[4]?.replace(/"/g, '').trim() || ""
                 };
             });
 
-            document.getElementById('last-update').innerText = "Última atualização: " + new Date().toLocaleTimeString();
+            document.getElementById('last-update').innerText = "Sincronizado: " + new Date().toLocaleTimeString();
             
-            // Carrega o setor que já estiver ativo ou o primeiro da lista
-            const ativo = document.querySelector('.sector-btn.active')?.innerText || "TECNOLOGIA";
-            loadSector(ativo.charAt(0) + ativo.slice(1).toLowerCase());
+            // Carrega o primeiro setor por padrão
+            loadSector("Tecnologia");
 
         } catch (error) {
-            console.error("Erro:", error);
-            document.getElementById('current-sector').innerText = "Erro ao conectar com a planilha";
+            console.error("Erro ao buscar dados:", error);
+            document.getElementById('current-sector').innerText = "Erro na conexão com os dados";
         }
     }
 
     function init() {
         const side = document.getElementById('sidebar');
-        side.innerHTML = '';
+        side.innerHTML = ''; 
         ramos.forEach((r, index) => {
             const btn = document.createElement('button');
             btn.className = 'sector-btn' + (index === 0 ? ' active' : '');
@@ -129,19 +138,19 @@
     }
 
     function loadSector(sectorName, btn) {
-        if(btn) {
-            document.querySelectorAll('.sector-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
+        // Estética dos botões
+        document.querySelectorAll('.sector-btn').forEach(b => b.classList.remove('active'));
+        if(btn) btn.classList.add('active');
 
         document.getElementById('current-sector').innerText = sectorName;
         const grid = document.getElementById('market-grid');
         grid.innerHTML = '';
 
+        // Filtro que ignora maiúsculas/minúsculas para evitar erros de digitação na planilha
         const ativosFiltrados = todosDados.filter(a => a.ramo.toLowerCase() === sectorName.toLowerCase());
 
         if(ativosFiltrados.length === 0) {
-            grid.innerHTML = `<p style="color:#55667d">Aguardando dados da planilha para o setor ${sectorName}...</p>`;
+            grid.innerHTML = `<p style="color:#55667d">Nenhum dado encontrado para o setor "${sectorName}" na planilha. Verifique a coluna E.</p>`;
             return;
         }
 
