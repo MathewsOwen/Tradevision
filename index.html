@@ -5,22 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TradeVision | Terminal Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     
     <style>
         :root {
             --bg: #020408; --surface: #0a0e14; --accent: #00ffc3;
             --danger: #ff4655; --text: #f8fafc; --text-dim: #64748b;
-            --border: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.08);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; }
 
-        /* Ticker Superior de Atualizações em Tempo Real */
+        /* Ticker Superior */
         .live-ticker { background: #000; border-bottom: 1px solid var(--border); padding: 8px 0; font-family: 'JetBrains Mono'; font-size: 10px; color: var(--accent); overflow: hidden; }
-        .ticker-move { display: inline-block; white-space: nowrap; animation: move 40s linear infinite; }
-        @keyframes move { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+        .ticker-move { display: inline-block; white-space: nowrap; animation: ticker-scroll 50s linear infinite; }
+        @keyframes ticker-scroll { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
 
         header { padding: 15px 30px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg); }
         .logo { font-size: 20px; font-weight: 800; color: var(--text); text-decoration: none; }
@@ -28,16 +27,16 @@
 
         .container { display: flex; height: calc(100vh - 95px); position: relative; }
 
-        /* Sidebar Esquerda */
+        /* Sidebar Navegação */
         aside { width: 220px; background: var(--surface); padding: 20px; border-right: 1px solid var(--border); overflow-y: auto; }
         .nav-btn { width: 100%; padding: 12px; background: transparent; border: none; color: var(--text-dim); text-align: left; cursor: pointer; border-radius: 8px; font-weight: 600; margin-bottom: 5px; transition: 0.2s; }
-        .nav-btn.active { color: var(--accent); background: rgba(0,255,195,0.05); }
+        .nav-btn.active { color: var(--accent); background: rgba(0,255,195,0.08); }
 
-        /* Área Central */
+        /* Grade de Ações */
         main { flex: 1; padding: 25px; overflow-y: auto; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; }
 
-        /* CARDS COM GRÁFICO NO HOVER */
+        /* Card Visual Estilo Bloomberg */
         .card { 
             background: rgba(255,255,255,0.02); 
             border: 1px solid var(--border); 
@@ -47,47 +46,50 @@
             transition: 0.3s; 
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
-        .card:hover { border-color: var(--accent); background: #0c111a; }
+        .card:hover { border-color: var(--accent); background: #0c111a; transform: translateY(-3px); }
         
-        /* O Gráfico que aparece no Hover */
+        /* Mini Gráfico no Hover */
         .hover-chart {
             position: absolute;
-            bottom: -100px; left: 0; width: 100%; height: 80px;
+            bottom: -5px; left: 0; width: 100%; height: 60px;
             opacity: 0; transition: 0.4s; pointer-events: none;
-            filter: grayscale(1) brightness(1.5);
+            filter: hue-rotate(140deg) brightness(1.2); /* Deixa o gráfico no tom de verde/azul */
         }
-        .card:hover .hover-chart { bottom: 0; opacity: 0.6; }
+        .card:hover .hover-chart { opacity: 0.4; }
 
-        .symbol { font-family: 'JetBrains Mono'; color: var(--accent); font-size: 11px; margin-bottom: 5px; display: block; }
-        .price { font-size: 26px; font-weight: 800; margin-bottom: 10px; }
-        .badge { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 4px; }
+        .symbol { font-family: 'JetBrains Mono'; color: var(--accent); font-size: 12px; font-weight: 700; margin-bottom: 5px; }
+        .price { font-size: 28px; font-weight: 800; margin-bottom: 5px; }
+        .name { font-size: 12px; color: var(--text-dim); margin-bottom: 12px; }
+        .badge { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 4px; align-self: flex-start; }
         .up { background: rgba(0,255,195,0.1); color: var(--accent); }
         .down { background: rgba(255,70,85,0.1); color: var(--danger); }
 
-        /* SIDEBAR DE NOTÍCIAS (HOVER) */
+        /* ABA DE NOTÍCIAS (HOVER NO CANTO DIREITO) */
         .news-sidebar {
-            width: 40px; background: var(--surface); border-left: 1px solid var(--border);
+            width: 45px; background: var(--surface); border-left: 1px solid var(--border);
             height: 100%; transition: width 0.4s ease; position: relative; overflow: hidden; display: flex;
         }
         .news-sidebar:hover { width: 380px; }
-        .news-indicator { min-width: 40px; display: flex; align-items: center; justify-content: center; background: #000; cursor: pointer; }
-        .news-indicator span { transform: rotate(90deg); white-space: nowrap; font-size: 10px; color: var(--accent); letter-spacing: 2px; }
+        .news-indicator { min-width: 45px; display: flex; align-items: center; justify-content: center; background: #000; cursor: pointer; }
+        .news-indicator span { transform: rotate(90deg); white-space: nowrap; font-size: 10px; color: var(--accent); letter-spacing: 3px; font-weight: 800; }
         
-        .news-content { padding: 25px; min-width: 340px; opacity: 0; transition: 0.3s; overflow-y: auto; }
+        .news-content { padding: 30px; min-width: 335px; opacity: 0; transition: 0.3s; overflow-y: auto; }
         .news-sidebar:hover .news-content { opacity: 1; }
         
-        .news-item { margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-        .news-date { font-family: 'JetBrains Mono'; font-size: 9px; color: var(--text-dim); margin-bottom: 4px; display: block; }
-        .news-text { font-size: 13px; font-weight: 600; line-height: 1.4; color: var(--text); }
-        .news-src { color: var(--accent); font-size: 10px; margin-top: 5px; display: block; }
+        .news-item { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
+        .news-date { font-family: 'JetBrains Mono'; font-size: 10px; color: var(--accent); margin-bottom: 6px; display: block; }
+        .news-text { font-size: 14px; font-weight: 600; line-height: 1.5; color: var(--text); }
+        .news-src { color: var(--text-dim); font-size: 10px; margin-top: 8px; display: block; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
 <div class="live-ticker">
-    <div class="ticker-move" id="live-price-ticker">
-        CARREGANDO ATUALIZAÇÕES DO MERCADO...
+    <div class="ticker-move" id="live-ticker-inner">
+        INICIALIZANDO TERMINAL... CONECTANDO AO FEED GLOBAL DE ATIVOS...
     </div>
 </div>
 
@@ -104,28 +106,29 @@
     </main>
 
     <div class="news-sidebar">
-        <div class="news-indicator"><span>MERCADO GLOBAL</span></div>
+        <div class="news-indicator"><span>GLOBAL NEWS</span></div>
         <div class="news-content">
-            <h3 style="font-size: 11px; margin-bottom: 20px; color: var(--accent);">HISTÓRICO E NOTÍCIAS</h3>
+            <h3 style="font-size: 11px; margin-bottom: 25px; color: var(--text-dim); letter-spacing: 2px;">HISTÓRICO E MERCADO</h3>
             <div id="news-list"></div>
         </div>
     </div>
 </div>
 
 <script>
-    const CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR9hPdpNw-jrALbP32-Pgqhwe_X98uaZht0tjtZXidCFwiXvXTjbJc5diOaI270W8m_hyHYpd5xwlQl/pub?gid=0&single=true&output=csv';
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR9hPdpNw-jrALbP32-Pgqhwe_X98uaZht0tjtZXidCFwiXvXTjbJc5diOaI270W8m_hyHYpd5xwlQl/pub?gid=0&single=true&output=csv';
     const sectors = ["Tecnologia", "Defesa", "Energia", "Cibersegurança", "Bancos", "Commodities", "Logística", "Saúde", "Varejo", "Refúgio"];
     
-    // Lista de Notícias ampliada (Dias anteriores)
+    // Notícias estendidas (Dias anteriores)
     const newsData = [
-        { date: "HOJE 10:45", src: "REUTERS", text: "Inflação nos EUA vem abaixo do esperado; mercados reagem com alta." },
-        { date: "HOJE 08:30", src: "BLOOMBERG", text: "NVIDIA ultrapassa Apple em valor de mercado após rali de IA." },
-        { date: "ONTEM", src: "CNBC", text: "Petróleo fecha em queda com aumento de estoques nos terminais de Cushing." },
-        { date: "08 MAR", src: "INVESTING", text: "Bancos europeus reportam lucros recordes no primeiro bimestre de 2024." },
-        { date: "07 MAR", src: "FINANCIAL TIMES", text: "Tensões comerciais entre China e UE afetam setor automotivo." },
-        { date: "06 MAR", src: "TRADEVISION", text: "Fluxo de capital institucional migra para ativos de cibersegurança." }
+        { date: "HOJE 10:45", src: "REUTERS", text: "Inflação nos EUA vem abaixo do esperado; mercados reagem com forte alta." },
+        { date: "HOJE 08:30", src: "BLOOMBERG", text: "NVIDIA anuncia novos superchips e atinge recorde histórico de avaliação." },
+        { date: "ONTEM", src: "CNBC", text: "Ações de defesa sobem após novos contratos governamentais na Europa." },
+        { date: "08 MAR", src: "INVESTING", text: "Commodities metálicas apresentam recuperação com demanda chinesa aquecida." },
+        { date: "07 MAR", src: "FINANCIAL TIMES", text: "Setor bancário brasileiro registra maior volume de dividendos da década." },
+        { date: "06 MAR", src: "TRADEVISION", text: "IA identifica fluxo de capital agressivo em startups de energia limpa." }
     ];
 
+    // Relógio
     setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
 
     function renderNews() {
@@ -138,66 +141,78 @@
         `).join('');
     }
 
-    async function update() {
+    async function loadData() {
         try {
-            const r = await fetch(CSV);
-            const t = await r.text();
-            const store = t.split('\n').slice(1).map(row => {
-                const c = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                return { t: c[0]?.replace(/"/g, '').trim(), n: c[1]?.replace(/"/g, ''), p: c[2], v: c[3]?.trim(), s: c[4]?.trim() };
-            }).filter(i => i.t && !i.t.includes('#N/A'));
+            const response = await fetch(CSV_URL);
+            const dataText = await response.text();
+            const rows = dataText.split('\n').slice(1);
             
-            window.marketData = store;
-            updateLiveTicker(store);
-            render(document.querySelector('.nav-btn.active')?.innerText || "TECNOLOGIA");
-        } catch(e) {}
+            window.allStocks = rows.map(row => {
+                const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                return {
+                    ticker: cols[0]?.replace(/"/g, '').trim(),
+                    name: cols[1]?.replace(/"/g, ''),
+                    price: cols[2],
+                    change: cols[3]?.trim(),
+                    sector: cols[4]?.trim()
+                };
+            }).filter(s => s.ticker && !s.ticker.includes('#N/A'));
+
+            updateTicker();
+            renderGrid(document.querySelector('.nav-btn.active')?.innerText || "TECNOLOGIA");
+        } catch (error) {
+            console.error("Erro ao carregar dados:", error);
+        }
     }
 
-    function updateLiveTicker(data) {
-        const ticker = document.getElementById('live-price-ticker');
-        const content = data.map(i => `${i.t}: R$ ${i.p} (${i.v})`).join('  //  ');
-        ticker.innerText = `+++ ULTIMAS ATUALIZAÇÕES: ${content} +++`;
+    function updateTicker() {
+        const tickerDiv = document.getElementById('live-ticker-inner');
+        const text = window.allStocks.map(s => `${s.ticker}: R$ ${s.price} (${s.change})`).join('  ///  ');
+        tickerDiv.innerText = `+++ FEED AO VIVO: ${text} +++`;
     }
 
-    function render(sName) {
-        const g = document.getElementById('market-grid');
-        g.innerHTML = '';
-        const filtered = window.marketData.filter(i => i.s && i.s.toLowerCase() === sName.toLowerCase());
+    function renderGrid(sectorName) {
+        const grid = document.getElementById('market-grid');
+        grid.innerHTML = '';
         
-        filtered.forEach(i => {
-            const up = !i.v.includes('-');
-            // Gerador de imagem de gráfico do TradingView baseado no ticker
-            const chartUrl = `https://s3.tradingview.com/generated_chart_images/s_${i.t}.png`;
+        const filtered = window.allStocks.filter(s => s.sector && s.sector.toLowerCase() === sectorName.toLowerCase());
 
-            g.innerHTML += `
-                <div class="card">
-                    <span class="symbol">${i.t}</span>
-                    <div class="price">R$ ${i.p}</div>
-                    <div style="font-size:12px; color:var(--text-dim); margin-bottom:12px">${i.n}</div>
-                    <span class="badge ${up ? 'up' : 'down'}">${i.v}</span>
-                    
-                    <img class="hover-chart" src="${chartUrl}" onerror="this.style.display='none'">
-                </div>
+        filtered.forEach(s => {
+            const isUp = !s.change.includes('-');
+            // Link de mini gráfico (Sparkline) mais estável
+            const chartUrl = `https://s3.tradingview.com/generated_chart_images/s_${s.ticker}.png`;
+
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <span class="symbol">${s.ticker}</span>
+                <div class="price">R$ ${s.price}</div>
+                <div class="name">${s.name}</div>
+                <span class="badge ${isUp ? 'up' : 'down'}">${s.change}</span>
+                <img class="hover-chart" src="${chartUrl}" alt="">
             `;
+            grid.appendChild(card);
         });
     }
 
-    const menu = document.getElementById('menu-side');
-    sectors.forEach((s, idx) => {
-        const b = document.createElement('button');
-        b.className = `nav-btn ${idx === 0 ? 'active' : ''}`;
-        b.innerText = s.toUpperCase();
-        b.onclick = () => {
-            document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active'));
-            b.classList.add('active');
-            render(s);
+    // Criar botões do menu
+    const menuContainer = document.getElementById('menu-side');
+    sectors.forEach((sec, index) => {
+        const btn = document.createElement('button');
+        btn.className = `nav-btn ${index === 0 ? 'active' : ''}`;
+        btn.innerText = sec.toUpperCase();
+        btn.onclick = () => {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderGrid(sec);
         };
-        menu.appendChild(b);
+        menuContainer.appendChild(btn);
     });
 
-    update();
+    // Inicialização
+    loadData();
     renderNews();
-    setInterval(update, 30000); // Atualiza dados da planilha a cada 30 segundos
+    setInterval(loadData, 60000); // Atualiza planilha a cada 1 minuto
 </script>
 </body>
 </html>
