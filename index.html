@@ -2,236 +2,172 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALPHAMARKETCAP | The Alpha Terminal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <title>ALPHAMARKETCAP | Institutional Grade</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #000000;
-            --surface: #0a0e14;
-            --accent: #00ffc3; /* Verde Elétrico */
-            --danger: #ff0055; /* Rosa Neon */
-            --gold: #ffcc00;   /* Destaque Alpha */
-            --text: #ffffff;
-            --text-dim: #64748b;
-            --border: rgba(0, 255, 195, 0.12);
+            --bg: #0b0e11; --card: #151921; --accent: #00f2ff;
+            --up: #00ff88; --down: #ff3366; --text: #f0f3f5;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background: var(--bg); 
-            color: var(--text); 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            overflow: hidden;
-            background-image: radial-gradient(circle at 50% 50%, #0a1118 0%, #000 100%);
-        }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow: hidden; }
 
-        /* Ticker Superior Limpo */
-        .live-ticker { 
-            background: #000; 
-            border-bottom: 1px solid var(--border); 
-            padding: 12px 0; 
-            font-family: 'JetBrains Mono'; 
-            font-size: 11px; 
-            color: var(--accent); 
-            overflow: hidden;
-            letter-spacing: 1px;
-        }
-        .ticker-move { display: inline-block; white-space: nowrap; animation: ticker-scroll 60s linear infinite; }
-        @keyframes ticker-scroll { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
-
+        /* HEADER ESTILO B3 */
         header { 
-            padding: 15px 30px; 
-            border-bottom: 1px solid var(--border); 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
+            background: #000; padding: 15px 30px; border-bottom: 1px solid #222;
+            display: flex; justify-content: space-between; align-items: center;
         }
-        .logo { font-size: 22px; font-weight: 800; letter-spacing: -1px; text-transform: uppercase; }
+        .logo { font-weight: 800; font-size: 18px; color: #fff; letter-spacing: 1px; }
         .logo span { color: var(--accent); }
 
+        /* TICKER LIMPO */
+        .ticker-wrap { background: #000; border-bottom: 1px solid #222; padding: 8px 0; overflow: hidden; }
+        .ticker { display: inline-block; white-space: nowrap; animation: scroll 60s linear infinite; font-family: 'JetBrains Mono'; font-size: 11px; color: var(--up); }
+        @keyframes scroll { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+
         .container { display: flex; height: calc(100vh - 100px); }
-
-        /* Menu Lateral */
-        aside { width: 220px; background: rgba(0,0,0,0.4); padding: 20px; border-right: 1px solid var(--border); }
-        .nav-btn { 
-            width: 100%; padding: 12px; background: transparent; border: none; 
-            color: var(--text-dim); text-align: left; cursor: pointer; 
-            font-weight: 700; margin-bottom: 5px; transition: 0.3s; font-size: 11px;
-            border-radius: 6px; text-transform: uppercase;
+        
+        /* MENU LATERAL SLIM */
+        aside { width: 200px; padding: 20px; border-right: 1px solid #222; background: #0b0e11; }
+        .nav-item { 
+            padding: 12px; color: #848e9c; cursor: pointer; font-size: 12px; 
+            font-weight: 700; border-radius: 4px; margin-bottom: 4px; transition: 0.2s;
         }
-        .nav-btn.active { color: #000; background: var(--accent); box-shadow: 0 0 15px rgba(0, 255, 195, 0.3); }
+        .nav-item:hover, .nav-item.active { background: #1e2329; color: var(--accent); }
 
-        /* Grid de Cards */
-        main { flex: 1; padding: 25px; overflow-y: auto; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
-
+        /* GRID PROFISSIONAL */
+        main { flex: 1; padding: 30px; overflow-y: auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+        
         .card { 
-            background: #0d1117; 
-            border: 1px solid var(--border); 
-            border-radius: 12px; 
-            padding: 22px; 
-            cursor: pointer; 
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            background: var(--card); border-radius: 8px; padding: 20px; 
+            border: 1px solid transparent; transition: 0.3s; position: relative;
         }
-        .card:hover { border-color: var(--accent); transform: translateY(-3px); background: #121821; }
-        
-        /* Sparkline no Hover */
-        .hover-chart {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 60px;
+        .card:hover { border-color: var(--accent); background: #1e2329; }
+
+        .symbol { color: #848e9c; font-size: 12px; font-weight: 700; margin-bottom: 8px; display: block; }
+        .price { font-size: 24px; font-weight: 700; margin-bottom: 10px; font-family: 'JetBrains Mono'; }
+        .change { font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 4px; }
+        .change.positive { color: var(--up); background: rgba(0, 255, 136, 0.1); }
+        .change.negative { color: var(--down); background: rgba(255, 51, 102, 0.1); }
+
+        /* SPARKLINE NO HOVER */
+        .sparkline {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 50px;
             opacity: 0; transition: 0.4s; pointer-events: none;
-            filter: hue-rotate(140deg) brightness(1.5);
         }
-        .card:hover .hover-chart { opacity: 0.4; }
+        .card:hover .sparkline { opacity: 0.4; }
 
-        .symbol { font-family: 'JetBrains Mono'; color: var(--accent); font-size: 12px; font-weight: 700; margin-bottom: 8px; display: block; }
-        .price { font-size: 28px; font-weight: 800; margin-bottom: 12px; }
-        .stock-name { font-size: 11px; color: var(--text-dim); margin-bottom: 15px; height: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        
-        .badge { 
-            font-size: 10px; font-weight: 800; padding: 5px 10px; border-radius: 4px; 
-            display: inline-flex; align-items: center; gap: 5px;
-        }
-        .up { background: rgba(0, 255, 195, 0.1); color: var(--accent); }
-        .down { background: rgba(255, 0, 85, 0.1); color: var(--danger); }
-
-        /* Barra de Notícias Lateral */
-        .news-sidebar {
-            width: 45px; background: #05070a; border-left: 1px solid var(--border);
-            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .news-sidebar:hover { width: 380px; }
-        .news-indicator { height: 100%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .news-indicator span { transform: rotate(90deg); white-space: nowrap; font-size: 10px; color: var(--gold); font-weight: 800; letter-spacing: 3px; }
-
-        .news-content { padding: 25px; opacity: 0; transition: 0.2s; visibility: hidden; width: 335px; }
-        .news-sidebar:hover .news-content { opacity: 1; visibility: visible; }
-
-        .folder-header { font-size: 11px; font-weight: 800; color: var(--gold); margin-bottom: 20px; letter-spacing: 1px; border-bottom: 1px solid rgba(255,204,0,0.2); padding-bottom: 10px; }
-        .news-item { margin-bottom: 15px; border-left: 2px solid var(--accent); padding-left: 12px; }
-        .news-time { font-family: 'JetBrains Mono'; font-size: 10px; color: var(--accent); }
-        .news-text { font-size: 13px; font-weight: 600; margin-top: 4px; line-height: 1.4; }
+        /* NOTÍCIAS ESTILO TERMINAL */
+        .news-bar { width: 300px; background: #0b0e11; border-left: 1px solid #222; padding: 25px; overflow-y: auto; }
+        .news-title { font-size: 11px; color: #848e9c; letter-spacing: 1px; margin-bottom: 20px; font-weight: 800; }
+        .news-item { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #1e2329; }
+        .news-time { color: var(--accent); font-size: 10px; font-family: 'JetBrains Mono'; }
+        .news-txt { font-size: 13px; font-weight: 600; line-height: 1.4; margin-top: 5px; }
     </style>
 </head>
 <body>
 
-<div class="live-ticker">
-    <div class="ticker-move" id="live-ticker-inner">CARREGANDO DADOS ALPHA...</div>
-</div>
-
 <header>
     <div class="logo">ALPHA<span>MARKETCAP</span></div>
-    <div id="clock" style="font-family: 'JetBrains Mono'; font-size: 13px; color: var(--gold);">00:00:00</div>
+    <div id="real-clock" style="font-family: 'JetBrains Mono'; font-size: 12px; color: #848e9c"></div>
 </header>
 
+<div class="ticker-wrap"><div class="ticker" id="ticker-feed">CONECTANDO AO FEED INSTITUCIONAL...</div></div>
+
 <div class="container">
-    <aside id="menu-side"></aside>
-    <main>
-        <div class="grid" id="market-grid"></div>
-    </main>
-    <div class="news-sidebar">
-        <div class="news-indicator"><span>PREMIUM INTELLIGENCE</span></div>
-        <div class="news-content">
-            <div class="folder-header">📁 TODAY'S MARKET NEWS</div>
-            <div id="today-news"></div>
-        </div>
+    <aside id="side-menu"></aside>
+    <main><div class="grid" id="main-grid"></div></main>
+    <div class="news-bar">
+        <div class="news-title">GLOBAL NEWS FEED</div>
+        <div id="news-feed"></div>
     </div>
 </div>
 
 <script>
-    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR9hPdpNw-jrALbP32-Pgqhwe_X98uaZht0tjtZXidCFwiXvXTjbJc5diOaI270W8m_hyHYpd5xwlQl/pub?gid=0&single=true&output=csv';
-    const sectors = ["Tecnologia", "Defesa", "Energia", "Cibersegurança", "Bancos", "Commodities", "Logística", "Saúde", "Varejo", "Refúgio"];
-    
-    // Função para limpar sujeira nos textos (aspas, espaços extras)
-    function clean(text) {
-        if (!text) return "";
-        return text.replace(/"/g, '').trim();
-    }
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR9hPdpNw-jrALbP32-Pgqhwe_X98uaZht0tjtZXidCFwiXvXTjbJc5diOaI270W8m_hyHYpd5xwlQl/pub?gid=0&single=true&output=csv';
+    const SECTORS = ["Tecnologia", "Defesa", "Energia", "Cibersegurança", "Bancos", "Commodities", "Logística", "Saúde", "Varejo", "Refúgio"];
 
-    setInterval(() => { 
-        document.getElementById('clock').innerText = new Date().toLocaleTimeString(); 
-    }, 1000);
+    // LIMPEZA DE DADOS (Remove aspas, espaços e lixo)
+    function sanitize(val) { return val ? val.toString().replace(/["']/g, "").trim() : ""; }
 
-    async function loadData() {
+    async function fetchData() {
         try {
-            const response = await fetch(CSV_URL);
-            const dataText = await response.text();
-            const rows = dataText.split('\n').slice(1);
+            const r = await fetch(SHEET_URL);
+            const text = await r.text();
+            const rows = text.split('\n').slice(1);
             
-            window.allStocks = rows.map(row => {
+            window.stocks = rows.map(row => {
                 const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 return {
-                    ticker: clean(cols[0]),
-                    name: clean(cols[1]),
-                    price: clean(cols[2]),
-                    change: clean(cols[3]),
-                    sector: clean(cols[4])
+                    ticker: sanitize(cols[0]),
+                    name: sanitize(cols[1]),
+                    price: sanitize(cols[2]),
+                    pct: sanitize(cols[3]),
+                    sector: sanitize(cols[4])
                 };
-            }).filter(s => s.ticker && s.ticker !== "" && !s.ticker.includes('#N/A'));
+            }).filter(s => s.ticker && !s.ticker.includes("#N/A"));
 
+            renderGrid(document.querySelector('.nav-item.active')?.innerText || "TECNOLOGIA");
             updateTicker();
-            const currentSector = document.querySelector('.nav-btn.active')?.innerText || "TECNOLOGIA";
-            renderGrid(currentSector);
-        } catch (e) { console.error("Erro Alpha:", e); }
+        } catch (e) { console.error("Erro na conexão Alpha."); }
     }
 
     function updateTicker() {
-        const tickerDiv = document.getElementById('live-ticker-inner');
-        const text = window.allStocks.map(s => `${s.ticker}: R$ ${s.price} [${s.change}]`).join('  ///  ');
-        tickerDiv.innerText = `+++ ALPHA FEED: ${text} +++`;
+        const feed = window.stocks.map(s => `${s.ticker} R$ ${s.price} (${s.pct})`).join('  •  ');
+        document.getElementById('ticker-feed').innerText = `+++ MARKET DATA: ${feed} +++`;
     }
 
-    function renderGrid(sectorName) {
-        const grid = document.getElementById('market-grid');
-        grid.innerHTML = '';
-        const filtered = window.allStocks.filter(s => s.sector.toLowerCase() === sectorName.toLowerCase());
+    function renderGrid(sector) {
+        const container = document.getElementById('main-grid');
+        container.innerHTML = '';
+        const filtered = window.stocks.filter(s => s.sector.toUpperCase() === sector.toUpperCase());
 
         filtered.forEach(s => {
-            const isUp = !s.change.includes('-');
-            const chartUrl = `https://s3.tradingview.com/generated_chart_images/s_${s.ticker}.png`;
-
-            grid.innerHTML += `
+            const isPos = !s.pct.includes('-');
+            const cleanTicker = s.ticker.includes(':') ? s.ticker.split(':')[1] : s.ticker;
+            
+            container.innerHTML += `
                 <div class="card">
                     <span class="symbol">${s.ticker}</span>
                     <div class="price">R$ ${s.price}</div>
-                    <div class="stock-name">${s.name}</div>
-                    <span class="badge ${isUp ? 'up' : 'down'}">${isUp ? '🚀' : '📉'} ${s.change}</span>
-                    <img class="hover-chart" src="${chartUrl}">
+                    <span class="change ${isPos ? 'positive' : 'negative'}">${isPos ? '▲' : '▼'} ${s.pct}</span>
+                    <img class="sparkline" src="https://s3.tradingview.com/generated_chart_images/s_${cleanTicker}.png">
                 </div>
             `;
         });
     }
 
-    // Criar botões do menu
-    const menuContainer = document.getElementById('menu-side');
-    sectors.forEach((sec, index) => {
-        const btn = document.createElement('button');
-        btn.className = `nav-btn ${index === 0 ? 'active' : ''}`;
-        btn.innerText = sec.toUpperCase();
-        btn.onclick = () => {
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderGrid(sec);
+    // MENU LATERAL
+    const menu = document.getElementById('side-menu');
+    SECTORS.forEach((s, i) => {
+        const div = document.createElement('div');
+        div.className = `nav-item ${i === 0 ? 'active' : ''}`;
+        div.innerText = s.toUpperCase();
+        div.onclick = function() {
+            document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
+            this.classList.add('active');
+            renderGrid(s);
         };
-        menuContainer.appendChild(btn);
+        menu.appendChild(div);
     });
 
-    // Mock de notícias
-    document.getElementById('today-news').innerHTML = `
+    // NEWS FEED (Exemplo dinâmico)
+    const news = [
+        {time: "10:45", txt: "Fed indica manutenção de taxas de juros para o próximo trimestre."},
+        {time: "10:30", txt: "NVIDIA anuncia nova arquitetura de chips para IA generativa."},
+        {time: "09:55", txt: "Tensões no Mar Vermelho elevam custo do frete marítimo global."}
+    ];
+    document.getElementById('news-feed').innerHTML = news.map(n => `
         <div class="news-item">
-            <span class="news-time">14:05</span>
-            <p class="news-text">Fluxo comprador atinge ativos de IA no setor de Tecnologia.</p>
+            <div class="news-time">${n.time}</div>
+            <div class="news-txt">${n.txt}</div>
         </div>
-        <div class="news-item">
-            <span class="news-time">11:20</span>
-            <p class="news-text">ALPHAMARKETCAP detecta suporte em Commodities.</p>
-        </div>
-    `;
+    `).join('');
 
-    loadData();
-    setInterval(loadData, 30000); // Atualiza a cada 30 segundos
+    setInterval(() => { document.getElementById('real-clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+    fetchData();
+    setInterval(fetchData, 30000);
 </script>
 </body>
 </html>
