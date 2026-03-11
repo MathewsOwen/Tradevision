@@ -2,88 +2,88 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>ALPHAMARKETCAP | Pro Terminal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>ALPHAMARKETCAP | Terminal de Inteligência Global</title>
+    <meta name="description" content="Terminal ALPHAMARKETCAP: Dados em tempo real, análise técnica e inteligência de mercado para investidores profissionais.">
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #05070a; --surface: #0d1117; --accent: #00f2ff; --up: #00ff88; --down: #ff3366; --text: #f0f3f5; --text-dim: #848e9c; --border: #1f2937; }
         
-        /* CORREÇÃO DE NITIDEZ */
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
         
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow: hidden; }
-        header { background: #000; padding: 0 30px; border-bottom: 2px solid var(--accent); display: flex; justify-content: space-between; align-items: center; height: 60px; }
-        .logo { font-weight: 800; font-size: 20px; text-transform: uppercase; color: #fff; text-decoration: none; letter-spacing: 1px; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh; }
+        
+        header { background: #000; padding: 0 30px; border-bottom: 2px solid var(--accent); display: flex; justify-content: space-between; align-items: center; height: 60px; position: relative; z-index: 10; }
+        .logo { font-weight: 800; font-size: 20px; text-transform: uppercase; color: #fff; letter-spacing: 1px; cursor: pointer; }
         .logo span { color: var(--accent); }
         
         .container { display: flex; height: calc(100vh - 60px); }
         
-        /* SIDEBAR AJUSTADA */
-        aside { width: 230px; padding: 20px; border-right: 1px solid var(--border); background: #000; display: flex; flex-direction: column; }
-        .nav-label { font-size: 10px; color: var(--accent); font-weight: 800; margin: 20px 0 10px; text-transform: uppercase; letter-spacing: 2px; }
-        .nav-item { padding: 12px; color: var(--text-dim); cursor: pointer; font-size: 11px; font-weight: 600; border-radius: 4px; transition: 0.2s; text-transform: uppercase; margin-bottom: 2px; }
+        /* SIDEBAR PROFISSIONAL */
+        aside { width: 230px; padding: 20px; border-right: 1px solid var(--border); background: #000; display: flex; flex-direction: column; flex-shrink: 0; }
+        .nav-label { font-size: 10px; color: var(--accent); font-weight: 800; margin: 20px 0 10px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; }
+        .nav-item { padding: 12px; color: var(--text-dim); cursor: pointer; font-size: 11px; font-weight: 600; border-radius: 4px; transition: 0.2s; text-transform: uppercase; margin-bottom: 2px; border-left: 3px solid transparent; }
         .nav-item:hover, .nav-item.active { color: #fff; background: #161b22; border-left: 3px solid var(--accent); }
 
-        /* BOTÃO QUEM SOMOS ESPECIAL */
-        .btn-about { margin-top: auto; padding: 15px; background: var(--surface); border: 1px solid var(--border); color: var(--accent); text-align: center; font-size: 10px; font-weight: 800; cursor: pointer; border-radius: 4px; text-transform: uppercase; }
+        .btn-about { margin-top: auto; padding: 15px; background: var(--surface); border: 1px solid var(--border); color: var(--accent); text-align: center; font-size: 10px; font-weight: 800; cursor: pointer; border-radius: 4px; text-transform: uppercase; transition: 0.3s; }
         .btn-about:hover { background: var(--accent); color: #000; }
 
-        main { flex: 1; overflow: hidden; background: #05070a; }
-        #screener-view, #terminal-view, #about-view { width: 100%; height: 100%; display: none; overflow-y: auto; }
-        #terminal-view.active, #screener-view.active, #about-view.active { display: block; }
+        /* VIEWPORTS */
+        main { flex: 1; position: relative; background: #05070a; overflow: hidden; }
+        .view-section { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; overflow-y: auto; }
+        .view-section.active { display: block; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1px; background: var(--border); }
-        .card { background: #05070a; padding: 25px; cursor: pointer; }
+        /* GRID ALPHAMARKETCAP */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1px; background: var(--border); border-bottom: 1px solid var(--border); }
+        .card { background: #05070a; padding: 25px; cursor: pointer; transition: 0.2s; }
         .card:hover { background: #0d1117; outline: 1px solid var(--accent); z-index: 1; }
 
-        /* ESTILO DO TEXTO SOBRE */
-        .content-text { max-width: 800px; margin: 60px auto; padding: 0 20px; line-height: 1.8; }
-        .content-text h1 { color: var(--accent); margin-bottom: 30px; font-size: 32px; }
-        .content-text p { color: #ccc; margin-bottom: 20px; font-size: 16px; }
+        /* SOBRE ALPHAMARKETCAP */
+        .content-text { max-width: 800px; margin: 60px auto; padding: 40px; line-height: 1.8; background: var(--surface); border-radius: 8px; border: 1px solid var(--border); }
+        .content-text h1 { color: var(--accent); margin-bottom: 20px; font-size: 28px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .content-text p { color: #ccc; margin-bottom: 15px; font-size: 15px; }
 
+        /* MODAL */
         #chart-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); display: none; z-index: 10000; }
-        .close-btn { position: fixed; top: 20px; right: 20px; width: 40px; height: 40px; background: var(--down); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10001; font-weight: bold; border: none; }
+        .close-btn { position: fixed; top: 20px; right: 20px; width: 40px; height: 40px; background: var(--down); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10001; font-weight: bold; border: none; box-shadow: 0 0 15px rgba(255,51,102,0.4); }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">ALPHA<span>MARKETCAP</span></div>
-    <div id="clock" style="font-family: 'JetBrains Mono'; font-size: 12px;">00:00:00</div>
+    <div class="logo" onclick="switchTab('terminal')">ALPHA<span>MARKETCAP</span></div>
+    <div id="clock" style="font-family: 'JetBrains Mono'; font-size: 12px; color: var(--accent)">00:00:00</div>
 </header>
 
 <div class="container">
     <aside>
-        <div class="nav-label">Inteligência</div>
-        <div class="nav-item active" onclick="switchTab('terminal')">📊 Destaques Alpha</div>
-        <div class="nav-item" onclick="switchTab('screener')">🔍 Screener Global</div>
+        <div class="nav-label">Ecossistema Alpha</div>
+        <div class="nav-item active" id="btn-terminal" onclick="switchTab('terminal')">📊 Destaques Alpha</div>
+        <div class="nav-item" id="btn-screener" onclick="switchTab('screener')">🔍 Screener Global</div>
         
-        <div class="nav-label">Setores</div>
+        <div class="nav-label">Setores de Mercado</div>
         <div id="sector-btns"></div>
 
-        <div class="btn-about" onclick="switchTab('about')">ℹ️ Quem Somos / Sobre</div>
+        <div class="btn-about" onclick="switchTab('about')">ℹ️ Institucional Alpha</div>
     </aside>
 
     <main>
-        <div id="terminal-view" class="active"><div class="grid" id="main-grid"></div></div>
+        <div id="terminal-view" class="view-section active">
+            <div class="grid" id="main-grid"></div>
+        </div>
         
-        <div id="screener-view">
-            <iframe src="https://s3.tradingview.com/external-embedding/embed-widget-screener.js?{"width":"100%","height":"100%","defaultColumn":"overview","defaultScreen":"most_capitalized","market":"brazil","showToolbar":true,"colorTheme":"dark","locale":"br"}" style="width:100%; height:100%; border:none;"></iframe>
-            <div class="tradingview-widget-container" style="height:100%">
-                <div class="tradingview-widget-container__widget"></div>
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-screener.js" async>
-                {
-                  "width": "100%", "height": "100%", "defaultColumn": "overview", "defaultScreen": "most_capitalized",
-                  "market": "brazil", "showToolbar": true, "colorTheme": "dark", "locale": "br"
-                }
-                </script>
-            </div>
+        <div id="screener-view" class="view-section">
+            <div id="tradingview_screener" style="height:100%; width:100%;"></div>
         </div>
 
-        <div id="about-view">
+        <div id="about-view" class="view-section">
             <div class="content-text">
-                <h1>A Nova Era da Inteligência Financeira</h1>
-                <p>O <strong>ALPHAMARKETCAP</strong> é um terminal de alta performance projetado para investidores que não aceitam o comum. Nossa missão é transformar dados brutos em decisões estratégicas.</p>
-                <p>Unimos a robustez dos dados da B3 e NASDAQ com uma interface intuitiva e ferramentas de análise técnica avançadas.</p>
+                <h1>Sobre a ALPHAMARKETCAP</h1>
+                <p>O <strong>ALPHAMARKETCAP</strong> é um terminal de alta performance focado na entrega de inteligência financeira proprietária.</p>
+                <p>Diferente de agregadores comuns, nossa infraestrutura prioriza a clareza dos dados e a velocidade de execução técnica, permitindo uma visão holística dos mercados da B3 e NASDAQ.</p>
+                <p>Nossos algoritmos de visualização são otimizados para investidores que operam em cenários de alta volatilidade, onde cada segundo de informação filtrada conta para o sucesso da operação.</p>
             </div>
         </div>
     </main>
@@ -97,25 +97,49 @@
     </div>
 </div>
 
+<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-screener.js" async>
+{
+  "width": "100%",
+  "height": "100%",
+  "defaultColumn": "overview",
+  "defaultScreen": "most_capitalized",
+  "market": "brazil",
+  "showToolbar": true,
+  "colorTheme": "dark",
+  "locale": "br",
+  "container_id": "tradingview_screener"
+}
+</script>
+
 <script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR9hPdpNw-jrALbP32-Pgqhwe_X98uaZht0tjtZXidCFwiXvXTjbJc5diOaI270W8m_hyHYpd5xwlQl/pub?gid=0&single=true&output=csv';
 
     function switchTab(id) {
-        document.querySelectorAll('main > div').forEach(d => d.classList.remove('active'));
+        document.querySelectorAll('.view-section').forEach(d => d.classList.remove('active'));
         document.getElementById(id + '-view').classList.add('active');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        if(id !== 'about') event.currentTarget.classList.add('active');
+        if(id === 'terminal') document.getElementById('btn-terminal').classList.add('active');
+        if(id === 'screener') document.getElementById('btn-screener').classList.add('active');
     }
 
     async function loadData() {
-        const r = await fetch(SHEET_URL);
-        const t = await r.text();
-        const rows = t.split('\n').slice(1);
-        window.stocks = rows.map(row => {
-            const c = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-            return { ticker: c[0].trim(), name: c[1], price: c[2], pct: c[3], sector: c[4].trim(), desc: c[5] };
-        });
-        renderGrid("Tecnologia");
+        try {
+            const r = await fetch(SHEET_URL);
+            const t = await r.text();
+            const rows = t.split('\n').slice(1);
+            window.stocks = rows.map(row => {
+                const c = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                return { 
+                    ticker: c[0]?.trim().replace(/"/g, ''), 
+                    name: c[1]?.trim().replace(/"/g, ''), 
+                    price: c[2], 
+                    pct: c[3], 
+                    sector: c[4]?.trim().replace(/"/g, ''), 
+                    desc: c[5]?.trim().replace(/"/g, '') 
+                };
+            }).filter(x => x.ticker);
+            renderGrid("Tecnologia");
+        } catch(e) { console.error("ALPHAMARKETCAP: Erro ao carregar dados."); }
     }
 
     function renderGrid(s) {
@@ -125,18 +149,25 @@
             card.innerHTML = `<div style="color:var(--text-dim);font-size:11px;font-family:JetBrains Mono">${x.ticker}</div><div style="font-size:24px;margin:10px 0;font-family:JetBrains Mono">R$ ${x.price}</div><div style="color:${x.pct.includes('-')?'var(--down)':'var(--up)'};font-weight:800">${x.pct}</div>`;
             card.onclick = () => {
                 document.getElementById('chart-modal').style.display = 'block';
-                document.getElementById('chart-area').innerHTML = `<iframe src="https://s.tradingview.com/widgetembed/?symbol=${x.ticker.split(':').pop()}&theme=dark" style="width:100%;height:100%;border:none"></iframe>`;
-                document.getElementById('desc-area').innerHTML = `<h2 style="color:var(--accent);margin-bottom:20px">${x.name}</h2><p style="color:#888;line-height:1.8;text-align:justify">${x.desc || 'Análise Alpha em processamento...'}</p>`;
+                const tickerClean = x.ticker.includes(':') ? x.ticker.split(':')[1] : x.ticker;
+                document.getElementById('chart-area').innerHTML = `<iframe src="https://s.tradingview.com/widgetembed/?symbol=${tickerClean}&theme=dark" style="width:100%;height:100%;border:none"></iframe>`;
+                document.getElementById('desc-area').innerHTML = `<h2 style="color:var(--accent);margin-bottom:20px;font-weight:400">${x.name}</h2><p style="color:#888;line-height:1.8;text-align:justify;font-size:14px">${x.desc || 'Análise Alpha em processamento...'}</p>`;
             };
             g.appendChild(card);
         });
     }
 
     const sectors = ["Tecnologia", "Defesa", "Energia", "Bancos", "Commodities", "Refúgio"];
+    const secContainer = document.getElementById('sector-btns');
     sectors.forEach(s => {
         const btn = document.createElement('div'); btn.className = 'nav-item'; btn.innerText = s;
-        btn.onclick = () => { switchTab('terminal'); renderGrid(s); btn.classList.add('active'); };
-        document.getElementById('sector-btns').appendChild(btn);
+        btn.onclick = (e) => { 
+            switchTab('terminal'); 
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            renderGrid(s); 
+        };
+        secContainer.appendChild(btn);
     });
 
     loadData();
