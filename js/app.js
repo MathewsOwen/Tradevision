@@ -9,14 +9,14 @@ window.addEventListener('load', () => {
                 initApp();
             }, 50);
         }, 800);
-    }, 3000);
+    }, 2500);
 });
 
-function switchTab(id) {
+function switchTab(id, btn) {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(id).classList.add('active');
-    event.currentTarget.classList.add('active');
+    btn.classList.add('active');
 }
 
 function initApp() {
@@ -36,9 +36,7 @@ async function loadData() {
     const allStocks = [];
 
     rows.forEach(row => {
-        // Regex para remover aspas e separar por vírgula corretamente
         const c = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(item => item.replace(/"/g, '').trim());
-        
         if(c[0]) {
             const s = {
                 ticker: c[0],
@@ -53,7 +51,6 @@ async function loadData() {
             sectors[s.sector].push(s);
         }
     });
-
     renderHighlights(allStocks);
     renderSectors(sectors);
 }
@@ -62,18 +59,15 @@ function renderHighlights(stocks) {
     const gainers = [...stocks].sort((a, b) => b.rawPct - a.rawPct).slice(0, 8);
     const losers = [...stocks].sort((a, b) => a.rawPct - b.rawPct).slice(0, 8);
 
-    const gainersDiv = document.getElementById('top-gainers');
-    const losersDiv = document.getElementById('top-losers');
-
     const createList = (list) => list.map(s => `
         <div class="side-item">
-            <div><b>${s.ticker}</b><br><small>${s.name}</small></div>
-            <span style="color:${s.rawPct >= 0 ? 'var(--up)' : 'var(--down)'}">${s.pct}</span>
+            <div><b style="font-size:12px">${s.ticker}</b><br><small style="font-size:9px; color:var(--text-dim)">${s.name}</small></div>
+            <span style="color:${s.rawPct >= 0 ? 'var(--up)' : 'var(--down)'}; font-weight:800">${s.pct}</span>
         </div>
     `).join('');
 
-    gainersDiv.innerHTML = createList(gainers);
-    losersDiv.innerHTML = createList(losers);
+    document.getElementById('top-gainers').innerHTML = createList(gainers);
+    document.getElementById('top-losers').innerHTML = createList(losers);
 }
 
 function renderSectors(sectors) {
@@ -84,7 +78,6 @@ function renderSectors(sectors) {
         div.innerHTML = `<h2 class="sector-title">${name}</h2>`;
         const grid = document.createElement('div');
         grid.className = 'stocks-grid';
-        
         sectors[name].forEach(s => {
             const isNeg = s.rawPct < 0;
             grid.innerHTML += `
@@ -92,7 +85,7 @@ function renderSectors(sectors) {
                     <div class="stock-name">${s.name}</div>
                     <div class="stock-ticker">${s.ticker}</div>
                     <div class="price">R$ ${s.price}</div>
-                    <div style="color:${isNeg?'var(--down)':'var(--up)'}; font-weight:700; font-size:13px;">
+                    <div style="color:${isNeg?'var(--down)':'var(--up)'}; font-weight:800; font-size:14px;">
                         ${isNeg?'▼':'▲'} ${s.pct}
                     </div>
                 </div>`;
