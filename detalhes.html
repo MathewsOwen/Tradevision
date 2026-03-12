@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>ALPHAMARKETCAP | Terminal</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        .nav-bar { background: #000; padding: 10px 5%; display: flex; align-items: center; border-bottom: 1px solid var(--border); }
+        .btn-back { color: var(--accent); text-decoration: none; font-weight: bold; margin-right: 20px; font-size: 13px; }
+        #chart-container { flex-grow: 1; }
+    </style>
+</head>
+<body>
+    <div class="nav-bar">
+        <a href="index.html" class="btn-back">← VOLTAR AO PAINEL</a>
+        <div class="logo-text">ALPHA<span>MARKETCAP</span></div>
+    </div>
+    <div id="chart-container"></div>
+
+    <script src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const ticker = urlParams.get('symbol') || 'IBOV';
+        
+        new TradingView.widget({
+            "autosize": true,
+            "symbol": ticker,
+            "interval": "D",
+            "timezone": "Etc/UTC",
+            "theme": "dark",
+            "style": "1",
+            "locale": "br",
+            "container_id": "chart-container",
+            "hide_side_toolbar": false,
+            "allow_symbol_change": true,
+            "details": true,
+            "hotlist": true,
+            "calendar": true
+        });
+    </script>
+</body>
+</html>
