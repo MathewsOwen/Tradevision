@@ -39,7 +39,9 @@ async function loadData() {
         const allStocks = [];
 
         rows.forEach(row => {
+            // Limpa aspas e separa por vírgula
             const c = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(item => item.replace(/"/g, '').trim());
+            
             if(c[0] && c[0] !== "") {
                 const s = {
                     ticker: c[0],
@@ -56,7 +58,7 @@ async function loadData() {
         });
         renderHighlights(allStocks);
         renderSectors(sectors);
-    } catch (e) { console.error("Erro ao carregar dados:", e); }
+    } catch (e) { console.error("Erro:", e); }
 }
 
 function renderHighlights(stocks) {
