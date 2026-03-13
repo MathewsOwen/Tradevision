@@ -1,5 +1,5 @@
 window.addEventListener('load', () => {
-    // Espera 3 segundos para mostrar o logo e a frase
+    // Garante que o splash apareça por pelo menos 3 segundos
     setTimeout(() => {
         const splash = document.getElementById('splash-screen');
         const main = document.getElementById('main-content');
@@ -10,12 +10,12 @@ window.addEventListener('load', () => {
         setTimeout(() => {
             splash.style.display = 'none';
             main.style.display = 'block';
-            document.body.style.overflow = 'auto'; // Libera o scroll
+            document.body.style.overflow = 'auto';
         }, 1000);
     }, 3000);
 });
 
-// Alerta temporário para o botão
+// Ação do botão de login
 document.getElementById('loginBtn').addEventListener('click', () => {
-    alert('Área Restrita: Estamos preparando o sistema de membros via Firebase.');
+    alert('Conectando ao servidor Alpha... O sistema de usuários será implementado via Firebase.');
 });
