@@ -1,16 +1,10 @@
-window.addEventListener('load', () => {
-    // Dá tempo do usuário admirar o logo antes de entrar
-    setTimeout(() => {
-        const splash = document.getElementById('splash-screen');
-        const main = document.getElementById('main-content');
+// Garantindo que o site funcione sem erros
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("AlphaMarketCap Terminal Ativo");
 
-        splash.style.transition = 'opacity 1s ease-in-out';
-        splash.style.opacity = '0';
-        
-        setTimeout(() => {
-            splash.style.display = 'none';
-            main.style.display = 'block';
-            document.body.style.overflow = 'auto';
-        }, 1000);
-    }, 3000);
+    const loginBtn = document.getElementById('loginBtn');
+
+    loginBtn.addEventListener('click', () => {
+        alert('Acesso ao Terminal Alpha: Estamos configurando a criptografia da base de dados.');
+    });
 });
