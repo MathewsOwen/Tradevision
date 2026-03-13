@@ -3,55 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaMarketCap | Global Terminal PRO</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <title>Sua Identidade | Market Insights</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="terminal-dark">
+<body>
 
-    <div class="ticker-wrapper">
-        <div class="ticker-content" id="bankTicker"></div>
-    </div>
+    <nav class="navbar">
+        <div class="logo">NOSSA<span>IDENTIDADE</span></div>
+        <ul class="nav-links">
+            <li><a href="#">Soluções</a></li>
+            <li><a href="#">Dados de Mercado</a></li>
+            <li><a href="#">Institucional</a></li>
+            <li><a href="#" class="btn-acesso">Acessar Plataforma</a></li>
+        </ul>
+    </nav>
 
-    <header class="main-header">
-        <div class="logo">ALPHAMARKETCAP <span class="version">V4.0_PRO</span></div>
-        <div class="system-time" id="clock">00:00:00</div>
-        <button class="btn-auth" id="loginBtn">AUTH_CONNECTION</button>
+    <header class="hero">
+        <div class="hero-content">
+            <h1>Liderança e <span>Inteligência</span> em Dados.</h1>
+            <p>Acompanhe o mercado com a precisão que o seu negócio exige.</p>
+            <button class="cta-button">Começar Agora</button>
+        </div>
+        <div class="hero-chart">
+            <canvas id="impactChart"></canvas>
+        </div>
     </header>
 
-    <div class="main-container">
-        <aside class="control-sidebar">
-            <nav class="nav-menu">
-                <div class="nav-category">MARKET_OPERATIONS</div>
-                <button class="nav-btn active">TERMINAL</button>
-                <button class="nav-btn">LIQUIDITY</button>
-                <button class="nav-btn">VOLATILITY_MAP</button>
-            </nav>
-        </aside>
-
-        <main class="viewport">
-            <div class="workspace">
-                <section class="chart-box">
-                    <header class="panel-header">
-                        <span class="symbol">LIVE_MARKET_ENGINE</span>
-                        <div class="chart-controls"><span>1M</span><span class="active">5M</span><span>15M</span></div>
-                    </header>
-                    <div class="chart-display" id="mainChart"></div>
-                </section>
-
-                <section class="movers-panel">
-                    <header class="panel-header">MARKET_MOVERS</header>
-                    <div class="movers-list">
-                        <div class="movers-category">HIGH_GAINERS</div>
-                        <div id="gainers" class="movers-group"></div>
-                        <div class="movers-category">TOP_LOSERS</div>
-                        <div id="losers" class="movers-group"></div>
-                    </div>
-                </section>
-            </div>
-        </main>
+    <div class="ticker-wrap">
+        <div class="ticker">
+            <div class="ticker__item">ATIVO 01: +2.45%</div>
+            <div class="ticker__item">ATIVO 02: -0.12%</div>
+            <div class="ticker__item">SUA MARCA: EM ALTA</div>
+            <div class="ticker__item">INDICE X: +1.80%</div>
+        </div>
     </div>
 
-    <script src="js/app.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
