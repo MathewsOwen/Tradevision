@@ -2,9 +2,9 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>AlphaMarketCap | Global Intelligence</title>
+    <title>AlphaMarketCap | Global Finance</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@400;700&family=Playfair+Display:ital,wght@1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=501">
+    <link rel="stylesheet" href="css/style.css?v=600">
 </head>
 <body class="private-edition">
 
@@ -12,16 +12,7 @@
 
     <div class="top-bar">
         <div class="ticker-track" id="globalTicker">
-            <div class="ticker-item"><img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png"> BTC <b>$64,210</b></div>
-            <div class="ticker-item"><img src="https://cryptologos.cc/logos/ethereum-eth-logo.png"> ETH <b>$3,450</b></div>
-            <div class="ticker-item"><img src="https://logo.clearbit.com/binance.com"> BINANCE <b>9.8 pts</b></div>
-            <div class="ticker-item"><img src="https://logo.clearbit.com/coinbase.com"> COINBASE <b>9.5 pts</b></div>
-            <div class="ticker-item"><img src="https://logo.clearbit.com/kraken.com"> KRAKEN <b>9.2 pts</b></div>
-            <div class="ticker-item">💵 USD/BRL <b>5.02</b></div>
-            <div class="ticker-item">💶 EUR/BRL <b>5.45</b></div>
-            <div class="ticker-item"><img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png"> BTC <b>$64,210</b></div>
-            <div class="ticker-item"><img src="https://logo.clearbit.com/binance.com"> BINANCE <b>9.8 pts</b></div>
-        </div>
+            </div>
     </div>
 
     <header class="header">
@@ -30,8 +21,8 @@
                 <span class="logo-gold-stylized">ALPHA</span><span class="logo-white-stylized">MARKETCAP</span>
             </div>
             <nav class="nav">
-                <button class="nav-link-pill active" onclick="switchTab('market')">TERMINAL DASHBOARD</button>
-                <button class="nav-link-pill" onclick="switchTab('news')">GLOBAL FEED</button>
+                <button class="nav-link-pill active" onclick="switchTab('market')">INÍCIO</button>
+                <button class="nav-link-pill" onclick="switchTab('news')">FEED DE NOTÍCIAS</button>
             </nav>
         </div>
     </header>
@@ -46,8 +37,8 @@
         <aside class="ranking-section" id="rankingView">
             <div class="card ranking-card">
                 <div class="tabs-ranking-pills">
-                    <button id="btn-high" class="pill-btn active" onclick="toggleRanking('high')">ALTAS</button>
-                    <button id="btn-low" class="pill-btn" onclick="toggleRanking('low')">BAIXAS</button>
+                    <button id="btn-high" class="pill-btn active" onclick="toggleRanking('high')">TOP 10 ALTAS</button>
+                    <button id="btn-low" class="pill-btn" onclick="toggleRanking('low')">TOP 10 BAIXAS</button>
                 </div>
                 <div id="highList" class="asset-list"></div>
                 <div id="lowList" class="asset-list hidden"></div>
@@ -56,13 +47,13 @@
 
         <section class="news-section hidden" id="newsView">
             <div class="card">
-                <h2 class="gold-title">LATEST NEWS // LIVE PORTAL</h2>
+                <h2 class="gold-title">CENTRAL DE INTELIGÊNCIA // MUNDIAL</h2>
                 <div id="newsFeed" class="news-grid"></div>
             </div>
         </section>
     </main>
 
     <script src="https://s3.tradingview.com/tv.js"></script>
-    <script src="js/app.js?v=501"></script>
+    <script src="js/app.js?v=600"></script>
 </body>
 </html>
