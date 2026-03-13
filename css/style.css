@@ -4,12 +4,13 @@
     --dark-bg: #050505;
 }
 
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
 body {
-    margin: 0;
     background-color: var(--dark-bg);
     color: white;
     font-family: 'Montserrat', sans-serif;
-    overflow: hidden; /* Trava o scroll no carregamento */
+    overflow: hidden;
 }
 
 /* Splash Screen */
@@ -21,12 +22,12 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 9999;
+    text-align: center;
 }
-
-.splash-content { text-align: center; }
 
 .main-logo {
     width: 280px;
+    max-width: 80%;
     filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.2));
 }
 
@@ -34,7 +35,7 @@ body {
     color: var(--gold);
     font-size: 0.8rem;
     letter-spacing: 5px;
-    margin-top: 20px;
+    margin-top: 25px;
     text-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
 }
 
@@ -43,6 +44,7 @@ body {
     height: 2px;
     background: #1a1a1a;
     margin: 30px auto;
+    overflow: hidden;
 }
 
 .loader-bar {
@@ -89,8 +91,15 @@ body {
 }
 
 .terminal-body {
-    padding: 50px;
+    padding: 100px 20px;
     text-align: center;
+}
+
+.welcome-card h1 {
+    font-size: 2.5rem;
+    letter-spacing: 5px;
+    margin-bottom: 10px;
+    color: var(--gold);
 }
 
 @keyframes load { to { width: 100%; } }
