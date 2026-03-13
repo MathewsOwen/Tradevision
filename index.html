@@ -1,71 +1,48 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALPHAMARKETCAP | Global Terminal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <title>AlphaMarketCap | Global Intelligence</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=JetBrains+Mono:wght@300;500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="splash-screen">
-        <div class="splash-logo">ALPHA<span>MARKETCAP</span></div>
-        <div class="splash-slogan">Inteligência para quem move mercados.</div>
-    </div>
 
-    <div id="site-content">
-        <div class="ticker-tape">
-            <div class="tradingview-widget-container">
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-                {
-                  "symbols": [
-                    {"proName":"NASDAQ:QQQ","title":"NASDAQ 100"},
-                    {"proName":"BMFBOVESPA:IBOV","title":"IBOVESPA"},
-                    {"proName":"FX_IDC:USDBRL","title":"DÓLAR"},
-                    {"proName":"NYSE:GS","title":"GOLDMAN SACHS"},
-                    {"proName":"NYSE:JPM","title":"JP MORGAN"},
-                    {"proName":"NYSE:MS","title":"MORGAN STANLEY"},
-                    {"proName":"NYSE:BAC","title":"BANK OF AMERICA"},
-                    {"proName":"NYSE:C","title":"CITIGROUP"}
-                  ],
-                  "showSymbolLogo": true,
-                  "colorTheme": "dark",
-                  "isTransparent": false,
-                  "displayMode": "adaptive",
-                  "locale": "br"
-                }
-                </script>
+    <div id="splash-screen">
+        <div class="splash-content">
+            <img src="logo-alpha.jpg" alt="AlphaMarketCap Logo" class="main-logo">
+            <h2 class="splash-phrase">PRECISÃO • EXCLUSIVIDADE • ALPHA</h2>
+            <div class="loader-container">
+                <div class="loader-bar"></div>
             </div>
         </div>
+    </div>
 
-        <header>
-            <div class="logo-text">ALPHA<span>MARKETCAP</span></div>
-            <div id="clock">00:00:00</div>
-        </header>
-
-        <main class="container">
-            <div class="dashboard-grid">
-                <div class="main-card chart-box">
-                    <h2 class="card-label">MONITORAMENTO GLOBAL</h2>
-                    <div id="main-chart"></div>
-                </div>
-
-                <div class="main-card">
-                    <div class="tabs">
-                        <button class="tab-btn active" onclick="switchTab('top-gainers', this)">ALTAS</button>
-                        <button class="tab-btn" onclick="switchTab('top-losers', this)">BAIXAS</button>
-                    </div>
-                    <div id="top-gainers" class="tab-content active"></div>
-                    <div id="top-losers" class="tab-content"></div>
-                </div>
+    <div id="main-content">
+        <header class="navbar">
+            <div class="logo-nav">
+                <img src="logo-alpha.jpg" alt="Logo" width="40">
+                <span>ALPHAMARKETCAP</span>
             </div>
             
-            <div id="sectors-container"></div>
+            <div class="user-menu">
+                <button id="loginBtn" class="btn-member">
+                    <span class="icon">🔒</span> ÁREA DO MEMBRO
+                </button>
+            </div>
+        </header>
+
+        <main class="terminal-container">
+            <section class="market-overview">
+                <div class="card">
+                    <h3>BEM-VINDO AO TERMINAL</h3>
+                    <p>Conectando aos mercados globais...</p>
+                </div>
+            </section>
         </main>
     </div>
 
-    <script src="https://s3.tradingview.com/tv.js"></script>
-    <script src="js/config.js"></script>
-    <script src="js/app.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
