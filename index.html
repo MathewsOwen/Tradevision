@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaMarketCap | Terminal PRO</title>
+    <title>AlphaMarketCap | Terminal Sênior</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -14,7 +14,7 @@
     </div>
 
     <header class="main-header">
-        <div class="logo">ALPHAMARKETCAP <span class="version">V4.0_PRO</span></div>
+        <div class="logo">ALPHAMARKETCAP <span class="version">V5.0_PRO</span></div>
         <div class="system-clock" id="clock">00:00:00</div>
         <button class="btn-terminal" id="loginBtn">AUTH_CONNECTION</button>
     </header>
@@ -32,8 +32,8 @@
         <main class="main-view">
             <div class="grid-layout">
                 <section class="panel chart-panel">
-                    <header class="panel-header">LIVE_MARKET_ENGINE [REAL-TIME]</header>
-                    <div class="canvas-area" id="mainChart"></div>
+                    <header class="panel-header">TRADINGVIEW_ENGINE // LIVE_FEED</header>
+                    <div id="tradingview_alpha" style="height: calc(100% - 40px); width: 100%;"></div>
                 </section>
 
                 <section class="panel movers-panel">
@@ -50,6 +50,7 @@
         </main>
     </div>
 
+    <script src="https://s3.tradingview.com/tv.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
