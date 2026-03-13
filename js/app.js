@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         graphArea.appendChild(candle);
     }
 
-    // Animação das barras
+    // Animação das barras (Simulando Mercado Vivo)
     setInterval(() => {
         const candles = document.querySelectorAll('.candle');
         candles.forEach(c => {
@@ -21,6 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1000);
 
     document.getElementById('loginBtn').addEventListener('click', () => {
-        alert('FIREBASE_CONNECTION: Iniciando protocolo de autenticação...');
+        alert('FIREBASE_CONNECTION: Estabelecendo túnel de dados...');
     });
 });
