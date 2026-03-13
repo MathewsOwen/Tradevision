@@ -1,39 +1,61 @@
-// Configuração do Gráfico de Impacto
-const ctx = document.getElementById('impactChart').getContext('2d');
+const AlphaCore = {
+    banks: ["J.P. MORGAN", "GOLDMAN SACHS", "MORGAN STANLEY", "CITIGROUP", "HSBC", "BOFA", "BARCLAYS", "UBS", "DEUTSCHE BANK", "WELLS FARGO", "BNP PARIBAS", "SANTANDER", "NOMURA", "MIZUHO", "CREDIT AGRICOLE", "SOCIETE GENERALE", "UBS GROUP", "RBC", "TD BANK", "MITSUBISHI"],
 
-const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-gradient.addColorStop(0, 'rgba(0, 71, 187, 0.4)');
-gradient.addColorStop(1, 'rgba(0, 71, 187, 0)');
-
-const impactChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
-        datasets: [{
-            label: 'Crescimento do Mercado',
-            data: [30, 45, 38, 60, 55, 80, 95],
-            borderColor: '#0047bb',
-            backgroundColor: gradient,
-            fill: true,
-            tension: 0.4,
-            borderWidth: 3,
-            pointRadius: 0
-        }]
+    init() {
+        this.buildTicker();
+        this.buildChart();
+        this.buildMovers();
+        this.launchLoops();
     },
-    options: {
-        responsive: true,
-        plugins: { legend: { display: false } },
-        scales: {
-            x: { grid: { display: false } },
-            y: { grid: { color: '#f0f0f0' } }
-        }
-    }
-});
 
-// Simulação de atualização em tempo real
-setInterval(() => {
-    const newData = impactChart.data.datasets[0].data;
-    newData.shift();
-    newData.push(Math.floor(Math.random() * (100 - 70 + 1) + 70));
-    impactChart.update();
-}, 3000);
+    buildTicker() {
+        const container = document.getElementById('bankTicker');
+        [...this.banks, ...this.banks].forEach(b => {
+            const div = document.createElement('div');
+            div.className = 'bank-unit';
+            div.innerHTML = `${b} <span>+${(Math.random()*5).toFixed(2)}%</span>`;
+            container.appendChild(div);
+        });
+    },
+
+    buildChart() {
+        const chart = document.getElementById('mainChart');
+        for(let i=0; i < 35; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'bar';
+            bar.style.height = `${Math.random() * 70 + 20}%`;
+            bar.onclick = () => alert("SISTEMA: Analisando volatilidade do bloco...");
+            chart.appendChild(bar);
+        }
+    },
+
+    buildMovers() {
+        const gainers = ["PETR4", "VALE3", "ITUB4", "BBDC4", "RENT3"];
+        const losers = ["MGLU3", "AMER3", "VIIA3", "AZUL4", "CVCB3"];
+
+        const render = (list, id, isUp) => {
+            const el = document.getElementById(id);
+            list.forEach(s => {
+                el.innerHTML += `
+                <div class="mover-row" onclick="alert('Trade em ${s} disponível.')">
+                    <span>${s}</span>
+                    <span class="${isUp ? 'up' : 'down'}">${isUp ? '+' : '-'}${(Math.random()*6).toFixed(2)}%</span>
+                </div>`;
+            });
+        };
+        render(gainers, 'gainers', true);
+        render(losers, 'losers', false);
+    },
+
+    launchLoops() {
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+            document.querySelectorAll('.bar').forEach(b => {
+                let h = parseFloat(b.style.height);
+                b.style.height = `${Math.max(15, Math.min(95, h + (Math.random() * 12 - 6)))}%`;
+            });
+        }, 1000);
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => AlphaCore.init());
