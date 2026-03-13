@@ -1,58 +1,91 @@
+/**
+ * AlphaMarketCap Engine V4.1 - Asset Integration
+ * Recuperando ativos da base de dados Alpha
+ */
+
 const AlphaCore = {
-    banks: ["J.P. MORGAN", "GOLDMAN SACHS", "MORGAN STANLEY", "CITIGROUP", "HSBC", "BOFA", "BARCLAYS", "UBS", "DEUTSCHE BANK", "WELLS FARGO", "BNP PARIBAS", "SANTANDER", "NOMURA", "MIZUHO", "CREDIT AGRICOLE", "SOCIETE GENERALE", "UBS GROUP", "RBC", "TD BANK", "MITSUBISHI"],
+    // OS 20 MAIORES BANCOS (Para o Ticker superior)
+    banks: [
+        "J.P. MORGAN", "GOLDMAN SACHS", "MORGAN STANLEY", "CITIGROUP", "HSBC", 
+        "BOFA", "BARCLAYS", "UBS", "DEUTSCHE BANK", "WELLS FARGO", 
+        "BNP PARIBAS", "SANTANDER", "NOMURA", "MIZUHO", "CREDIT AGRICOLE", 
+        "SOCIETE GENERALE", "UBS GROUP", "RBC", "TD BANK", "MITSUBISHI"
+    ],
+
+    // ATIVOS DA NOSSA PLANILHA (Para o Painel Lateral)
+    gainers: ["PETR4", "VALE3", "ITUB4", "NVDA", "TSLA", "AAPL"],
+    losers: ["MGLU3", "AMER3", "AZUL4", "INTC", "PYPL", "BABA"],
 
     init() {
         this.buildTicker();
         this.buildChart();
         this.buildMovers();
         this.launchLoops();
+        console.log("AlphaCore: Ativos da planilha carregados com sucesso.");
     },
 
     buildTicker() {
         const container = document.getElementById('bankTicker');
+        if (!container) return;
+        // Duplicando para o efeito infinito de Senior
         [...this.banks, ...this.banks].forEach(b => {
             const div = document.createElement('div');
             div.className = 'bank-unit';
-            div.innerHTML = `${b} <span>+${(Math.random()*5).toFixed(2)}%</span>`;
+            const pts = (Math.random() * 1000 + 500).toFixed(2);
+            div.innerHTML = `${b} <span>${pts} PTS</span>`;
             container.appendChild(div);
         });
     },
 
     buildChart() {
         const chart = document.getElementById('mainChart');
+        if (!chart) return;
         for(let i=0; i < 35; i++) {
             const bar = document.createElement('div');
             bar.className = 'bar';
             bar.style.height = `${Math.random() * 70 + 20}%`;
-            bar.onclick = () => alert("SISTEMA: Analisando volatilidade do bloco...");
             chart.appendChild(bar);
         }
     },
 
     buildMovers() {
-        const gainers = ["PETR4", "VALE3", "ITUB4", "BBDC4", "RENT3"];
-        const losers = ["MGLU3", "AMER3", "VIIA3", "AZUL4", "CVCB3"];
+        const gContainer = document.getElementById('gainers');
+        const lContainer = document.getElementById('losers');
+        
+        if (!gContainer || !lContainer) return;
 
-        const render = (list, id, isUp) => {
-            const el = document.getElementById(id);
-            list.forEach(s => {
-                el.innerHTML += `
-                <div class="mover-row" onclick="alert('Trade em ${s} disponível.')">
+        gContainer.innerHTML = ''; 
+        lContainer.innerHTML = '';
+
+        this.gainers.forEach(s => {
+            const val = (Math.random() * 5 + 1).toFixed(2);
+            gContainer.innerHTML += `
+                <div class="mover-row" onclick="alert('Iniciando análise profunda de ${s}')">
                     <span>${s}</span>
-                    <span class="${isUp ? 'up' : 'down'}">${isUp ? '+' : '-'}${(Math.random()*6).toFixed(2)}%</span>
+                    <span class="up">+${val}%</span>
                 </div>`;
-            });
-        };
-        render(gainers, 'gainers', true);
-        render(losers, 'losers', false);
+        });
+
+        this.losers.forEach(s => {
+            const val = (Math.random() * 5 + 1).toFixed(2);
+            lContainer.innerHTML += `
+                <div class="mover-row" onclick="alert('Alerta de queda: Monitorando ${s}')">
+                    <span>${s}</span>
+                    <span class="down">-${val}%</span>
+                </div>`;
+        });
     },
 
     launchLoops() {
         setInterval(() => {
-            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+            // Atualiza relógio
+            const clock = document.getElementById('clock');
+            if (clock) clock.innerText = new Date().toLocaleTimeString();
+            
+            // Movimenta gráfico
             document.querySelectorAll('.bar').forEach(b => {
                 let h = parseFloat(b.style.height);
-                b.style.height = `${Math.max(15, Math.min(95, h + (Math.random() * 12 - 6)))}%`;
+                b.style.height = `${Math.max(15, Math.min(95, h + (Math.random() * 10 - 5)))}%`;
             });
         }, 1000);
     }
