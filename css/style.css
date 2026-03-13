@@ -2,45 +2,52 @@
     --navy: #000b1a;
     --navy-card: #001633;
     --gold: #d4af37;
-    --gold-bright: #f1d592;
     --white: #f8f9fa;
     --green: #00e676;
     --red: #ff1744;
+    --border: rgba(212, 175, 55, 0.2);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background-color: var(--navy); color: var(--white); font-family: 'Inter', sans-serif; }
+body { background-color: var(--navy); color: var(--white); font-family: 'Inter', sans-serif; overflow-x: hidden; }
 
-.container { max-width: 1650px; margin: 0 auto; padding: 0 20px; }
+.container { max-width: 1750px; margin: 0 auto; padding: 0 20px; }
 
-/* Ticker com Logos */
-.top-bar { background: #000; height: 45px; border-bottom: 1px solid var(--gold); overflow: hidden; display: flex; align-items: center; }
+/* Ticker Premium */
+.top-bar { background: #000; height: 50px; border-bottom: 1px solid var(--gold); overflow: hidden; display: flex; align-items: center; }
 .ticker-track { display: flex; white-space: nowrap; animation: slide 60s linear infinite; }
-.ticker-item { display: flex; align-items: center; padding: 0 30px; font-size: 12px; color: var(--gold); gap: 10px; }
-.ticker-item img { height: 18px; filter: grayscale(20%); }
+.ticker-item { display: flex; align-items: center; padding: 0 35px; font-size: 13px; color: var(--gold); gap: 12px; font-weight: bold; }
+.ticker-item img { height: 22px; width: 22px; border-radius: 50%; border: 1px solid var(--gold); }
 
 /* Logo Estilizada */
-.logo-gold-stylized { font-family: 'Playfair Display', serif; font-style: italic; color: var(--gold); font-size: 32px; letter-spacing: -1px; text-shadow: 2px 2px 0px rgba(0,0,0,0.5); }
-.logo-white-stylized { font-family: 'Cinzel', serif; color: var(--white); font-size: 28px; font-weight: 300; }
+.logo-gold-stylized { font-family: 'Playfair Display', serif; font-style: italic; color: var(--gold); font-size: 36px; letter-spacing: -1px; }
+.logo-white-stylized { font-family: 'Cinzel', serif; color: var(--white); font-size: 30px; font-weight: 300; }
 
-/* Botões Arredondados (Pills) */
-.nav-link-pill { background: rgba(255,255,255,0.05); border: 1px solid var(--gold); color: var(--white); padding: 12px 25px; border-radius: 50px; cursor: pointer; font-size: 12px; font-weight: bold; margin-left: 15px; transition: 0.3s; }
-.nav-link-pill.active { background: var(--gold); color: var(--navy); box-shadow: 0 0 15px var(--gold); }
+/* Navegação Pill */
+.header { padding: 25px 0; border-bottom: 1px solid var(--border); }
+.header-flex { display: flex; justify-content: space-between; align-items: center; }
+.nav-link-pill { background: rgba(255,255,255,0.05); border: 1px solid var(--gold); color: var(--white); padding: 12px 35px; border-radius: 50px; cursor: pointer; font-size: 13px; font-weight: 700; margin-left: 15px; transition: 0.3s; text-transform: uppercase; }
+.nav-link-pill.active { background: var(--gold); color: var(--navy); box-shadow: 0 0 20px rgba(212, 175, 55, 0.5); }
 
-.pill-btn { flex: 1; padding: 10px; background: transparent; border: none; color: #555; cursor: pointer; border-radius: 30px; font-weight: bold; margin: 2px; }
-.pill-btn.active { background: var(--gold); color: var(--navy); }
-.tabs-ranking-pills { background: rgba(0,0,0,0.3); border-radius: 35px; display: flex; padding: 4px; border: 1px solid var(--border); margin-bottom: 20px; }
-
-/* Layout Grid Aumentado */
-.main-grid { display: grid; grid-template-columns: 1fr 380px; gap: 25px; padding: 30px 0; }
-.card { background: var(--navy-card); border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 15px; padding: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
+/* Layout Grid */
+.main-grid { display: grid; grid-template-columns: 1fr 420px; gap: 30px; padding: 30px 0; }
+.card { background: var(--navy-card); border: 1px solid var(--border); border-radius: 20px; padding: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
 
 /* Gráfico */
-#tradingview_alpha { height: 650px; width: 100%; border-radius: 10px; overflow: hidden; }
+#tradingview_alpha { height: 680px; width: 100%; border-radius: 12px; overflow: hidden; }
 
-/* News */
-.news-item { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 20px; border: 1px solid transparent; transition: 0.3s; cursor: pointer; text-decoration: none; color: inherit; display: block; margin-bottom: 15px; }
-.news-item:hover { border-color: var(--gold); background: rgba(212, 175, 55, 0.05); transform: translateY(-3px); }
+/* Rankings */
+.tabs-ranking-pills { background: rgba(0,0,0,0.3); border-radius: 40px; display: flex; padding: 5px; border: 1px solid var(--border); margin-bottom: 25px; }
+.pill-btn { flex: 1; padding: 12px; background: transparent; border: none; color: #666; cursor: pointer; border-radius: 35px; font-weight: bold; transition: 0.3s; }
+.pill-btn.active { background: var(--gold); color: var(--navy); }
+.asset-row { display: flex; justify-content: space-between; padding: 15px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
+.asset-row:hover { background: rgba(212, 175, 55, 0.1); border-radius: 10px; }
+
+/* Notícias */
+.news-item { background: rgba(0,0,0,0.2); border-radius: 15px; padding: 20px; border: 1px solid transparent; transition: 0.3s; cursor: pointer; text-decoration: none; color: inherit; display: block; margin-bottom: 20px; border-left: 5px solid var(--gold); }
+.news-item:hover { border-color: var(--gold); transform: translateY(-5px); }
+
+.update-indicator { font-size: 10px; color: #444; text-align: center; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; }
 
 @keyframes slide { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 .hidden { display: none !important; }
