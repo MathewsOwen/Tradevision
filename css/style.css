@@ -8,35 +8,39 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background-color: var(--bg-black); color: #fff; font-family: 'JetBrains Mono', monospace; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+body { background: var(--bg-black); color: #fff; font-family: 'JetBrains Mono', monospace; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-/* Ticker Senior */
-.ticker-wrapper { background: #000; height: 32px; border-bottom: 1px solid var(--border); display: flex; align-items: center; overflow: hidden; }
-.ticker-content { display: flex; white-space: nowrap; animation: ticker-move 50s linear infinite; }
-.bank-unit { padding: 0 35px; font-size: 11px; color: #666; }
-.bank-unit span { color: var(--green); margin-left: 8px; }
+/* Ticker e Linha Branca */
+.ticker-wrapper { background: #000; height: 32px; overflow: hidden; display: flex; align-items: center; }
+.white-divider { height: 1.5px; background: #ffffff; width: 100%; box-shadow: 0 0 10px rgba(255,255,255,0.5); }
+.ticker-content { display: flex; white-space: nowrap; animation: ticker-move 40s linear infinite; }
+.bank-unit { padding: 0 35px; font-size: 11px; color: #888; }
+.bank-unit span { color: var(--green); margin-left: 5px; }
+
 @keyframes ticker-move { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-/* Header */
-.main-header { height: 60px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; background: #000; }
-.logo { font-weight: bold; letter-spacing: 3px; color: var(--accent); }
-.btn-terminal { background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 8px 15px; font-size: 10px; cursor: pointer; }
-
 /* Layout */
+.main-header { height: 60px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
+.logo { font-weight: bold; letter-spacing: 3px; color: var(--accent); }
 .app-body { display: flex; flex: 1; overflow: hidden; }
 .sidebar { width: 220px; border-right: 1px solid var(--border); background: #000; padding: 20px 0; }
-.nav-item { display: block; padding: 15px 25px; color: #444; text-decoration: none; font-size: 11px; }
-.nav-item.active { color: var(--accent); background: rgba(0, 243, 255, 0.05); border-left: 3px solid var(--accent); }
 
-/* Grid e Painéis */
-.main-view { flex: 1; padding: 15px; }
-.grid-layout { display: grid; grid-template-columns: 1fr 300px; gap: 15px; height: 100%; }
-.panel { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 4px; }
+.nav-btn { width: 100%; padding: 15px 25px; background: none; border: none; color: #444; text-align: left; cursor: pointer; font-family: inherit; font-size: 11px; transition: 0.3s; }
+.nav-btn.active { color: var(--accent); border-right: 2px solid var(--accent); background: rgba(0, 243, 255, 0.05); }
+
+/* Gráfico Reduzido */
+.main-view { flex: 1; padding: 20px; position: relative; }
+.grid-layout { display: grid; grid-template-columns: 1fr 320px; gap: 20px; height: 100%; }
+.panel { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.tv-container { height: 450px; width: 100%; } /* TAMANHO DIMINUÍDO */
+
 .panel-header { background: #000; padding: 12px; font-size: 10px; color: #555; border-bottom: 1px solid var(--border); }
-
-/* Movers */
 .movers-content { padding: 15px; }
-.list-title { font-size: 9px; color: #444; margin-bottom: 10px; letter-spacing: 1px; }
-.mover-row { display: flex; justify-content: space-between; padding: 12px 0; font-size: 12px; border-bottom: 1px solid #0f0f0f; cursor: pointer; }
-.up { color: var(--green); }
-.down { color: var(--red); }
+.mover-row { display: flex; justify-content: space-between; padding: 12px 10px; font-size: 12px; border-bottom: 1px solid #111; cursor: pointer; }
+.mover-row:hover { background: #111; }
+
+/* Controle de Opções */
+.hidden-view { display: none; position: absolute; top: 20px; left: 20px; right: 20px; bottom: 20px; z-index: 10; background: var(--panel-bg); }
+.placeholder-content { display: flex; align-items: center; justify-content: center; height: 100%; color: #333; font-size: 12px; }
+
+.up { color: var(--green); } .down { color: var(--red); }
