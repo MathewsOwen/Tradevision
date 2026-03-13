@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaMarketCap | Terminal Sênior</title>
+    <title>AlphaMarketCap | Enterprise Terminal</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -12,40 +12,44 @@
     <div class="ticker-wrapper">
         <div class="ticker-content" id="bankTicker"></div>
     </div>
-
-    <header class="main-header">
-        <div class="logo">ALPHAMARKETCAP <span class="version">V5.0_PRO</span></div>
+    <div class="white-divider"></div> <header class="main-header">
+        <div class="logo">ALPHAMARKETCAP <span class="version">V5.1_PRO</span></div>
         <div class="system-clock" id="clock">00:00:00</div>
-        <button class="btn-terminal" id="loginBtn">AUTH_CONNECTION</button>
+        <button class="btn-terminal" id="authBtn">AUTH_CONNECTION</button>
     </header>
 
     <div class="app-body">
         <aside class="sidebar">
-            <nav>
+            <nav id="mainNav">
                 <div class="nav-label">OPERATIONS</div>
-                <a href="#" class="nav-item active">TERMINAL</a>
-                <a href="#" class="nav-item">QUANT_SIGNALS</a>
-                <a href="#" class="nav-item">LIQUIDITY</a>
+                <button class="nav-btn active" data-target="dashboard">DASHBOARD</button>
+                <button class="nav-btn" data-target="signals">QUANT_SIGNALS</button>
+                <button class="nav-btn" data-target="liquidity">LIQUIDITY</button>
             </nav>
         </aside>
 
         <main class="main-view">
-            <div class="grid-layout">
+            <div class="grid-layout" id="view-dashboard">
                 <section class="panel chart-panel">
                     <header class="panel-header">TRADINGVIEW_ENGINE // LIVE_FEED</header>
-                    <div id="tradingview_alpha" style="height: calc(100% - 40px); width: 100%;"></div>
+                    <div id="tradingview_alpha" class="tv-container"></div>
                 </section>
 
                 <section class="panel movers-panel">
                     <header class="panel-header">MARKET_MOVERS_24H</header>
-                    <div class="movers-content">
-                        <div class="list-title">HIGH_GAINERS</div>
-                        <div id="gainers" class="movers-list"></div>
-                        
-                        <div class="list-title" style="margin-top: 20px;">TOP_LOSERS</div>
-                        <div id="losers" class="movers-list"></div>
-                    </div>
+                    <div class="movers-content" id="moversList">
+                        </div>
                 </section>
+            </div>
+            
+            <div class="panel hidden-view" id="view-signals">
+                <header class="panel-header">QUANTUM_SIGNALS_FEED</header>
+                <div class="placeholder-content">AGUARDANDO CONEXÃO COM O FIREBASE PARA SINAIS EM TEMPO REAL...</div>
+            </div>
+
+            <div class="panel hidden-view" id="view-liquidity">
+                <header class="panel-header">GLOBAL_LIQUIDITY_MAP</header>
+                <div class="placeholder-content">MAPA DE CALOR DE LIQUIDIDADE EM DESENVOLVIMENTO.</div>
             </div>
         </main>
     </div>
