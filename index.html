@@ -4,29 +4,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlphaMarketCap | Terminal</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* DESIGN INTEGRADO PARA NÃO DAR ERRO */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background-color: #050505; /* Fundo Preto Alpha */
+            color: #d4af37; /* Dourado */
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: #000;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .brand-name {
+            font-weight: bold;
+            letter-spacing: 3px;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+        }
+
+        .btn-member {
+            background: transparent;
+            border: 1px solid #00f3ff; /* Azul Neon */
+            color: #00f3ff;
+            padding: 8px 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .btn-member:hover {
+            background: #00f3ff;
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+        }
+
+        .hero {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            letter-spacing: 5px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+        }
+
+        .hero-content p {
+            color: #888;
+            font-size: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .line {
+            width: 50px;
+            height: 2px;
+            background: #00f3ff;
+            margin: 20px auto;
+            box-shadow: 0 0 8px #00f3ff;
+        }
+    </style>
 </head>
 <body>
 
     <header class="navbar">
-        <div class="brand">
-            <img src="Logo Alphamarketcap.jpg" alt="Logo" class="nav-logo">
-            <span class="brand-name">ALPHAMARKETCAP</span>
-        </div>
-        <div class="user-controls">
-            <button id="loginBtn" class="btn-member">ÁREA DO MEMBRO</button>
-        </div>
+        <div class="brand-name">ALPHAMARKETCAP</div>
+        <button id="loginBtn" class="btn-member">Área do Membro</button>
     </header>
 
     <main class="hero">
         <div class="hero-content">
             <h1>GLOBAL INTELLIGENCE</h1>
-            <p>O mercado em tempo real. Identidade Alpha ativada.</p>
-            <div class="divider"></div>
+            <div class="line"></div>
+            <p>CONECTANDO AO MERCADO EM TEMPO REAL</p>
         </div>
     </main>
 
-    <script src="script.js"></script>
+    <script>
+        // SCRIPT SIMPLES INTEGRADO
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            alert('Acesso Restrito: Terminal Alpha em processo de atualização.');
+        });
+    </script>
 </body>
 </html>
