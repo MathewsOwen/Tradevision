@@ -2,29 +2,61 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>AlphaMarketCap PRO</title>
-    <link rel="stylesheet" href="css/style.css?v=1.2">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaMarketCap | Premium Terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@500;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=101">
 </head>
-<body>
-    <div class="ticker-wrapper"><div id="bankTicker" class="ticker-content"></div></div>
-    <div class="premium-line"></div>
-    
-    <div class="main-layout">
+<body class="terminal-body">
+
+    <div class="ticker-wrapper">
+        <div class="ticker-content" id="bankTicker"></div>
+    </div>
+    <div class="premium-divider"></div>
+
+    <header class="main-header">
+        <div class="brand">
+            <div class="logo-box">A</div>
+            <div class="logo-text">
+                <span class="logo-main">ALPHAMARKETCAP</span>
+                <span class="logo-sub">// CORE_V5.2_PRO</span>
+            </div>
+        </div>
+        <div class="clock-panel">
+            <span id="clock" class="orbitron">00:00:00</span>
+        </div>
+        <button class="btn-terminal">SECURE_AUTH</button>
+    </header>
+
+    <div class="app-body">
         <aside class="sidebar">
-            <h2 class="logo">ALPHA</h2>
-            <nav>
-                <button class="nav-item active">TERMINAL</button>
-                <button class="nav-item">SIGNALS</button>
+            <nav id="mainNav">
+                <div class="nav-label">COMMAND_CENTER</div>
+                <button class="nav-btn active" data-target="dashboard">TERMINAL</button>
+                <button class="nav-btn" data-target="signals">SIGNALS</button>
+                <button class="nav-btn" data-target="liquidity">LIQUIDITY</button>
             </nav>
+            <div class="status-bar">
+                <span class="pulse"></span> LIVE_CONNECTION
+            </div>
         </aside>
-        
-        <main class="content">
-            <div id="tv_chart_container"></div>
-            <div id="movers_list" class="movers"></div>
+
+        <main class="main-view">
+            <div class="grid-layout" id="view-dashboard">
+                <section class="panel chart-panel">
+                    <header class="panel-header">TRADINGVIEW_LIVE_FEED</header>
+                    <div id="tradingview_alpha" class="tv-container"></div>
+                </section>
+
+                <section class="panel movers-panel">
+                    <header class="panel-header">MARKET_WATCH</header>
+                    <div class="movers-content" id="moversList"></div>
+                </section>
+            </div>
         </main>
     </div>
 
     <script src="https://s3.tradingview.com/tv.js"></script>
-    <script src="js/app.js?v=1.2"></script>
+    <script src="js/app.js?v=101"></script>
 </body>
 </html>
