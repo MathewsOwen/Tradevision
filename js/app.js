@@ -1,29 +1,52 @@
-/* script.js */
-document.addEventListener('DOMContentLoaded', () => {
-    const graphArea = document.getElementById('graphArea');
+/**
+ * AlphaMarketCap Core Engine
+ * Versão 3.1 - Profissional
+ */
 
-    if (graphArea) {
-        // Gera os candles
-        for (let i = 0; i < 35; i++) {
+const App = {
+    init() {
+        this.renderChart();
+        this.startPricePulse();
+        this.setupEventListeners();
+        console.log("AlphaMarketCap: Core Engine Ready.");
+    },
+
+    renderChart() {
+        const container = document.getElementById('chartContainer');
+        const candleCount = 40;
+
+        for (let i = 0; i < candleCount; i++) {
             const candle = document.createElement('div');
             candle.className = 'candle';
-            const height = Math.floor(Math.random() * 200) + 50;
-            candle.style.height = `${height}px`;
-            graphArea.appendChild(candle);
+            candle.style.height = `${Math.floor(Math.random() * 60) + 20}%`;
+            container.appendChild(candle);
         }
+    },
 
-        // Animação dinâmica
+    startPricePulse() {
         setInterval(() => {
             const candles = document.querySelectorAll('.candle');
             candles.forEach(c => {
-                const change = Math.floor(Math.random() * 20) - 10;
-                let currentHeight = parseInt(c.style.height);
-                c.style.height = `${Math.max(20, currentHeight + change)}px`;
+                const currentHeight = parseFloat(c.style.height);
+                const volatility = (Math.random() * 10) - 5;
+                const newHeight = Math.max(10, Math.min(95, currentHeight + volatility));
+                c.style.height = `${newHeight}%`;
             });
-        }, 1000);
-    }
+        }, 800);
+    },
 
-    document.getElementById('loginBtn').addEventListener('click', () => {
-        alert('AUTENTICAÇÃO: Estabelecendo conexão com servidor Alpha...');
-    });
-});
+    setupEventListeners() {
+        const loginBtn = document.getElementById('loginBtn');
+        loginBtn.addEventListener('click', () => {
+            this.logActivity("Login Attempt via Secure Gateway");
+            alert("SISTEMA CORPORATIVO: Aguardando integração final do Firebase.");
+        });
+    },
+
+    logActivity(msg) {
+        const now = new Date().toLocaleTimeString();
+        console.log(`[${now}] ALPHA_LOG: ${msg}`);
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => App.init());
