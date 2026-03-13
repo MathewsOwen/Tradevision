@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const graphArea = document.getElementById('graphArea');
 
-    // Cria os candles (velas) do gráfico automaticamente
-    for (let i = 0; i < 30; i++) {
+    // Gera as barras do gráfico dinamicamente
+    for (let i = 0; i < 35; i++) {
         const candle = document.createElement('div');
         candle.className = 'candle';
         const height = Math.floor(Math.random() * 200) + 50;
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         graphArea.appendChild(candle);
     }
 
-    // Faz o gráfico "pulsar" simulando movimento real
+    // Animação das barras
     setInterval(() => {
         const candles = document.querySelectorAll('.candle');
         candles.forEach(c => {
@@ -20,8 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, 1000);
 
-    // Botão de Login
     document.getElementById('loginBtn').addEventListener('click', () => {
-        alert('FIREBASE_CONNECTION: Estabelecendo túnel de dados criptografado...');
+        alert('FIREBASE_CONNECTION: Iniciando protocolo de autenticação...');
     });
 });
