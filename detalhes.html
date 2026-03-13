@@ -1,32 +1,15 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>ALPHAMARKETCAP | Terminal</title>
-    <link rel="stylesheet" href="css/style.css">
-    <style>
-        body { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        .nav-bar { background: #000; padding: 10px 5%; display: flex; align-items: center; border-bottom: 2px solid var(--accent); }
-        .btn-back { color: var(--accent); text-decoration: none; font-weight: bold; margin-right: 20px; font-size: 13px; border: 1px solid var(--accent); padding: 5px 15px; border-radius: 4px; }
-        #chart-container { flex-grow: 1; }
-    </style>
-</head>
-<body>
-    <div class="nav-bar">
-        <a href="index.html" class="btn-back">← DASHBOARD</a>
-        <div class="logo-text">ALPHA<span>MARKETCAP</span></div>
-    </div>
-    <div id="chart-container"></div>
-
-    <script src="https://s3.tradingview.com/tv.js"></script>
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const ticker = urlParams.get('symbol') || 'IBOV';
-        new TradingView.widget({
-            "autosize": true, "symbol": ticker, "interval": "D", "timezone": "Etc/UTC",
-            "theme": "dark", "style": "1", "locale": "br", "container_id": "chart-container",
-            "hide_side_toolbar": false, "allow_symbol_change": true, "details": true, "hotlist": true
+document.addEventListener('DOMContentLoaded', () => {
+    const graphArea = document.getElementById('graphArea');
+    for (let i = 0; i < 30; i++) {
+        const candle = document.createElement('div');
+        candle.className = 'candle';
+        candle.style.height = `${Math.floor(Math.random() * 200) + 50}px`;
+        graphArea.appendChild(candle);
+    }
+    setInterval(() => {
+        document.querySelectorAll('.candle').forEach(c => {
+            let h = parseInt(c.style.height);
+            c.style.height = `${Math.max(20, h + (Math.random() * 20 - 10))}px`;
         });
-    </script>
-</body>
-</html>
+    }, 1000);
+});
