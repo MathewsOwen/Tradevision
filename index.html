@@ -8,37 +8,48 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="terminal-dark">
-    <div class="ticker-wrapper"><div class="ticker-content" id="bankTicker"></div></div>
+
+    <div class="ticker-wrapper">
+        <div class="ticker-content" id="bankTicker"></div>
+    </div>
 
     <header class="main-header">
         <div class="logo">ALPHAMARKETCAP <span class="version">V4.0_PRO</span></div>
-        <div class="system-time" id="clock">00:00:00</div>
-        <button class="btn-auth">AUTH_CONNECTION</button>
+        <div class="system-clock" id="clock">00:00:00</div>
+        <button class="btn-terminal" id="loginBtn">AUTH_CONNECTION</button>
     </header>
 
-    <div class="main-container">
-        <aside class="control-sidebar">
-            <nav class="nav-menu">
-                <div class="nav-category">MARKET_OPERATIONS</div>
-                <button class="nav-btn active">TERMINAL</button>
-                <button class="nav-btn">QUANT_SIGNALS</button>
+    <div class="app-body">
+        <aside class="sidebar">
+            <nav>
+                <div class="nav-label">OPERATIONS</div>
+                <a href="#" class="nav-item active">TERMINAL</a>
+                <a href="#" class="nav-item">QUANT_SIGNALS</a>
+                <a href="#" class="nav-item">LIQUIDITY</a>
             </nav>
         </aside>
 
-        <main class="viewport">
-            <div class="workspace">
-                <section class="chart-box">
-                    <header class="panel-header">LIVE_MARKET_ENGINE</header>
-                    <div class="chart-display" id="mainChart"></div>
+        <main class="main-view">
+            <div class="grid-layout">
+                <section class="panel chart-panel">
+                    <header class="panel-header">LIVE_MARKET_ENGINE [REAL-TIME]</header>
+                    <div class="canvas-area" id="mainChart"></div>
                 </section>
-                <section class="movers-panel">
-                    <header class="panel-header">MARKET_MOVERS</header>
-                    <div id="gainers" class="movers-group"></div>
-                    <div id="losers" class="movers-group"></div>
+
+                <section class="panel movers-panel">
+                    <header class="panel-header">MARKET_MOVERS_24H</header>
+                    <div class="movers-content">
+                        <div class="list-title">HIGH_GAINERS</div>
+                        <div id="gainers" class="movers-list"></div>
+                        
+                        <div class="list-title" style="margin-top: 20px;">TOP_LOSERS</div>
+                        <div id="losers" class="movers-list"></div>
+                    </div>
                 </section>
             </div>
         </main>
     </div>
+
     <script src="js/app.js"></script>
 </body>
 </html>
