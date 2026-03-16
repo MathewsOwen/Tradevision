@@ -1,14 +1,8 @@
-document.addEventListener("DOMContentLoaded", () => {
+async function renderMarkets() {
   const marketTable = document.getElementById("marketTable");
   const tickerTrack = document.getElementById("tickerTrack");
   const forexTable = document.getElementById("forexTable");
   const commoditiesTable = document.getElementById("commoditiesTable");
-
-  const heroStats = {
-    ibov: document.getElementById("statIbov"),
-    usd: document.getElementById("statUsd"),
-    sp500: document.getElementById("statSp500")
-  };
 
   const markets = [
     { symbol: "IBOVESPA", price: "128.450", change: "+0,84%", direction: "Alta" },
@@ -89,11 +83,16 @@ document.addEventListener("DOMContentLoaded", () => {
       .join("");
   }
 
-  if (heroStats.ibov) heroStats.ibov.textContent = "128.450";
-  if (heroStats.usd) heroStats.usd.textContent = "5,02";
-  if (heroStats.sp500) heroStats.sp500.textContent = "5.210";
+  safeSetText("statIbov", "128.450");
+  safeSetText("statUsd", "5,02");
+  safeSetText("statSp500", "5.210");
 
   if (document.getElementById("tradingview_market")) {
     createAdvancedChart("tradingview_market", "BMFBOVESPA:IBOV");
   }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderMarkets();
+  setInterval(renderMarkets, REFRESH_INTERVALS.markets);
 });
