@@ -6,7 +6,7 @@
   <title>Criptomoedas | Pronuxfin</title>
   <meta
     name="description"
-    content="Acompanhe preços de criptomoedas como Bitcoin, Ethereum e Solana na Pronuxfin."
+    content="Acompanhe Bitcoin, Ethereum, Solana, BNB e XRP com uma visão premium de mercado na Pronuxfin."
   />
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -24,30 +24,142 @@
     </nav>
   </header>
 
+  <div class="ticker">
+    <div class="ticker-track" id="cryptoTickerTrack"></div>
+  </div>
+
   <main class="page">
     <div class="section-head">
       <h1>Criptomoedas</h1>
-      <p>Preços em tempo real das principais criptos acompanhadas pela Pronuxfin.</p>
+      <p>
+        Preços, leitura de mercado e acompanhamento visual das principais
+        criptos monitoradas pela Pronuxfin.
+      </p>
     </div>
 
-    <div class="table-card">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Ativo</th>
-            <th>Preço (USD)</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="cryptoTable"></tbody>
-      </table>
-    </div>
+    <section class="stats market-stats">
+      <article class="stat-card">
+        <span class="card-label">BITCOIN</span>
+        <div class="stat-value" id="btcMainStat">--</div>
+      </article>
+
+      <article class="stat-card">
+        <span class="card-label">ETHEREUM</span>
+        <div class="stat-value" id="ethMainStat">--</div>
+      </article>
+
+      <article class="stat-card">
+        <span class="card-label">DOMINÂNCIA</span>
+        <div class="stat-value">BTC</div>
+      </article>
+
+      <article class="stat-card">
+        <span class="card-label">SENTIMENTO</span>
+        <div class="stat-value">Ativo</div>
+      </article>
+    </section>
+
+    <section class="section no-pad-top">
+      <div class="grid-2">
+        <div class="table-card">
+          <div class="card-top">
+            <h3>Principais criptomoedas</h3>
+            <span class="mini-tag">CRYPTO</span>
+          </div>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Ativo</th>
+                <th>Preço (USD)</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="cryptoTable"></tbody>
+          </table>
+        </div>
+
+        <div class="card market-side-card">
+          <span class="card-label">LEITURA ESTRATÉGICA</span>
+          <h3>Panorama cripto</h3>
+          <p>
+            O mercado cripto segue com Bitcoin liderando atenção, Ethereum
+            mantendo relevância estrutural e altcoins com leitura mais tática.
+          </p>
+
+          <div class="mini-insights">
+            <div class="mini-insight">
+              <strong>Liderança</strong>
+              <span class="positive">Bitcoin</span>
+            </div>
+            <div class="mini-insight">
+              <strong>Volatilidade</strong>
+              <span class="neutral">Moderada</span>
+            </div>
+            <div class="mini-insight">
+              <strong>Radar</strong>
+              <span class="positive">BTC, ETH, SOL</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section no-pad-top">
+      <div class="grid-3">
+        <article class="card highlight-card">
+          <span class="card-label">BTC</span>
+          <h3>Reserva dominante</h3>
+          <p>
+            Bitcoin continua sendo o principal ativo de referência do mercado.
+          </p>
+        </article>
+
+        <article class="card highlight-card">
+          <span class="card-label">ETH</span>
+          <h3>Infraestrutura forte</h3>
+          <p>
+            Ethereum permanece como uma das principais bases do ecossistema.
+          </p>
+        </article>
+
+        <article class="card highlight-card">
+          <span class="card-label">ALTCOINS</span>
+          <h3>Seleção tática</h3>
+          <p>
+            Altcoins exigem mais critério, liquidez e leitura de risco.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section no-pad-top">
+      <div class="table-card">
+        <div class="card-top">
+          <h3>Ranking rápido</h3>
+          <span class="mini-tag">WATCHLIST</span>
+        </div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Moeda</th>
+              <th>Preço (USD)</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="cryptoWatchTable"></tbody>
+        </table>
+      </div>
+    </section>
   </main>
 
   <footer class="footer">
     <p>© 2026 Pronuxfin — Inteligência Financeira</p>
   </footer>
 
+  <script src="js/api.js" defer></script>
+  <script src="js/app.js" defer></script>
   <script src="js/crypto.js" defer></script>
 </body>
 </html>
