@@ -6,7 +6,7 @@
   <title>Pronuxfin | Inteligência Financeira</title>
   <meta
     name="description"
-    content="Pronuxfin é uma plataforma de inteligência financeira com mercados, ações, criptomoedas e radar de oportunidades."
+    content="Pronuxfin é uma plataforma de inteligência financeira com mercados, ações, criptomoedas, radar estratégico e dados de mercado em uma experiência premium."
   />
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -24,15 +24,57 @@
     </nav>
   </header>
 
+  <div class="ticker">
+    <div class="ticker-track" id="tickerTrack"></div>
+  </div>
+
   <main>
     <section class="hero">
       <div class="hero-content">
-        <span class="badge">PLATAFORMA FINANCEIRA</span>
+        <span class="badge">PLATAFORMA FINANCEIRA PREMIUM</span>
         <h1>Onde dados viram decisões.</h1>
         <p>
-          Acompanhe mercados globais, ações, criptomoedas e sinais de
-          oportunidade em uma experiência moderna, rápida e profissional.
+          Mercados globais, ações, criptomoedas, radar estratégico e leitura
+          institucional em uma experiência moderna, rápida e profissional.
         </p>
+
+        <div class="hero-actions">
+          <a href="mercados.html" class="btn-primary">Explorar Mercados</a>
+          <a href="radar.html" class="btn-secondary">Abrir Radar</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats">
+      <article class="stat-card">
+        <span class="card-label">IBOVESPA</span>
+        <div class="stat-value" id="statIbov">--</div>
+      </article>
+
+      <article class="stat-card">
+        <span class="card-label">USD/BRL</span>
+        <div class="stat-value" id="statUsd">--</div>
+      </article>
+
+      <article class="stat-card">
+        <span class="card-label">BITCOIN</span>
+        <div class="stat-value" id="statBtc">--</div>
+      </article>
+
+      <article class="stat-card">
+        <span class="card-label">S&P 500</span>
+        <div class="stat-value" id="statSp500">--</div>
+      </article>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Gráfico do mercado</h2>
+        <p>Uma visão profissional para acompanhar o comportamento dos ativos.</p>
+      </div>
+
+      <div class="widget-card">
+        <div id="tradingview_chart"></div>
       </div>
     </section>
 
@@ -57,30 +99,124 @@
       </div>
     </section>
 
-    <section class="section section-grid">
-      <article class="card">
-        <h3>Leitura rápida</h3>
-        <p>
-          Use a Pronuxfin para monitorar tendências, acompanhar preços e ter uma
-          visão mais clara do mercado.
-        </p>
-      </article>
+    <section class="section">
+      <div class="section-head">
+        <h2>Destaques da bolsa</h2>
+        <p>Principais ações monitoradas na plataforma.</p>
+      </div>
 
-      <article class="card">
-        <h3>Foco em performance</h3>
-        <p>
-          Estrutura otimizada para crescer com novas páginas, novos ativos e
-          novos módulos.
-        </p>
-      </article>
+      <div class="grid-2">
+        <div class="table-card">
+          <div class="card-top">
+            <h3>Top Ações</h3>
+            <span class="mini-tag">B3</span>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Ticker</th>
+                <th>Preço</th>
+                <th>Variação</th>
+                <th>Direção</th>
+              </tr>
+            </thead>
+            <tbody id="homeStocksTable"></tbody>
+          </table>
+        </div>
 
-      <article class="card">
-        <h3>Base para escalar</h3>
-        <p>
-          Essa versão já deixa seu projeto pronto para evoluir para uma
-          plataforma maior.
-        </p>
-      </article>
+        <div class="table-card">
+          <div class="card-top">
+            <h3>Top Criptomoedas</h3>
+            <span class="mini-tag">CRYPTO</span>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Ativo</th>
+                <th>Preço (USD)</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="homeCryptoTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Radar estratégico</h2>
+        <p>Leitura rápida do mercado com foco em direção, risco e oportunidade.</p>
+      </div>
+
+      <div class="grid-3">
+        <article class="card highlight-card">
+          <span class="card-label">TENDÊNCIA</span>
+          <h3>Alta moderada</h3>
+          <p>
+            O mercado segue com viés positivo, mas ainda exige atenção à
+            volatilidade e aos movimentos macro.
+          </p>
+        </article>
+
+        <article class="card highlight-card">
+          <span class="card-label">RISCO</span>
+          <h3>Controlado</h3>
+          <p>
+            O cenário-base continua saudável, porém com necessidade de gestão
+            de exposição em ativos mais sensíveis.
+          </p>
+        </article>
+
+        <article class="card highlight-card">
+          <span class="card-label">OPORTUNIDADES</span>
+          <h3>BTC, PETR4, VALE3</h3>
+          <p>
+            Ativos no radar com maior atenção por fluxo, liquidez e
+            relevância no mercado.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Últimas leituras do mercado</h2>
+        <p>Notícias e sinais que mantêm o investidor à frente do movimento.</p>
+      </div>
+
+      <div id="homeNewsFeed" class="grid-3"></div>
+    </section>
+
+    <section class="section">
+      <div class="grid-3">
+        <article class="card premium-box">
+          <span class="card-label">PLATAFORMA</span>
+          <h3>Experiência institucional</h3>
+          <p>
+            Visual premium, leitura rápida e estrutura pronta para crescer
+            como plataforma de dados financeiros.
+          </p>
+        </article>
+
+        <article class="card premium-box">
+          <span class="card-label">DADOS</span>
+          <h3>Monitoramento inteligente</h3>
+          <p>
+            A Pronuxfin foi pensada para unir análise, velocidade, clareza e
+            uma experiência visual muito mais forte.
+          </p>
+        </article>
+
+        <article class="card premium-box">
+          <span class="card-label">ESCALA</span>
+          <h3>Base para evoluir</h3>
+          <p>
+            Essa estrutura já prepara o projeto para páginas de ativos,
+            rankings, gráficos e expansão de SEO.
+          </p>
+        </article>
+      </div>
     </section>
   </main>
 
@@ -88,6 +224,12 @@
     <p>© 2026 Pronuxfin — Inteligência Financeira</p>
   </footer>
 
+  <script src="https://s3.tradingview.com/tv.js"></script>
+  <script src="js/api.js" defer></script>
+  <script src="js/app.js" defer></script>
   <script src="js/markets.js" defer></script>
+  <script src="js/stocks.js" defer></script>
+  <script src="js/crypto.js" defer></script>
+  <script src="js/news.js" defer></script>
 </body>
 </html>
