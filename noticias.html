@@ -6,7 +6,7 @@
   <title>Notícias do Mercado | Pronuxfin</title>
   <meta
     name="description"
-    content="Veja as principais manchetes e leituras do mercado financeiro na Pronuxfin."
+    content="Central de notícias da Pronuxfin com destaques de mercado, criptomoedas, macroeconomia e leitura estratégica."
   />
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -26,11 +26,58 @@
 
   <main class="page">
     <div class="section-head">
-      <h1>Notícias do Mercado</h1>
-      <p>Principais destaques para manter o investidor atualizado.</p>
+      <h1>Central de Inteligência</h1>
+      <p>
+        Leituras, manchetes e destaques do mercado para manter o investidor
+        atualizado com uma visão mais estratégica.
+      </p>
     </div>
 
-    <div id="newsFeed" class="news-grid"></div>
+    <section class="news-hero">
+      <article class="news-hero-main" id="featuredNews"></article>
+
+      <div class="news-hero-side" id="secondaryNews"></div>
+    </section>
+
+    <section class="section no-pad-top">
+      <div class="grid-3">
+        <article class="card highlight-card">
+          <span class="card-label">MACRO</span>
+          <h3>Juros e política monetária</h3>
+          <p>
+            O mercado segue atento a qualquer sinal de mudança em juros,
+            inflação e ritmo de crescimento global.
+          </p>
+        </article>
+
+        <article class="card highlight-card">
+          <span class="card-label">BOLSA</span>
+          <h3>Fluxo e liquidez</h3>
+          <p>
+            A leitura institucional dá peso maior para ativos com relevância,
+            volume e presença nos principais índices.
+          </p>
+        </article>
+
+        <article class="card highlight-card">
+          <span class="card-label">CRIPTO</span>
+          <h3>Ativos digitais no radar</h3>
+          <p>
+            Bitcoin segue dominante, enquanto outras moedas exigem leitura mais
+            tática e maior gestão de risco.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section no-pad-top">
+      <div class="section-head">
+        <h2>Últimas manchetes</h2>
+        <p>Uma visão organizada dos principais temas monitorados pela plataforma.</p>
+      </div>
+
+      <div id="newsFeed" class="news-grid-advanced"></div>
+    </section>
   </main>
 
   <footer class="footer">
