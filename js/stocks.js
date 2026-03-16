@@ -12,15 +12,19 @@ async function renderStocks() {
 
     const stocks = apiStocks.map((stock) => {
       const percent = Number(stock.regularMarketChangePercent || 0);
-      const formattedChange = `${percent >= 0 ? "+" : ""}${percent.toFixed(2)}%`;
+      const price =
+        typeof stock.regularMarketPrice === "number"
+          ? stock.regularMarketPrice.toLocaleString("pt-BR", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })
+          : "--";
 
       return {
         ticker: stock.symbol,
-        price:
-          typeof stock.regularMarketPrice === "number"
-            ? stock.regularMarketPrice.toLocaleString("pt-BR")
-            : "--",
-        change: formattedChange,
+        price,
+        changeValue: percent,
+        change: `${percent >= 0 ? "+" : ""}${percent.toFixed(2)}%`,
         direction: percent >= 0 ? "Alta" : "Baixa"
       };
     });
@@ -29,9 +33,12 @@ async function renderStocks() {
 
     const renderMainRows = (list) =>
       list
-        .map((stock) => `
+        .map(
+          (stock) => `
           <tr class="clickable-row" data-url="${assetUrl(stock.ticker)}">
-            <td><a class="asset-link" href="${assetUrl(stock.ticker)}">${stock.ticker}</a></td>
+            <td>
+              <a class="asset-link" href="${assetUrl(stock.ticker)}">${stock.ticker}</a>
+            </td>
             <td>${stock.price}</td>
             <td class="${getChangeClass(stock.change)}">${stock.change}</td>
             <td>
@@ -41,42 +48,70 @@ async function renderStocks() {
               </span>
             </td>
           </tr>
-        `)
+        `
+        )
         .join("");
 
     const renderMiniRows = (list) =>
       list
-        .map((stock) => `
+        .map(
+          (stock) => `
           <tr class="clickable-row" data-url="${assetUrl(stock.ticker)}">
-            <td><a class="asset-link" href="${assetUrl(stock.ticker)}">${stock.ticker}</a></td>
+            <td>
+              <a class="asset-link" href="${assetUrl(stock.ticker)}">${stock.ticker}</a>
+            </td>
             <td>${stock.price}</td>
             <td class="${getChangeClass(stock.change)}">${stock.change}</td>
           </tr>
-        `)
+        `
+        )
         .join("");
 
-    const positiveStocks = stocks.filter((item) => item.change.startsWith("+"));
-    const negativeStocks = stocks.filter((item) => item.change.startsWith("-"));
+    const positiveStocks = [...stocks]
+      .filter((item) => item.changeValue >= 0)
+      .sort((a, b) => b.changeValue - a.changeValue);
 
-    positiveStocks.sort(
-      (a, b) =>
-        parseFloat(b.change.replace("%", "").replace(",", ".")) -
-        parseFloat(a.change.replace("%", "").replace(",", "."))
-    );
+    const negativeStocks = [...stocks]
+      .filter((item) => item.changeValue < 0)
+      .sort((a, b) => a.changeValue - b.changeValue);
 
-    negativeStocks.sort(
-      (a, b) =>
-        parseFloat(a.change.replace("%", "").replace(",", ".")) -
-        parseFloat(b.change.replace("%", "").replace(",", "."))
-    );
+    if (stocksTable) {
+      stocksTable.innerHTML =
+        stocks.length > 0
+          ? renderMainRows(stocks)
+          : createEmptyRow(4, "Nenhuma ação disponível.");
+    }
 
-    if (stocksTable) stocksTable.innerHTML = renderMainRows(stocks);
-    if (homeStocksTable) homeStocksTable.innerHTML = renderMainRows(stocks.slice(0, 5));
-    if (topGainersTable) topGainersTable.innerHTML = renderMiniRows(positiveStocks.slice(0, 4));
-    if (topLosersTable) topLosersTable.innerHTML = renderMiniRows(negativeStocks.slice(0, 4));
+    if (homeStocksTable) {
+      homeStocksTable.innerHTML =
+        stocks.length > 0
+          ? renderMainRows(stocks.slice(0, 4))
+          : createEmptyRow(4, "Nenhuma ação disponível.");
+    }
 
-    if (topGainerStat && positiveStocks.length > 0) topGainerStat.textContent = positiveStocks[0].ticker;
-    if (topLoserStat && negativeStocks.length > 0) topLoserStat.textContent = negativeStocks[0].ticker;
+    if (topGainersTable) {
+      topGainersTable.innerHTML =
+        positiveStocks.length > 0
+          ? renderMiniRows(positiveStocks.slice(0, 4))
+          : createEmptyRow(3, "Sem altas no momento.");
+    }
+
+    if (topLosersTable) {
+      topLosersTable.innerHTML =
+        negativeStocks.length > 0
+          ? renderMiniRows(negativeStocks.slice(0, 4))
+          : createEmptyRow(3, "Sem quedas no momento.");
+    }
+
+    if (topGainerStat) {
+      topGainerStat.textContent =
+        positiveStocks.length > 0 ? positiveStocks[0].ticker : "--";
+    }
+
+    if (topLoserStat) {
+      topLoserStat.textContent =
+        negativeStocks.length > 0 ? negativeStocks[0].ticker : "--";
+    }
 
     if (stocksTickerTrack) {
       const tickerItems = stocks
@@ -96,11 +131,32 @@ async function renderStocks() {
 
     bindClickableRows();
   } catch (error) {
-    const failRow = createEmptyRow(4, "Não foi possível carregar os dados das ações.");
-    if (stocksTable) stocksTable.innerHTML = failRow;
-    if (homeStocksTable) homeStocksTable.innerHTML = failRow;
-    if (topGainersTable) topGainersTable.innerHTML = createEmptyRow(3, "Erro ao carregar.");
-    if (topLosersTable) topLosersTable.innerHTML = createEmptyRow(3, "Erro ao carregar.");
+    if (stocksTable) {
+      stocksTable.innerHTML = createEmptyRow(
+        4,
+        "Não foi possível carregar os dados das ações."
+      );
+    }
+
+    if (homeStocksTable) {
+      homeStocksTable.innerHTML = createEmptyRow(
+        4,
+        "Não foi possível carregar os dados das ações."
+      );
+    }
+
+    if (topGainersTable) {
+      topGainersTable.innerHTML = createEmptyRow(3, "Erro ao carregar.");
+    }
+
+    if (topLosersTable) {
+      topLosersTable.innerHTML = createEmptyRow(3, "Erro ao carregar.");
+    }
+
+    if (topGainerStat) topGainerStat.textContent = "--";
+    if (topLoserStat) topLoserStat.textContent = "--";
+
+    console.error("Erro em renderStocks:", error);
   }
 }
 
