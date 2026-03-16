@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ranking do Mercado | Pronuxfin</title>
+  <meta
+    name="description"
+    content="Ranking do mercado da Pronuxfin com maiores altas, maiores baixas, top ações e top criptomoedas."
+  />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="logo">PRONUXFIN</div>
+
+    <div class="header-right">
+      <div class="search-wrap">
+        <input
+          type="text"
+          id="globalSearch"
+          class="search-input"
+          placeholder="Buscar ativo... Ex: PETR4, VALE3, BTC, ETH"
+          autocomplete="off"
+        />
+        <div id="searchResults" class="search-results"></div>
+      </div>
+
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="mercados.html">Mercados</a>
+        <a href="acoes.html">Ações</a>
+        <a href="cripto.html">Cripto</a>
+        <a href="noticias.html">Notícias</a>
+        <a href="radar.html">Radar</a>
+        <a href="heatmap.html">Heatmap</a>
+        <a href="ranking.html" class="active">Ranking</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="section-head">
+      <h1>Ranking do Mercado</h1>
+      <p>
+        Visão consolidada dos ativos com melhor e pior desempenho, além dos
+        destaques de bolsa e criptomoedas.
+      </p>
+    </div>
+
+    <section class="stats market-stats">
+      <article class="stat-card">
+        <span class="card-label">TOP ALTA</span>
+        <div class="stat-value" id="rankingTopGainer">--</div>
+      </article>
+
+      <article class="stat-card">
+        <span class="card-label">TOP QUEDA</span>
+        <div class="stat-value" id="rankingTopLoser">--</div>
+      </article>
+
+      <article class="stat-card">
+        <span class="card-label">TOP CRIPTO</span>
+        <div class="stat-value" id="rankingTopCrypto">--</div>
+      </article>
+
+      <article class="stat-card">
+        <span class="card-label">RADAR</span>
+        <div class="stat-value">Ativo</div>
+      </article>
+    </section>
+
+    <section class="section no-pad-top">
+      <div class="grid-2">
+        <div class="table-card">
+          <div class="card-top">
+            <h3>Maiores Altas</h3>
+            <span class="mini-tag">UP</span>
+          </div>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Ativo</th>
+                <th>Preço</th>
+                <th>Variação</th>
+              </tr>
+            </thead>
+            <tbody id="rankingGainersTable"></tbody>
+          </table>
+        </div>
+
+        <div class="table-card">
+          <div class="card-top">
+            <h3>Maiores Baixas</h3>
+            <span class="mini-tag">DOWN</span>
+          </div>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Ativo</th>
+                <th>Preço</th>
+                <th>Variação</th>
+              </tr>
+            </thead>
+            <tbody id="rankingLosersTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section no-pad-top">
+      <div class="grid-2">
+        <div class="table-card">
+          <div class="card-top">
+            <h3>Top Ações</h3>
+            <span class="mini-tag">B3</span>
+          </div>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Ticker</th>
+                <th>Preço</th>
+                <th>Variação</th>
+                <th>Direção</th>
+              </tr>
+            </thead>
+            <tbody id="rankingStocksTable"></tbody>
+          </table>
+        </div>
+
+        <div class="table-card">
+          <div class="card-top">
+            <h3>Top Criptomoedas</h3>
+            <span class="mini-tag">CRYPTO</span>
+          </div>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Ativo</th>
+                <th>Preço (USD)</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="rankingCryptoTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section no-pad-top">
+      <div class="grid-3">
+        <article class="card highlight-card">
+          <span class="card-label">LEITURA</span>
+          <h3>Velocidade de análise</h3>
+          <p>
+            O ranking concentra o que está performando melhor e pior em uma única tela.
+          </p>
+        </article>
+
+        <article class="card highlight-card">
+          <span class="card-label">FOCO</span>
+          <h3>Menos ruído</h3>
+          <p>
+            Em vez de navegar página por página, o investidor consegue um resumo rápido do cenário.
+          </p>
+        </article>
+
+        <article class="card highlight-card">
+          <span class="card-label">PRONUX VIEW</span>
+          <h3>Central de mercado</h3>
+          <p>
+            Essa página aproxima a Pronuxfin de uma experiência mais robusta e institucional.
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Pronuxfin — Inteligência Financeira</p>
+  </footer>
+
+  <script src="js/api.js" defer></script>
+  <script src="js/app.js" defer></script>
+  <script src="js/ranking.js" defer></script>
+</body>
+</html>
