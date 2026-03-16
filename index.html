@@ -3,46 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pronuxfin | Dashboard Neural</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <title>PRONUXFIN | Quantum Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
-<body class="premium-dark">
-    <header class="header">
-        <div class="container nav">
-            <div class="logo">PRONUX<span>FIN</span></div>
-            <nav>
-                <a href="index.html" class="active">Home</a>
-                <a href="mercados.html">Mercados</a>
-                <a href="acoes.html">Ações</a>
-                <a href="cripto.html">Cripto</a>
-                <a href="noticias.html">Notícias</a>
-                <a href="radar.html">Radar</a>
-            </nav>
-        </div>
+<body class="apex-theme">
+    <header class="top-bar">
+        <div class="sys-info">PRONUX<span>FIN</span> <span class="tag">INSTITUTIONAL</span></div>
+        <nav class="main-nav">
+            <a href="index.html" class="active">DASHBOARD</a>
+            <a href="mercados.html">MARKETS</a>
+            <a href="acoes.html">EQUITIES</a>
+            <a href="cripto.html">CRYPTO</a>
+            <a href="noticias.html">NEWS</a>
+            <a href="radar.html">RADAR</a>
+        </nav>
+        <div class="market-clock" id="liveClock">00:00:00 UTC</div>
     </header>
-    <div class="ticker"><div class="ticker-track" id="tickerTrack"></div></div>
-    <main class="container">
-        <section class="hero">
-            <h1>Onde dados viram decisões.</h1>
-            <p>Inteligência artificial aplicada ao monitoramento de ativos globais.</p>
-        </section>
-        <section class="ai-intelligence">
-            <div class="premium-card gold-border">
-                <div class="ai-header">
-                    <div class="ai-badge">NEURAL ENGINE V5.0</div>
-                    <div id="ai-timer" class="ai-timer">10:00</div>
+
+    <main class="dashboard-grid">
+        <div class="panel main-chart-panel">
+            <div class="panel-header">
+                <span class="symbol">BTC/USDT</span>
+                <span class="price-up" id="headerPrice">$ 64,120.50</span>
+            </div>
+            <div id="tvChart" class="chart-container"></div>
+        </div>
+
+        <div class="panel ai-panel">
+            <div class="panel-header">AI PROJECTION ENGINE <span id="aiTimer">10:00</span></div>
+            <div class="ai-stats">
+                <div class="stat-card">
+                    <label>PROBABILITY</label>
+                    <div class="val">88.4% <span class="up">▲</span></div>
                 </div>
-                <div class="ai-main-content">
-                    <div id="projection-graph" class="graph-container"></div>
-                    <div class="ai-verdict-box">
-                        <h4>VEREDITO DA IA</h4>
-                        <p id="ai-verdict">Sincronizando modelos preditivos...</p>
-                    </div>
+                <div class="stat-card">
+                    <label>VOLATILITY</label>
+                    <div class="val">1.24%</div>
                 </div>
             </div>
-        </section>
+            <div class="ai-logs" id="aiLogs">
+                <p>> Initializing liquidity scan...</p>
+                <p>> Order book imbalance detected at $64k</p>
+            </div>
+            <div class="verdict-card">
+                <label>SENTIMENT VERDICT</label>
+                <h3 id="verdictText">STRONG ACCUMULATION</h3>
+            </div>
+        </div>
     </main>
+
+    <div class="bottom-ticker" id="tickerTrack"></div>
     <script src="js/app.js"></script>
 </body>
 </html>
