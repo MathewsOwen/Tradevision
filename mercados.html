@@ -1,16 +1,54 @@
-<body class="apex-theme">
-    <main class="data-container">
-        <div class="terminal-header">
-            <h2>MARKET MONITOR <span class="dim">/ REAL-TIME FEED</span></h2>
-            <div class="filters"><button class="btn-active">ALL</button><button>GAINERS</button></div>
-        </div>
-        <div class="terminal-table">
-            <div class="t-head">
-                <span>ASSET</span><span>PRICE</span><span>24H CHG</span><span>MARKET CAP</span><span>ACTION</span>
-            </div>
-            <div id="dataGrid" class="t-body"></div>
-        </div>
-    </main>
-    <script src="js/api.js"></script>
-    <script src="js/data-engine.js"></script>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mercados Globais | Pronuxfin</title>
+  <meta
+    name="description"
+    content="Acompanhe os principais mercados globais, índices e moedas na Pronuxfin."
+  />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="logo">PRONUXFIN</div>
+
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="mercados.html" class="active">Mercados</a>
+      <a href="acoes.html">Ações</a>
+      <a href="cripto.html">Cripto</a>
+      <a href="noticias.html">Notícias</a>
+      <a href="radar.html">Radar</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    <div class="section-head">
+      <h1>Mercados Globais</h1>
+      <p>Índices, moedas e referências do mercado em uma visão centralizada.</p>
+    </div>
+
+    <div class="table-card">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Ativo</th>
+            <th>Preço</th>
+            <th>Variação</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="marketTable"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Pronuxfin — Inteligência Financeira</p>
+  </footer>
+
+  <script src="js/markets.js" defer></script>
 </body>
+</html>
