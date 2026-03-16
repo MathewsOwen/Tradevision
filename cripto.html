@@ -1,35 +1,56 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cripto | Pronuxfin</title>
-<link rel="stylesheet" href="css/layout.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ações em Tempo Real | Pronuxfin</title>
+    
+    <meta name="description" content="Acompanhe ativos da B3 em tempo real com o monitor de alta frequência Pronuxfin.">
+    <link rel="icon" href="img/favicon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/layout.css">
 </head>
 
-<body>
+<body class="premium-dark">
 
-<header class="topbar">
-<div class="logo">PRONUXFIN</div>
+    <header class="header">
+        <div class="container nav">
+            <div class="logo">PRONUX<span>FIN</span></div>
+            <nav role="navigation">
+                <a href="index.html">Home</a>
+                <a href="mercados.html">Mercados</a>
+                <a href="acoes.html" class="active">Ações</a>
+                <a href="cripto.html">Cripto</a>
+                <a href="noticias.html">Notícias</a>
+                <a href="radar.html">Radar</a>
+            </nav>
+        </div>
+    </header>
 
-<nav>
-<a href="index.html">Home</a>
-<a href="mercados.html">Mercados</a>
-<a href="acoes.html">Ações</a>
-<a href="cripto.html">Cripto</a>
-<a href="noticias.html">Notícias</a>
-<a href="radar.html">Radar</a>
-</nav>
-</header>
+    <main class="container page">
+        <header class="page-header">
+            <h1>Monitor de Ativos B3</h1>
+            <p class="subtitle">Análise de volatilidade em tempo real via Motor Pronux V5.0.</p>
+        </header>
 
-<section class="page">
-<h1>Criptomoedas</h1>
-<div id="cryptoTable"></div>
-</section>
+        <section id="stocksTable" class="market-grid-vertical" aria-live="polite">
+            <div class="loading-state">Iniciando feed de dados...</div>
+        </section>
 
-<script src="js/crypto.js"></script>
+        <footer class="info-footer">
+            <p>
+                <span class="live-dot" aria-hidden="true"></span> 
+                <strong>LIVE:</strong> Sistema operando com latência reduzida.
+            </p>
+        </footer>
+    </main>
 
+    <script src="js/api.js"></script>
+    <script src="js/stocks.js"></script>
 </body>
 </html>
-
