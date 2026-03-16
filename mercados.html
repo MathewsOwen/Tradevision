@@ -3,15 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mercados Globais | Pronuxfin Intelligence</title>
-    
+    <title>Mercados Globais | Pronuxfin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/layout.css">
 </head>
-
 <body class="premium-dark">
-
     <header class="header">
         <div class="container nav">
             <div class="logo">PRONUX<span>FIN</span></div>
@@ -25,25 +21,10 @@
             </nav>
         </div>
     </header>
-
-    <main class="container page">
-        <header class="page-header">
-            <div class="ai-status-small">NETWORK LIVE</div>
-            <h1>Visão Geral dos Mercados</h1>
-            <p class="subtitle">Dados consolidados de índices globais, moedas e commodities com atualização via WebSocket simulado.</p>
-        </header>
-
-        <section id="marketTable" class="market-grid">
-            </section>
-
-        <section class="market-summary-footer">
-            <div class="premium-card mini-summary">
-                <p><strong>Status do Pregão:</strong> <span class="text-green">Aberto (NY/SP)</span></p>
-                <p><strong>Volatilidade VIX:</strong> <span class="text-gold">Baixa - 12.45</span></p>
-            </div>
-        </section>
+    <main class="container page-content">
+        <h1>Índices Globais</h1>
+        <div id="marketGrid" class="market-grid"></div>
     </main>
-
     <script src="js/markets.js"></script>
 </body>
 </html>
