@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", async () => {
+async function renderNews() {
   const newsFeed = document.getElementById("newsFeed");
   const homeNewsFeed = document.getElementById("homeNewsFeed");
   const featuredNews = document.getElementById("featuredNews");
@@ -111,4 +111,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch (error) {
     renderAll(fallbackNews);
   }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderNews();
+  setInterval(renderNews, REFRESH_INTERVALS.news);
 });
