@@ -4,6 +4,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const forexTable = document.getElementById("forexTable");
   const commoditiesTable = document.getElementById("commoditiesTable");
 
+  const heroStats = {
+    ibov: document.getElementById("statIbov"),
+    usd: document.getElementById("statUsd"),
+    sp500: document.getElementById("statSp500")
+  };
+
   const markets = [
     { symbol: "IBOVESPA", price: "128.450", change: "+0,84%", direction: "Alta" },
     { symbol: "S&P 500", price: "5.210", change: "+0,42%", direction: "Alta" },
@@ -83,21 +89,11 @@ document.addEventListener("DOMContentLoaded", () => {
       .join("");
   }
 
-  if (typeof TradingView !== "undefined" && document.getElementById("tradingview_market")) {
-    new TradingView.widget({
-      autosize: true,
-      symbol: "BMFBOVESPA:IBOV",
-      interval: "D",
-      timezone: "America/Sao_Paulo",
-      theme: "dark",
-      style: "1",
-      locale: "br",
-      toolbar_bg: "#0f172a",
-      enable_publishing: false,
-      hide_top_toolbar: false,
-      hide_side_toolbar: false,
-      allow_symbol_change: true,
-      container_id: "tradingview_market"
-    });
+  if (heroStats.ibov) heroStats.ibov.textContent = "128.450";
+  if (heroStats.usd) heroStats.usd.textContent = "5,02";
+  if (heroStats.sp500) heroStats.sp500.textContent = "5.210";
+
+  if (document.getElementById("tradingview_market")) {
+    createAdvancedChart("tradingview_market", "BMFBOVESPA:IBOV");
   }
 });
