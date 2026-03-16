@@ -1,92 +1,47 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const stocksTable = document.getElementById("stocksTable");
-  const homeStocksTable = document.getElementById("homeStocksTable");
-  const topGainersTable = document.getElementById("topGainersTable");
-  const topLosersTable = document.getElementById("topLosersTable");
-  const topGainerStat = document.getElementById("topGainerStat");
-  const topLoserStat = document.getElementById("topLoserStat");
-  const stocksTickerTrack = document.getElementById("stocksTickerTrack");
+document.addEventListener("DOMContentLoaded", async () => {
 
-  const stocks = [
-    { ticker: "PETR4", price: "38,50", change: "+1,82%", direction: "Alta" },
-    { ticker: "VALE3", price: "66,20", change: "-0,95%", direction: "Baixa" },
-    { ticker: "ITUB4", price: "31,90", change: "+0,74%", direction: "Alta" },
-    { ticker: "WEGE3", price: "45,10", change: "+1,10%", direction: "Alta" },
-    { ticker: "BBAS3", price: "28,44", change: "-0,38%", direction: "Baixa" },
-    { ticker: "BBDC4", price: "14,82", change: "+0,28%", direction: "Alta" },
-    { ticker: "MGLU3", price: "12,30", change: "+2,14%", direction: "Alta" },
-    { ticker: "ELET3", price: "40,22", change: "-0,42%", direction: "Baixa" }
-  ];
+const stocksTable = document.getElementById("stocksTable")
 
-  const renderMainRows = (list) =>
-    list
-      .map((stock) => `
-        <tr>
-          <td>${stock.ticker}</td>
-          <td>${stock.price}</td>
-          <td class="${getChangeClass(stock.change)}">${stock.change}</td>
-          <td>
-            <span class="status">
-              <span class="dot ${getDotClassByChange(stock.change)}"></span>
-              ${stock.direction}
-            </span>
-          </td>
-        </tr>
-      `)
-      .join("");
+if (!stocksTable) return
 
-  const renderMiniRows = (list) =>
-    list
-      .map((stock) => `
-        <tr>
-          <td>${stock.ticker}</td>
-          <td>${stock.price}</td>
-          <td class="${getChangeClass(stock.change)}">${stock.change}</td>
-        </tr>
-      `)
-      .join("");
+try {
 
-  const positiveStocks = stocks.filter((item) => item.change.startsWith("+"));
-  const negativeStocks = stocks.filter((item) => item.change.startsWith("-"));
+const stocks = await fetchStocks()
 
-  positiveStocks.sort((a, b) => parseFloat(b.change.replace("%", "").replace(",", ".")) - parseFloat(a.change.replace("%", "").replace(",", ".")));
-  negativeStocks.sort((a, b) => parseFloat(a.change.replace("%", "").replace(",", ".")) - parseFloat(b.change.replace("%", "").replace(",", ".")));
+stocksTable.innerHTML = stocks.map(stock => `
 
-  if (stocksTable) {
-    stocksTable.innerHTML = renderMainRows(stocks);
-  }
+<tr>
 
-  if (homeStocksTable) {
-    homeStocksTable.innerHTML = renderMainRows(stocks.slice(0, 5));
-  }
+<td>${stock.symbol}</td>
 
-  if (topGainersTable) {
-    topGainersTable.innerHTML = renderMiniRows(positiveStocks.slice(0, 4));
-  }
+<td>${stock.regularMarketPrice}</td>
 
-  if (topLosersTable) {
-    topLosersTable.innerHTML = renderMiniRows(negativeStocks.slice(0, 4));
-  }
+<td class="${stock.regularMarketChangePercent >= 0 ? 'positive' : 'negative'}">
 
-  if (topGainerStat && positiveStocks.length > 0) {
-    topGainerStat.textContent = positiveStocks[0].ticker;
-  }
+${stock.regularMarketChangePercent.toFixed(2)}%
 
-  if (topLoserStat && negativeStocks.length > 0) {
-    topLoserStat.textContent = negativeStocks[0].ticker;
-  }
+</td>
 
-  if (stocksTickerTrack) {
-    const tickerItems = stocks
-      .map((stock) => `
-        <span class="ticker-item">
-          <strong>${stock.ticker}</strong>
-          <span>${stock.price}</span>
-          <span class="${getChangeClass(stock.change)}">${stock.change}</span>
-        </span>
-      `)
-      .join("");
+<td>
 
-    stocksTickerTrack.innerHTML = tickerItems + tickerItems;
-  }
-});
+<span class="status">
+
+<span class="dot ${stock.regularMarketChangePercent >= 0 ? 'green' : 'red'}"></span>
+
+${stock.regularMarketChangePercent >= 0 ? 'Alta' : 'Baixa'}
+
+</span>
+
+</td>
+
+</tr>
+
+`).join("")
+
+} catch {
+
+stocksTable.innerHTML = `<tr><td colspan="4">Erro ao carregar dados</td></tr>`
+
+}
+
+})
