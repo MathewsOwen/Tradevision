@@ -6,7 +6,7 @@
   <title>Pronuxfin | Inteligência Financeira</title>
   <meta
     name="description"
-    content="Pronuxfin é uma plataforma de inteligência financeira com mercados, ações, criptomoedas, radar estratégico e dados de mercado em uma experiência premium."
+    content="Pronuxfin é uma plataforma de inteligência financeira com mercados, ações, criptomoedas, notícias, radar estratégico e heatmap em uma experiência premium."
   />
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -14,14 +14,28 @@
   <header class="header">
     <div class="logo">PRONUXFIN</div>
 
-    <nav class="nav">
-      <a href="index.html" class="active">Home</a>
-      <a href="mercados.html">Mercados</a>
-      <a href="acoes.html">Ações</a>
-      <a href="cripto.html">Cripto</a>
-      <a href="noticias.html">Notícias</a>
-      <a href="radar.html">Radar</a>
-    </nav>
+    <div class="header-right">
+      <div class="search-wrap">
+        <input
+          type="text"
+          id="globalSearch"
+          class="search-input"
+          placeholder="Buscar ativo... Ex: PETR4, VALE3, BTC, ETH"
+          autocomplete="off"
+        />
+        <div id="searchResults" class="search-results"></div>
+      </div>
+
+      <nav class="nav">
+        <a href="index.html" class="active">Home</a>
+        <a href="mercados.html">Mercados</a>
+        <a href="acoes.html">Ações</a>
+        <a href="cripto.html">Cripto</a>
+        <a href="noticias.html">Notícias</a>
+        <a href="radar.html">Radar</a>
+        <a href="heatmap.html">Heatmap</a>
+      </nav>
+    </div>
   </header>
 
   <div class="ticker">
@@ -34,8 +48,8 @@
         <span class="badge">PLATAFORMA FINANCEIRA PREMIUM</span>
         <h1>Onde dados viram decisões.</h1>
         <p>
-          Mercados globais, ações, criptomoedas, radar estratégico e leitura
-          institucional em uma experiência moderna, rápida e profissional.
+          Mercados globais, ações, criptomoedas, radar estratégico, notícias e
+          leitura institucional em uma experiência moderna, rápida e profissional.
         </p>
 
         <div class="hero-actions">
@@ -172,8 +186,8 @@
           <span class="card-label">OPORTUNIDADES</span>
           <h3>BTC, PETR4, VALE3</h3>
           <p>
-            Ativos no radar com maior atenção por fluxo, liquidez e
-            relevância no mercado.
+            Ativos no radar com maior atenção por fluxo, liquidez e relevância
+            no mercado.
           </p>
         </article>
       </div>
