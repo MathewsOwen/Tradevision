@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", async () => {
+async function renderStocks() {
   const stocksTable = document.getElementById("stocksTable");
   const homeStocksTable = document.getElementById("homeStocksTable");
   const topGainersTable = document.getElementById("topGainersTable");
@@ -94,13 +94,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       stocksTickerTrack.innerHTML = tickerItems + tickerItems;
     }
 
-    document.querySelectorAll("tr.clickable-row").forEach((row) => {
-      row.addEventListener("click", (event) => {
-        if (event.target.tagName.toLowerCase() === "a") return;
-        const url = row.getAttribute("data-url");
-        if (url) window.location.href = url;
-      });
-    });
+    bindClickableRows();
   } catch (error) {
     const failRow = createEmptyRow(4, "Não foi possível carregar os dados das ações.");
     if (stocksTable) stocksTable.innerHTML = failRow;
@@ -108,4 +102,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (topGainersTable) topGainersTable.innerHTML = createEmptyRow(3, "Erro ao carregar.");
     if (topLosersTable) topLosersTable.innerHTML = createEmptyRow(3, "Erro ao carregar.");
   }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderStocks();
+  setInterval(renderStocks, REFRESH_INTERVALS.stocks);
 });
