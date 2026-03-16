@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlphaMarketCap | Premium Finance Terminal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@400;700&family=Playfair+Display:ital,wght@1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=900">
+    <title>PRONUXFIN | Global Finance Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;700&family=Orbitron:wght@500&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="private-edition">
+<body class="dark-terminal">
 
     <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3" preload="auto"></audio>
 
@@ -18,11 +18,13 @@
     <header class="header">
         <div class="container header-flex">
             <div class="brand">
-                <span class="logo-gold-stylized">ALPHA</span><span class="logo-white-stylized">MARKETCAP</span>
+                <span class="logo-main">PRONUX</span><span class="logo-sub">FIN</span>
+                <div class="tagline">PROFESSIONAL NEXUS FINANCE</div>
             </div>
             <nav class="nav">
                 <button class="nav-link-pill active" onclick="switchTab('market')">INÍCIO</button>
-                <button class="nav-link-pill" onclick="switchTab('news')">GLOBAL FEED</button>
+                <button class="nav-link-pill" onclick="switchTab('news')">NOTÍCIAS</button>
+                <button class="nav-link-pill ai-btn" onclick="switchTab('ai')">PRONUX INSIGHTS (IA)</button>
             </nav>
         </div>
     </header>
@@ -30,31 +32,68 @@
     <main class="container main-grid">
         <section class="chart-section" id="marketView">
             <div class="card chart-card">
-                <div id="tradingview_alpha"></div>
+                <div id="tradingview_pronux"></div>
             </div>
         </section>
 
         <aside class="ranking-section" id="rankingView">
             <div class="card ranking-card">
                 <div class="tabs-ranking-pills">
-                    <button id="btn-high" class="pill-btn active" onclick="toggleRanking('high')">ALTAS</button>
-                    <button id="btn-low" class="pill-btn" onclick="toggleRanking('low')">BAIXAS</button>
+                    <button id="btn-high" class="pill-btn active" onclick="toggleRanking('high')">TOP 10 ALTAS</button>
+                    <button id="btn-low" class="pill-btn" onclick="toggleRanking('low')">TOP 10 BAIXAS</button>
                 </div>
                 <div id="highList" class="asset-list"></div>
                 <div id="lowList" class="asset-list hidden"></div>
-                <div class="update-indicator">PRÓXIMO REBALANCEAMENTO EM: <span id="timer">60</span>s</div>
+                <div class="update-indicator">PRÓXIMA ATUALIZAÇÃO EM: <span id="timer">60</span>s</div>
             </div>
         </aside>
 
+        <section class="ai-section hidden" id="aiView">
+            <div class="card ai-card">
+                <div class="ai-header">
+                    <h2 class="gold-title">PRONUX NEURAL ENGINE</h2>
+                    <p>Análise estatística e sentimento de mercado em tempo real.</p>
+                </div>
+                
+                <div class="ai-stats-grid">
+                    <div class="ai-stat-box">
+                        <h4>SENTIMENTO</h4>
+                        <div id="aiSentiment" class="stat-value">---</div>
+                    </div>
+                    <div class="ai-stat-box">
+                        <h4>VOLATILIDADE ESTIMADA</h4>
+                        <div id="aiVol" class="stat-value">---</div>
+                    </div>
+                </div>
+
+                <div class="ai-report-box">
+                    <h3>CONCLUSÃO TÉCNICA:</h3>
+                    <p id="aiReportText">Aguardando dados...</p>
+                </div>
+
+                <div class="fear-greed-container">
+                    <h4>FEAR & GREED INDEX</h4>
+                    <div class="gauge-bg">
+                        <div id="gaugePointer" class="gauge-pointer"></div>
+                    </div>
+                    <div class="gauge-labels">
+                        <span>EXTREMO MEDO</span>
+                        <span>NEUTRO</span>
+                        <span>EXTREMA GANÂNCIA</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="news-section hidden" id="newsView">
             <div class="card">
-                <h2 class="gold-title">CENTRAL DE INTELIGÊNCIA // ATUALIZAÇÃO 5 MIN</h2>
+                <h2 class="gold-title">GLOBAL NEWS FEED</h2>
                 <div id="newsFeed" class="news-grid"></div>
             </div>
         </section>
     </main>
 
     <script src="https://s3.tradingview.com/tv.js"></script>
-    <script src="js/app.js?v=900"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
