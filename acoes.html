@@ -1,23 +1,16 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ações B3 | Pronuxfin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body class="premium-dark">
-    <header class="header">
-        <div class="container nav">
-            <div class="logo">PRONUX<span>FIN</span></div>
-            <nav><a href="index.html">Home</a><a href="mercados.html">Mercados</a><a href="acoes.html" class="active">Ações</a><a href="cripto.html">Cripto</a><a href="noticias.html">Notícias</a><a href="radar.html">Radar</a></nav>
+<body class="apex-theme">
+    <main class="data-container">
+        <div class="terminal-header">
+            <h2>MARKET MONITOR <span class="dim">/ REAL-TIME FEED</span></h2>
+            <div class="filters"><button class="btn-active">ALL</button><button>GAINERS</button></div>
         </div>
-    </header>
-    <main class="container page-content">
-        <h1>Monitor de Ações B3</h1>
-        <div id="stocksGrid" class="market-grid"></div>
+        <div class="terminal-table">
+            <div class="t-head">
+                <span>ASSET</span><span>PRICE</span><span>24H CHG</span><span>MARKET CAP</span><span>ACTION</span>
+            </div>
+            <div id="dataGrid" class="t-body"></div>
+        </div>
     </main>
-    <script src="js/stocks.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/data-engine.js"></script>
 </body>
-</html>
