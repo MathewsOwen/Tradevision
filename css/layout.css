@@ -1,6 +1,5 @@
-.ai-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-.ai-badge { background: rgba(255,195,0,0.1); color: var(--gold); padding: 5px 12px; border-radius: 50px; font-size: 10px; font-weight: 800; }
-.ai-timer { font-family: 'Orbitron'; color: var(--gold); font-size: 20px; }
-.typing { border-right: 2px solid var(--gold); animation: blink 0.7s infinite; }
-@keyframes blink { 50% { border-color: transparent; } }
-@media (max-width: 768px) { .nav { flex-direction: column; gap: 15px; } .hero h1 { font-size: 1.8rem; } }
+.terminal-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+.t-head { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 100px; padding: 10px; border-bottom: 1px solid var(--border); font-family: var(--font-mono); color: var(--dim); font-size: 11px; }
+.t-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 100px; padding: 15px 10px; border-bottom: 1px solid #0d0d0d; align-items: center; font-family: var(--font-mono); font-size: 13px; transition: 0.2s; }
+.t-row:hover { background: #0d0d0d; }
+.up { color: var(--accent); } .down { color: var(--loss); }
