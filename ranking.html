@@ -8,11 +8,18 @@
     name="description"
     content="Ranking do mercado da Pronuxfin com maiores altas, maiores baixas, top ações e top criptomoedas."
   />
+  <meta name="theme-color" content="#0b1220" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <noscript>
+    <div class="noscript-alert">
+      A Pronuxfin precisa do JavaScript ativado para carregar dados e atualizações desta página.
+    </div>
+  </noscript>
+
   <header class="header">
-    <div class="logo">PRONUXFIN</div>
+    <a href="index.html" class="logo" aria-label="Ir para a página inicial da Pronuxfin">PRONUXFIN</a>
 
     <div class="header-right">
       <div class="search-wrap">
@@ -22,11 +29,17 @@
           class="search-input"
           placeholder="Buscar ativo... Ex: PETR4, VALE3, BTC, ETH"
           autocomplete="off"
+          aria-label="Buscar ativo"
         />
-        <div id="searchResults" class="search-results"></div>
+        <div
+          id="searchResults"
+          class="search-results"
+          role="listbox"
+          aria-label="Resultados da busca"
+        ></div>
       </div>
 
-      <nav class="nav">
+      <nav class="nav" aria-label="Navegação principal">
         <a href="index.html">Home</a>
         <a href="mercados.html">Mercados</a>
         <a href="acoes.html">Ações</a>
@@ -34,7 +47,8 @@
         <a href="noticias.html">Notícias</a>
         <a href="radar.html">Radar</a>
         <a href="heatmap.html">Heatmap</a>
-        <a href="ranking.html" class="active">Ranking</a>
+        <a href="ranking.html" class="active" aria-current="page">Ranking</a>
+        <a href="calendario.html">Calendário</a>
       </nav>
     </div>
   </header>
