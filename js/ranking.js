@@ -1,4 +1,9 @@
+let rankingRenderInProgress = false;
+
 async function renderRankingPage() {
+  if (rankingRenderInProgress) return;
+  rankingRenderInProgress = true;
+
   const gainersTable = document.getElementById("rankingGainersTable");
   const losersTable = document.getElementById("rankingLosersTable");
   const stocksTable = document.getElementById("rankingStocksTable");
@@ -8,7 +13,10 @@ async function renderRankingPage() {
   const topLoser = document.getElementById("rankingTopLoser");
   const topCrypto = document.getElementById("rankingTopCrypto");
 
-  if (!gainersTable || !losersTable || !stocksTable || !cryptoTable) return;
+  if (!gainersTable || !losersTable || !stocksTable || !cryptoTable) {
+    rankingRenderInProgress = false;
+    return;
+  }
 
   gainersTable.innerHTML = createEmptyRow(3, "Carregando ranking...");
   losersTable.innerHTML = createEmptyRow(3, "Carregando ranking...");
@@ -21,19 +29,28 @@ async function renderRankingPage() {
       fetchCryptoPrices()
     ]);
 
-    const stocks = stocksApi.map((stock) => {
-      const percent = Number(stock.regularMarketChangePercent || 0);
-      return {
-        symbol: stock.symbol,
-        price:
-          typeof stock.regularMarketPrice === "number"
-            ? stock.regularMarketPrice.toLocaleString("pt-BR")
+    const assetBase = getAssetPageBase();
+
+    const stocks = stocksApi
+      .filter((stock) => stock && stock.symbol)
+      .map((stock) => {
+        const percent = Number(stock.regularMarketChangePercent ?? 0);
+        const rawPrice = Number(stock.regularMarketPrice);
+
+        return {
+          symbol: String(stock.symbol).toUpperCase(),
+          price: Number.isFinite(rawPrice)
+            ? rawPrice.toLocaleString("pt-BR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              })
             : "--",
-        change: percent,
-        changeText: `${percent >= 0 ? "+" : ""}${percent.toFixed(2)}%`,
-        direction: percent >= 0 ? "Alta" : "Baixa"
-      };
-    });
+          change: Number.isFinite(percent) ? percent : 0,
+          changeText: `${percent >= 0 ? "+" : ""}${(Number.isFinite(percent) ? percent : 0).toFixed(2)}%`,
+          direction: percent > 0 ? "Alta" : percent < 0 ? "Baixa" : "Neutro"
+        };
+      })
+      .sort((a, b) => a.symbol.localeCompare(b.symbol, "pt-BR"));
 
     const cryptos = [
       { name: "Bitcoin", symbol: "BTC", price: cryptoApi?.bitcoin?.usd ?? null },
@@ -44,21 +61,24 @@ async function renderRankingPage() {
     ];
 
     const positiveStocks = [...stocks]
-      .filter((item) => item.change >= 0)
+      .filter((item) => item.change > 0)
       .sort((a, b) => b.change - a.change);
 
     const negativeStocks = [...stocks]
       .filter((item) => item.change < 0)
       .sort((a, b) => a.change - b.change);
 
-    const stockUrl = (symbol) => `ativos/ativo.html?symbol=${symbol}`;
+    const assetUrl = (symbol) =>
+      `${assetBase}?symbol=${encodeURIComponent(symbol)}`;
 
     const stockMainRows = (list) =>
       list
         .map(
           (item) => `
-            <tr class="clickable-row" data-url="${stockUrl(item.symbol)}">
-              <td><a class="asset-link" href="${stockUrl(item.symbol)}">${item.symbol}</a></td>
+            <tr class="clickable-row" data-url="${assetUrl(item.symbol)}">
+              <td>
+                <a class="asset-link" href="${assetUrl(item.symbol)}">${escapeHtml(item.symbol)}</a>
+              </td>
               <td>${item.price}</td>
               <td class="${getChangeClass(item.changeText)}">${item.changeText}</td>
               <td>
@@ -76,8 +96,10 @@ async function renderRankingPage() {
       list
         .map(
           (item) => `
-            <tr class="clickable-row" data-url="${stockUrl(item.symbol)}">
-              <td><a class="asset-link" href="${stockUrl(item.symbol)}">${item.symbol}</a></td>
+            <tr class="clickable-row" data-url="${assetUrl(item.symbol)}">
+              <td>
+                <a class="asset-link" href="${assetUrl(item.symbol)}">${escapeHtml(item.symbol)}</a>
+              </td>
               <td>${item.price}</td>
               <td class="${getChangeClass(item.changeText)}">${item.changeText}</td>
             </tr>
@@ -88,9 +110,11 @@ async function renderRankingPage() {
     const cryptoRows = cryptos
       .map(
         (item) => `
-          <tr class="clickable-row" data-url="${stockUrl(item.symbol)}">
-            <td><a class="asset-link" href="${stockUrl(item.symbol)}">${item.name}</a></td>
-            <td>$${formatUsd(item.price)}</td>
+          <tr class="clickable-row" data-url="${assetUrl(item.symbol)}">
+            <td>
+              <a class="asset-link" href="${assetUrl(item.symbol)}">${escapeHtml(item.name)}</a>
+            </td>
+            <td>${item.price !== null ? formatUsd(item.price) : "--"}</td>
             <td>
               <span class="status">
                 <span class="dot blue"></span>
@@ -122,9 +146,19 @@ async function renderRankingPage() {
         ? cryptoRows
         : createEmptyRow(3, "Sem criptomoedas disponíveis.");
 
-    if (topGainer && positiveStocks[0]) topGainer.textContent = positiveStocks[0].symbol;
-    if (topLoser && negativeStocks[0]) topLoser.textContent = negativeStocks[0].symbol;
-    if (topCrypto && cryptos[0]) topCrypto.textContent = cryptos[0].symbol;
+    if (topGainer) {
+      topGainer.textContent =
+        positiveStocks.length > 0 ? positiveStocks[0].symbol : "--";
+    }
+
+    if (topLoser) {
+      topLoser.textContent =
+        negativeStocks.length > 0 ? negativeStocks[0].symbol : "--";
+    }
+
+    if (topCrypto) {
+      topCrypto.textContent = cryptos.length > 0 ? "BTC" : "--";
+    }
 
     bindClickableRows();
   } catch (error) {
@@ -132,10 +166,21 @@ async function renderRankingPage() {
     losersTable.innerHTML = createEmptyRow(3, "Erro ao carregar ranking.");
     stocksTable.innerHTML = createEmptyRow(4, "Erro ao carregar ações.");
     cryptoTable.innerHTML = createEmptyRow(3, "Erro ao carregar criptomoedas.");
+
+    if (topGainer) topGainer.textContent = "--";
+    if (topLoser) topLoser.textContent = "--";
+    if (topCrypto) topCrypto.textContent = "--";
+
+    console.error("[Pronuxfin] Erro em renderRankingPage:", error);
+  } finally {
+    rankingRenderInProgress = false;
   }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   renderRankingPage();
-  setInterval(renderRankingPage, REFRESH_INTERVALS.stocks);
+
+  setInterval(() => {
+    renderRankingPage();
+  }, REFRESH_INTERVALS.stocks);
 });
