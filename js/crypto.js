@@ -1,4 +1,9 @@
+let cryptoRenderInProgress = false;
+
 async function renderCrypto() {
+  if (cryptoRenderInProgress) return;
+  cryptoRenderInProgress = true;
+
   const cryptoTable = document.getElementById("cryptoTable");
   const homeCryptoTable = document.getElementById("homeCryptoTable");
   const cryptoWatchTable = document.getElementById("cryptoWatchTable");
@@ -16,65 +21,134 @@ async function renderCrypto() {
 
   try {
     const data = await fetchCryptoPrices();
+    const assetBase = getAssetPageBase();
 
     const cryptos = [
-      { name: "Bitcoin", short: "BTC", price: data?.bitcoin?.usd, status: "Monitorando" },
-      { name: "Ethereum", short: "ETH", price: data?.ethereum?.usd, status: "Monitorando" },
-      { name: "Solana", short: "SOL", price: data?.solana?.usd, status: "Monitorando" },
-      { name: "BNB", short: "BNB", price: data?.binancecoin?.usd, status: "Monitorando" },
-      { name: "XRP", short: "XRP", price: data?.ripple?.usd, status: "Monitorando" }
+      {
+        name: "Bitcoin",
+        short: "BTC",
+        price: data?.bitcoin?.usd ?? null,
+        status: "Monitorando"
+      },
+      {
+        name: "Ethereum",
+        short: "ETH",
+        price: data?.ethereum?.usd ?? null,
+        status: "Monitorando"
+      },
+      {
+        name: "Solana",
+        short: "SOL",
+        price: data?.solana?.usd ?? null,
+        status: "Monitorando"
+      },
+      {
+        name: "BNB",
+        short: "BNB",
+        price: data?.binancecoin?.usd ?? null,
+        status: "Monitorando"
+      },
+      {
+        name: "XRP",
+        short: "XRP",
+        price: data?.ripple?.usd ?? null,
+        status: "Monitorando"
+      }
     ];
 
-    const assetUrl = (symbol) => `ativos/ativo.html?symbol=${symbol}`;
+    const assetUrl = (symbol) =>
+      `${assetBase}?symbol=${encodeURIComponent(symbol)}`;
+
+    const formatCryptoPrice = (value) =>
+      typeof value === "number" && Number.isFinite(value)
+        ? formatUsd(value)
+        : "--";
 
     const renderRows = (list) =>
       list
         .map(
           (crypto) => `
-          <tr class="clickable-row" data-url="${assetUrl(crypto.short)}">
-            <td><a class="asset-link" href="${assetUrl(crypto.short)}">${crypto.name}</a></td>
-            <td>$${formatUsd(crypto.price)}</td>
-            <td>
-              <span class="status">
-                <span class="dot blue"></span>
-                ${crypto.status}
-              </span>
-            </td>
-          </tr>
-        `
+            <tr class="clickable-row" data-url="${assetUrl(crypto.short)}">
+              <td>
+                <a class="asset-link" href="${assetUrl(crypto.short)}">${escapeHtml(crypto.name)}</a>
+              </td>
+              <td>${formatCryptoPrice(crypto.price)}</td>
+              <td>
+                <span class="status">
+                  <span class="dot blue"></span>
+                  ${escapeHtml(crypto.status)}
+                </span>
+              </td>
+            </tr>
+          `
         )
         .join("");
 
-    if (cryptoTable) cryptoTable.innerHTML = renderRows(cryptos);
-    if (homeCryptoTable) homeCryptoTable.innerHTML = renderRows(cryptos.slice(0, 5));
-    if (cryptoWatchTable) cryptoWatchTable.innerHTML = renderRows(cryptos);
+    if (cryptoTable) {
+      cryptoTable.innerHTML =
+        cryptos.length > 0
+          ? renderRows(cryptos)
+          : createEmptyRow(3, "Nenhuma criptomoeda disponível.");
+    }
+
+    if (homeCryptoTable) {
+      homeCryptoTable.innerHTML =
+        cryptos.length > 0
+          ? renderRows(cryptos.slice(0, 5))
+          : createEmptyRow(3, "Nenhuma criptomoeda disponível.");
+    }
+
+    if (cryptoWatchTable) {
+      cryptoWatchTable.innerHTML =
+        cryptos.length > 0
+          ? renderRows(cryptos)
+          : createEmptyRow(3, "Nenhuma criptomoeda disponível.");
+    }
 
     if (cryptoTickerTrack) {
-      const tickerItems = cryptos
-        .map(
-          (crypto) => `
+      if (cryptos.length > 0) {
+        const tickerItems = cryptos
+          .map(
+            (crypto) => `
+              <span class="ticker-item">
+                <strong>${escapeHtml(crypto.short)}</strong>
+                <span>${formatCryptoPrice(crypto.price)}</span>
+                <span class="neutral">Monitorando</span>
+              </span>
+            `
+          )
+          .join("");
+
+        cryptoTickerTrack.innerHTML = tickerItems + tickerItems;
+      } else {
+        cryptoTickerTrack.innerHTML = `
           <span class="ticker-item">
-            <strong>${crypto.short}</strong>
-            <span>$${formatUsd(crypto.price)}</span>
-            <span class="neutral">Monitorando</span>
+            <strong>Cripto</strong>
+            <span>Sem dados no momento</span>
           </span>
-        `
-        )
-        .join("");
-
-      cryptoTickerTrack.innerHTML = tickerItems + tickerItems;
+        `;
+      }
     }
 
-    if (statBtc && typeof data?.bitcoin?.usd === "number") {
-      statBtc.textContent = `$${formatUsd(data.bitcoin.usd)}`;
+    if (statBtc) {
+      statBtc.textContent =
+        typeof data?.bitcoin?.usd === "number"
+          ? formatUsd(data.bitcoin.usd)
+          : "--";
     }
 
-    if (btcMainStat && typeof data?.bitcoin?.usd === "number") {
-      btcMainStat.textContent = `$${formatUsd(data.bitcoin.usd)}`;
+    if (btcMainStat) {
+      btcMainStat.textContent =
+        typeof data?.bitcoin?.usd === "number"
+          ? formatUsd(data.bitcoin.usd)
+          : "--";
     }
 
-    if (ethMainStat && typeof data?.ethereum?.usd === "number") {
-      ethMainStat.textContent = `$${formatUsd(data.ethereum.usd)}`;
+    if (ethMainStat) {
+      ethMainStat.textContent =
+        typeof data?.ethereum?.usd === "number"
+          ? formatUsd(data.ethereum.usd)
+          : "--";
     }
 
     bindClickableRows();
@@ -85,13 +159,29 @@ async function renderCrypto() {
     if (homeCryptoTable) homeCryptoTable.innerHTML = fail;
     if (cryptoWatchTable) cryptoWatchTable.innerHTML = fail;
 
+    if (cryptoTickerTrack) {
+      cryptoTickerTrack.innerHTML = `
+        <span class="ticker-item">
+          <strong>Cripto</strong>
+          <span>Falha na atualização</span>
+        </span>
+      `;
+    }
+
     if (statBtc) statBtc.textContent = "Indisponível";
     if (btcMainStat) btcMainStat.textContent = "Indisponível";
     if (ethMainStat) ethMainStat.textContent = "Indisponível";
+
+    console.error("[Pronuxfin] Erro em renderCrypto:", error);
+  } finally {
+    cryptoRenderInProgress = false;
   }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   renderCrypto();
-  setInterval(renderCrypto, REFRESH_INTERVALS.crypto);
+
+  setInterval(() => {
+    renderCrypto();
+  }, REFRESH_INTERVALS.crypto);
 });
