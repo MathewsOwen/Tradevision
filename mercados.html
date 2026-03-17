@@ -8,11 +8,19 @@
     name="description"
     content="Acompanhe mercados globais, índices, moedas e commodities em uma visão profissional na Pronuxfin."
   />
+  <meta name="theme-color" content="#0b1220" />
+  <link rel="preconnect" href="https://s3.tradingview.com" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <noscript>
+    <div class="noscript-alert">
+      A Pronuxfin precisa do JavaScript ativado para carregar gráficos, dados e atualizações desta página.
+    </div>
+  </noscript>
+
   <header class="header">
-    <div class="logo">PRONUXFIN</div>
+    <a href="index.html" class="logo" aria-label="Ir para a página inicial da Pronuxfin">PRONUXFIN</a>
 
     <div class="header-right">
       <div class="search-wrap">
@@ -22,23 +30,31 @@
           class="search-input"
           placeholder="Buscar ativo... Ex: PETR4, VALE3, BTC, ETH"
           autocomplete="off"
+          aria-label="Buscar ativo"
         />
-        <div id="searchResults" class="search-results"></div>
+        <div
+          id="searchResults"
+          class="search-results"
+          role="listbox"
+          aria-label="Resultados da busca"
+        ></div>
       </div>
 
-      <nav class="nav">
+      <nav class="nav" aria-label="Navegação principal">
         <a href="index.html">Home</a>
-        <a href="mercados.html" class="active">Mercados</a>
+        <a href="mercados.html" class="active" aria-current="page">Mercados</a>
         <a href="acoes.html">Ações</a>
         <a href="cripto.html">Cripto</a>
         <a href="noticias.html">Notícias</a>
         <a href="radar.html">Radar</a>
         <a href="heatmap.html">Heatmap</a>
+        <a href="ranking.html">Ranking</a>
+        <a href="calendario.html">Calendário</a>
       </nav>
     </div>
   </header>
 
-  <div class="ticker">
+  <div class="ticker" aria-label="Ticker de mercados globais">
     <div class="ticker-track" id="tickerTrack"></div>
   </div>
 
@@ -74,8 +90,8 @@
     </section>
 
     <section class="section no-pad-top">
-      <div class="widget-card">
-        <div id="tradingview_market"></div>
+      <div class="widget-card chart-card">
+        <div id="tradingview_market" class="chart-container"></div>
       </div>
     </section>
 
