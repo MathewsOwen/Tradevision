@@ -6,13 +6,20 @@
   <title>Heatmap do Mercado | Pronuxfin</title>
   <meta
     name="description"
-    content="Heatmap do mercado da Pronuxfin com visualização rápida de ações em alta e em baixa."
+    content="Heatmap do mercado da Pronuxfin com visualização rápida de ativos em alta e em baixa, com leitura premium do cenário."
   />
+  <meta name="theme-color" content="#0b1220" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <noscript>
+    <div class="noscript-alert">
+      A Pronuxfin precisa do JavaScript ativado para carregar dados e atualizações desta página.
+    </div>
+  </noscript>
+
   <header class="header">
-    <div class="logo">PRONUXFIN</div>
+    <a href="index.html" class="logo" aria-label="Ir para a página inicial da Pronuxfin">PRONUXFIN</a>
 
     <div class="header-right">
       <div class="search-wrap">
@@ -22,18 +29,26 @@
           class="search-input"
           placeholder="Buscar ativo... Ex: PETR4, VALE3, BTC, ETH"
           autocomplete="off"
+          aria-label="Buscar ativo"
         />
-        <div id="searchResults" class="search-results"></div>
+        <div
+          id="searchResults"
+          class="search-results"
+          role="listbox"
+          aria-label="Resultados da busca"
+        ></div>
       </div>
 
-      <nav class="nav">
+      <nav class="nav" aria-label="Navegação principal">
         <a href="index.html">Home</a>
         <a href="mercados.html">Mercados</a>
         <a href="acoes.html">Ações</a>
         <a href="cripto.html">Cripto</a>
         <a href="noticias.html">Notícias</a>
         <a href="radar.html">Radar</a>
-        <a href="heatmap.html" class="active">Heatmap</a>
+        <a href="heatmap.html" class="active" aria-current="page">Heatmap</a>
+        <a href="ranking.html">Ranking</a>
+        <a href="calendario.html">Calendário</a>
       </nav>
     </div>
   </header>
@@ -42,8 +57,8 @@
     <div class="section-head">
       <h1>Heatmap do Mercado</h1>
       <p>
-        Visualização rápida dos ativos da bolsa para identificar força,
-        fraqueza e direção do mercado em segundos.
+        Visualização rápida dos ativos monitorados pela Pronuxfin para identificar
+        força, fraqueza e direção do mercado em segundos.
       </p>
     </div>
 
@@ -54,8 +69,8 @@
       </article>
 
       <article class="stat-card">
-        <span class="card-label">SETOR FORTE</span>
-        <div class="stat-value">Bancos</div>
+        <span class="card-label">SETOR / FOCO</span>
+        <div class="stat-value">Líquidos</div>
       </article>
 
       <article class="stat-card">
@@ -80,7 +95,7 @@
           <h3>Força relativa</h3>
           <p>
             O heatmap ajuda a enxergar rapidamente onde o fluxo está mais forte
-            e quais ativos estão puxando o mercado.
+            e quais ativos estão puxando a atenção do mercado.
           </p>
         </article>
 
@@ -89,7 +104,7 @@
           <h3>Visual instantâneo</h3>
           <p>
             Em vez de analisar linha por linha, o mapa de calor resume o cenário
-            de forma muito mais rápida.
+            de forma muito mais rápida e intuitiva.
           </p>
         </article>
 
@@ -98,7 +113,7 @@
           <h3>Camada institucional</h3>
           <p>
             Esse tipo de leitura aproxima a Pronuxfin de uma experiência de
-            terminal financeiro premium.
+            plataforma financeira premium e mais estratégica.
           </p>
         </article>
       </div>
