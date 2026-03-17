@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
-  const symbol = (params.get("symbol") || "PETR4").toUpperCase();
+  const requestedSymbol = (params.get("symbol") || "PETR4").toUpperCase();
 
   const elements = {
     title: document.getElementById("assetTitle"),
@@ -73,125 +73,190 @@ document.addEventListener("DOMContentLoaded", async () => {
       market: "Bolsa do Brasil",
       category: "Ação"
     },
-    WEGE3: {
-      name: "WEG ON",
-      tv: "BMFBOVESPA:WEGE3",
-      market: "Bolsa do Brasil",
-      category: "Ação"
-    },
-    BBAS3: {
-      name: "Banco do Brasil ON",
-      tv: "BMFBOVESPA:BBAS3",
+    MGLU3: {
+      name: "Magazine Luiza ON",
+      tv: "BMFBOVESPA:MGLU3",
       market: "Bolsa do Brasil",
       category: "Ação"
     }
   };
 
-  const isCrypto = Boolean(cryptoMap[symbol]);
-  const assetMeta = isCrypto ? cryptoMap[symbol] : stockMap[symbol] || stockMap.PETR4;
+  function setText(el, value) {
+    if (el) el.textContent = value;
+  }
 
-  function setBasicMeta(displayName, market, category) {
-    elements.title.textContent = `${displayName} (${symbol})`;
-    elements.subtitle.textContent = `Monitoramento completo de ${displayName} com leitura estratégica da Pronuxfin.`;
-    elements.symbol.textContent = symbol;
-    elements.market.textContent = market;
-    elements.category.textContent = category;
+  function formatBrlPrice(value) {
+    if (typeof value !== "number" || Number.isNaN(value)) return "--";
+
+    return value.toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function setBasicMeta(displayName, symbol, market, category) {
+    setText(elements.title, `${displayName} (${symbol})`);
+    setText(
+      elements.subtitle,
+      `Monitoramento completo de ${displayName} com leitura estratégica da Pronuxfin.`
+    );
+    setText(elements.symbol, symbol);
+    setText(elements.market, market);
+    setText(elements.category, category);
     document.title = `${displayName} (${symbol}) | Pronuxfin`;
   }
 
   function setDirectionByChange(changeValue) {
-    if (typeof changeValue !== "number") {
-      elements.direction.textContent = "Monitorando";
-      elements.change.textContent = "--";
-      elements.change.className = "stat-value";
+    if (typeof changeValue !== "number" || Number.isNaN(changeValue)) {
+      setText(elements.direction, "Monitorando");
+      setText(elements.change, "--");
+
+      if (elements.change) {
+        elements.change.className = "stat-value";
+      }
       return;
     }
 
     const formatted = `${changeValue >= 0 ? "+" : ""}${changeValue.toFixed(2)}%`;
-    elements.change.textContent = formatted;
-    elements.change.className = `stat-value ${changeValue >= 0 ? "positive" : "negative"}`;
-    elements.direction.textContent = changeValue >= 0 ? "Alta" : "Baixa";
+    setText(elements.change, formatted);
+
+    if (elements.change) {
+      elements.change.className = `stat-value ${
+        changeValue > 0 ? "positive" : changeValue < 0 ? "negative" : "neutral"
+      }`;
+    }
+
+    setText(
+      elements.direction,
+      changeValue > 0 ? "Alta" : changeValue < 0 ? "Baixa" : "Neutro"
+    );
   }
 
   function renderInfoRows(rows) {
+    if (!elements.infoTable) return;
+
     elements.infoTable.innerHTML = rows
       .map(
         (row) => `
-        <tr>
-          <td>${row.label}</td>
-          <td>${row.value}</td>
-        </tr>
-      `
+          <tr>
+            <td>${escapeHtml(row.label)}</td>
+            <td>${escapeHtml(row.value)}</td>
+          </tr>
+        `
       )
       .join("");
   }
 
-  try {
-    if (isCrypto) {
-      setBasicMeta(assetMeta.name, assetMeta.market, assetMeta.category);
+  const isCrypto = Boolean(cryptoMap[requestedSymbol]);
+  const isStock = Boolean(stockMap[requestedSymbol]);
 
+  const activeSymbol = isCrypto || isStock ? requestedSymbol : "PETR4";
+  const assetMeta = cryptoMap[activeSymbol] || stockMap[activeSymbol];
+  const assetIsCrypto = Boolean(cryptoMap[activeSymbol]);
+
+  try {
+    setBasicMeta(
+      assetMeta.name,
+      activeSymbol,
+      assetMeta.market,
+      assetMeta.category
+    );
+
+    setText(elements.status, "Monitorando");
+
+    if (assetIsCrypto) {
       const data = await fetchCryptoPrices();
       const rawPrice = data?.[assetMeta.id]?.usd;
 
-      elements.price.textContent = typeof rawPrice === "number" ? `$${formatUsd(rawPrice)}` : "--";
-      elements.status.textContent = "Monitorando";
-      elements.summary.textContent =
-        `${assetMeta.name} está no radar da Pronuxfin como um dos criptoativos mais relevantes do mercado.`;
+      setText(
+        elements.price,
+        typeof rawPrice === "number" ? formatUsd(rawPrice) : "--"
+      );
+
+      setText(
+        elements.summary,
+        `${assetMeta.name} está no radar da Pronuxfin como um dos criptoativos mais relevantes do mercado.`
+      );
 
       setDirectionByChange(null);
 
       renderInfoRows([
-        { label: "Símbolo", value: symbol },
+        { label: "Símbolo", value: activeSymbol },
         { label: "Nome", value: assetMeta.name },
         { label: "Mercado", value: assetMeta.market },
         { label: "Categoria", value: assetMeta.category },
-        { label: "Preço atual", value: typeof rawPrice === "number" ? `$${formatUsd(rawPrice)}` : "--" }
+        {
+          label: "Preço atual",
+          value: typeof rawPrice === "number" ? formatUsd(rawPrice) : "--"
+        }
       ]);
 
       createAdvancedChart("asset_chart", assetMeta.tv);
       return;
     }
 
-    setBasicMeta(assetMeta.name, assetMeta.market, assetMeta.category);
-
     const stocks = await fetchStocks();
-    const stock = stocks.find((item) => item.symbol === symbol) || stocks[0];
+    const stock = stocks.find(
+      (item) => String(item.symbol).toUpperCase() === activeSymbol
+    );
 
-    const rawPrice = stock?.regularMarketPrice;
-    const rawChange = stock?.regularMarketChangePercent;
+    const rawPrice = Number(stock?.regularMarketPrice);
+    const rawChange = Number(stock?.regularMarketChangePercent);
 
-    elements.price.textContent =
-      typeof rawPrice === "number" ? rawPrice.toLocaleString("pt-BR") : "--";
-    elements.status.textContent = "Monitorando";
-    elements.summary.textContent =
-      `${assetMeta.name} está no radar da Pronuxfin como um dos ativos relevantes da bolsa brasileira.`;
+    setText(
+      elements.price,
+      Number.isFinite(rawPrice) ? formatBrlPrice(rawPrice) : "--"
+    );
 
-    setDirectionByChange(rawChange);
+    setText(
+      elements.summary,
+      `${assetMeta.name} está no radar da Pronuxfin como um dos ativos relevantes da bolsa brasileira.`
+    );
+
+    setDirectionByChange(Number.isFinite(rawChange) ? rawChange : null);
 
     renderInfoRows([
-      { label: "Símbolo", value: stock?.symbol || symbol },
+      { label: "Símbolo", value: activeSymbol },
       { label: "Nome", value: assetMeta.name },
       { label: "Mercado", value: assetMeta.market },
       { label: "Categoria", value: assetMeta.category },
       {
         label: "Preço atual",
-        value: typeof rawPrice === "number" ? rawPrice.toLocaleString("pt-BR") : "--"
+        value: Number.isFinite(rawPrice) ? formatBrlPrice(rawPrice) : "--"
       },
       {
         label: "Variação",
-        value:
-          typeof rawChange === "number"
-            ? `${rawChange >= 0 ? "+" : ""}${rawChange.toFixed(2)}%`
-            : "--"
+        value: Number.isFinite(rawChange)
+          ? `${rawChange >= 0 ? "+" : ""}${rawChange.toFixed(2)}%`
+          : "--"
       }
     ]);
 
     createAdvancedChart("asset_chart", assetMeta.tv);
   } catch (error) {
-    elements.price.textContent = "Indisponível";
-    elements.change.textContent = "--";
-    elements.direction.textContent = "Indisponível";
-    elements.summary.textContent = "Não foi possível carregar os dados do ativo neste momento.";
+    console.error("[Pronuxfin] Erro em ativo.js:", error);
+
+    setBasicMeta(
+      assetMeta?.name || "Ativo",
+      activeSymbol,
+      assetMeta?.market || "--",
+      assetMeta?.category || "--"
+    );
+
+    setText(elements.price, "Indisponível");
+    setText(elements.change, "--");
+
+    if (elements.change) {
+      elements.change.className = "stat-value";
+    }
+
+    setText(elements.direction, "Indisponível");
+    setText(elements.status, "Indisponível");
+    setText(
+      elements.summary,
+      "Não foi possível carregar os dados do ativo neste momento."
+    );
+
     renderInfoRows([{ label: "Status", value: "Erro ao carregar dados" }]);
   }
 });
