@@ -1,19 +1,71 @@
 const NEWS_API_KEY = "36f6190c46284b89876d032af65ecbf8";
 
-async function fetchJson(url) {
-  const response = await fetch(url, { cache: "no-store" });
+const API_ENDPOINTS = {
+  crypto:
+    "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin,ripple&vs_currencies=usd",
+  stocks:
+    "https://brapi.dev/api/quote/PETR4,VALE3,MGLU3,ITUB4",
+  newsQuery: "bolsa OR bitcoin OR mercado financeiro OR ibovespa OR ações"
+};
 
-  if (!response.ok) {
-    throw new Error(`Erro na requisição: ${response.status}`);
+const REQUEST_TIMEOUT = 12000;
+
+function createTimeoutSignal(timeout = REQUEST_TIMEOUT) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+  return {
+    signal: controller.signal,
+    clear: () => clearTimeout(timeoutId)
+  };
+}
+
+async function fetchJson(url, options = {}) {
+  const { timeout = REQUEST_TIMEOUT, ...fetchOptions } = options;
+  const { signal, clear } = createTimeoutSignal(timeout);
+
+  try {
+    const response = await fetch(url, {
+      cache: "no-store",
+      ...fetchOptions,
+      signal
+    });
+
+    if (!response.ok) {
+      throw new Error(`Falha HTTP ${response.status} em ${url}`);
+    }
+
+    const contentType = response.headers.get("content-type") || "";
+
+    if (!contentType.includes("application/json")) {
+      throw new Error(`Resposta inválida (não JSON) em ${url}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    if (error.name === "AbortError") {
+      throw new Error(`Tempo limite excedido ao carregar ${url}`);
+    }
+
+    throw error;
+  } finally {
+    clear();
   }
-
-  return response.json();
 }
 
 async function fetchCryptoPrices() {
-  return fetchJson(
-    "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin,ripple&vs_currencies=usd"
-  );
+  try {
+    const data = await fetchJson(API_ENDPOINTS.crypto);
+
+    if (!data || typeof data !== "object") {
+      throw new Error("Estrutura inválida na resposta de criptomoedas.");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("[Pronuxfin] Erro ao buscar criptomoedas:", error);
+    throw new Error("Não foi possível carregar os preços das criptomoedas no momento.");
+  }
 }
 
 /*
@@ -22,19 +74,36 @@ async function fetchCryptoPrices() {
   PETR4, VALE3, MGLU3, ITUB4
 */
 async function fetchStocks() {
-  const data = await fetchJson(
-    "https://brapi.dev/api/quote/PETR4,VALE3,MGLU3,ITUB4"
-  );
+  try {
+    const data = await fetchJson(API_ENDPOINTS.stocks);
 
-  return data.results || [];
+    if (!data || !Array.isArray(data.results)) {
+      throw new Error("Estrutura inválida na resposta de ações.");
+    }
+
+    return data.results.filter(Boolean);
+  } catch (error) {
+    console.error("[Pronuxfin] Erro ao buscar ações:", error);
+    throw new Error("Não foi possível carregar os dados das ações no momento.");
+  }
 }
 
 async function fetchMarketNews() {
-  const query = "bolsa OR bitcoin OR mercado financeiro OR ibovespa OR ações";
+  const query = encodeURIComponent(API_ENDPOINTS.newsQuery);
+  const url =
+    `https://newsapi.org/v2/everything?q=${query}` +
+    `&language=pt&sortBy=publishedAt&pageSize=8&apiKey=${NEWS_API_KEY}`;
 
-  return fetchJson(
-    `https://newsapi.org/v2/everything?q=${encodeURIComponent(
-      query
-    )}&language=pt&sortBy=publishedAt&pageSize=8&apiKey=${NEWS_API_KEY}`
-  );
+  try {
+    const data = await fetchJson(url);
+
+    if (!data || !Array.isArray(data.articles)) {
+      throw new Error("Estrutura inválida na resposta de notícias.");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("[Pronuxfin] Erro ao buscar notícias:", error);
+    throw new Error("Não foi possível carregar as notícias do mercado no momento.");
+  }
 }
