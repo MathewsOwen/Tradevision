@@ -3,12 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Pronuxfin | Inteligência Financeira</title>
+
   <meta
     name="description"
     content="Pronuxfin é uma plataforma de inteligência financeira com mercados, ações, criptomoedas, notícias, radar estratégico e heatmap em uma experiência premium."
   />
+  <meta
+    name="keywords"
+    content="Pronuxfin, mercado financeiro, ações, criptomoedas, B3, investimentos, radar estratégico, heatmap, notícias financeiras, inteligência financeira"
+  />
+  <meta name="author" content="Pronuxfin" />
   <meta name="theme-color" content="#0b1220" />
+
   <meta property="og:title" content="Pronuxfin | Inteligência Financeira" />
   <meta
     property="og:description"
@@ -16,6 +24,9 @@
   />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="pt_BR" />
+  <meta property="og:image" content="img/logo-pronuxfin.webp" />
+
+  <link rel="preload" href="img/logo-pronuxfin.webp" as="image" />
   <link rel="preconnect" href="https://s3.tradingview.com" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -26,8 +37,56 @@
     </div>
   </noscript>
 
+  <!-- INTRO / SPLASH SCREEN -->
+  <div class="intro-screen" id="introScreen" aria-hidden="true">
+    <div class="intro-bg-glow"></div>
+
+    <button
+      class="skip-intro"
+      id="skipIntroBtn"
+      type="button"
+      aria-label="Pular animação de abertura"
+    >
+      Pular abertura
+    </button>
+
+    <div class="intro-center">
+      <div class="brand-mark" role="img" aria-label="Logo animado Pronuxfin">
+        <span class="brand-letter p">P</span>
+        <span class="brand-letter r">R</span>
+
+        <span class="brand-letter o-wrap" aria-hidden="true">
+          <span class="o-shape">
+            <span class="o-bars">
+              <span class="o-bar o-bar-1"></span>
+              <span class="o-bar o-bar-2"></span>
+              <span class="o-bar o-bar-3"></span>
+            </span>
+          </span>
+        </span>
+
+        <span class="brand-letter n">N</span>
+        <span class="brand-letter u">U</span>
+
+        <span class="brand-letter x-wrap" aria-hidden="true">
+          <span class="x-base">X</span>
+          <span class="x-arrow-line"></span>
+          <span class="x-arrow-head"></span>
+        </span>
+
+        <span class="brand-letter f">F</span>
+        <span class="brand-letter i">I</span>
+        <span class="brand-letter n2">N</span>
+      </div>
+
+      <p class="brand-tagline">WHERE UNDERSTANDING BECOMES ADVANTAGE</p>
+    </div>
+  </div>
+
   <header class="header">
-    <a href="index.html" class="logo" aria-label="Ir para a página inicial da Pronuxfin">PRONUXFIN</a>
+    <a href="index.html" class="logo" aria-label="Ir para a página inicial da Pronuxfin">
+      PRONUXFIN
+    </a>
 
     <div class="header-right">
       <div class="search-wrap">
@@ -82,7 +141,7 @@
       </div>
     </section>
 
-    <section class="stats">
+    <section class="stats" aria-label="Indicadores principais">
       <article class="stat-card">
         <span class="card-label">IBOVESPA</span>
         <div class="stat-value" id="statIbov">--</div>
@@ -148,6 +207,7 @@
             <h3>Top Ações</h3>
             <span class="mini-tag">B3</span>
           </div>
+
           <table class="table">
             <thead>
               <tr>
@@ -166,6 +226,7 @@
             <h3>Top Criptomoedas</h3>
             <span class="mini-tag">CRYPTO</span>
           </div>
+
           <table class="table">
             <thead>
               <tr>
@@ -262,6 +323,7 @@
   </footer>
 
   <script src="https://s3.tradingview.com/tv.js"></script>
+  <script src="js/intro.js" defer></script>
   <script src="js/api.js" defer></script>
   <script src="js/app.js" defer></script>
   <script src="js/markets.js" defer></script>
