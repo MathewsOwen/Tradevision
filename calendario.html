@@ -3,177 +3,95 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Calendário Econômico | Pronuxfin</title>
   <meta
     name="description"
-    content="Calendário econômico da Pronuxfin com eventos importantes, juros, inflação, payroll e indicadores."
+    content="Acompanhe o calendário econômico com eventos macro, indicadores, projeções e impactos para o mercado na Pronuxfin."
   />
-  <meta name="theme-color" content="#0b1220" />
+
   <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <noscript>
-    <div class="noscript-alert">
-      A Pronuxfin precisa do JavaScript ativado para carregar dados e atualizações desta página.
-    </div>
-  </noscript>
 
   <header class="header">
-    <a href="index.html" class="logo" aria-label="Ir para a página inicial da Pronuxfin">PRONUXFIN</a>
-
-    <div class="header-right">
-      <div class="search-wrap">
-        <input
-          type="text"
-          id="globalSearch"
-          class="search-input"
-          placeholder="Buscar ativo... Ex: PETR4, VALE3, BTC, ETH"
-          autocomplete="off"
-          aria-label="Buscar ativo"
-        />
-        <div
-          id="searchResults"
-          class="search-results"
-          role="listbox"
-          aria-label="Resultados da busca"
-        ></div>
+    <div class="container header-content">
+      <div class="logo">
+        PRONUX<span>FIN</span>
       </div>
 
-      <nav class="nav" aria-label="Navegação principal">
-        <a href="index.html">Home</a>
-        <a href="mercados.html">Mercados</a>
-        <a href="acoes.html">Ações</a>
-        <a href="cripto.html">Cripto</a>
-        <a href="noticias.html">Notícias</a>
-        <a href="radar.html">Radar</a>
-        <a href="heatmap.html">Heatmap</a>
-        <a href="ranking.html">Ranking</a>
-        <a href="calendario.html" class="active" aria-current="page">Calendário</a>
+      <nav class="nav">
+        <a href="index.html" data-nav-link>Home</a>
+        <a href="acoes.html" data-nav-link>Ações</a>
+        <a href="cripto.html" data-nav-link>Cripto</a>
+        <a href="mercados.html" data-nav-link>Mercados</a>
+        <a href="noticias.html" data-nav-link>Notícias</a>
+        <a href="ranking.html" data-nav-link>Ranking</a>
+        <a href="heatmap.html" data-nav-link>Heatmap</a>
+        <a href="radar.html" data-nav-link>Radar</a>
+        <a href="calendario.html" data-nav-link>Calendário</a>
       </nav>
+
+      <form class="search" data-search-form>
+        <input type="text" placeholder="Buscar ativo..." data-search-input />
+        <div class="search-results" data-search-results></div>
+      </form>
     </div>
   </header>
 
-  <main class="page">
-    <div class="section-head">
-      <h1>Calendário Econômico</h1>
-      <p>
-        Acompanhe os eventos macroeconômicos mais relevantes para o mercado,
-        incluindo juros, inflação, emprego e atividade econômica.
-      </p>
-    </div>
+  <main class="section">
+    <div class="container">
 
-    <section class="stats market-stats">
-      <article class="stat-card">
-        <span class="card-label">PRÓXIMO EVENTO</span>
-        <div class="stat-value" id="calendarNextEvent">--</div>
-      </article>
+      <div class="page-title">
+        <h1>Calendário Econômico</h1>
+        <p>
+          Monitore indicadores, decisões de política monetária, inflação, atividade econômica
+          e outros eventos macro com leitura clara e atualização rápida.
+        </p>
+      </div>
 
-      <article class="stat-card">
-        <span class="card-label">IMPACTO ALTO</span>
-        <div class="stat-value" id="calendarHighImpact">--</div>
-      </article>
+      <div class="filters-bar">
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <input
+            type="text"
+            id="calendar-filter-input"
+            placeholder="Filtrar por evento, país ou impacto..."
+          />
+          <button type="button" id="calendar-refresh-btn">Atualizar</button>
+        </div>
+      </div>
 
-      <article class="stat-card">
-        <span class="card-label">BRASIL</span>
-        <div class="stat-value">Monitorando</div>
-      </article>
-
-      <article class="stat-card">
-        <span class="card-label">EUA</span>
-        <div class="stat-value">Monitorando</div>
-      </article>
-    </section>
-
-    <section class="section no-pad-top">
-      <div class="table-card">
-        <div class="card-top">
-          <h3>Eventos econômicos</h3>
-          <span class="mini-tag">MACRO</span>
+      <section class="panel">
+        <div class="section-header">
+          <h2>Eventos Econômicos</h2>
+          <a href="index.html">Voltar para Home →</a>
         </div>
 
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>Hora</th>
-              <th>País</th>
-              <th>Evento</th>
-              <th>Impacto</th>
-              <th>Leitura</th>
-            </tr>
-          </thead>
-          <tbody id="calendarTable"></tbody>
-        </table>
-      </div>
-    </section>
+        <div id="calendar-grid" class="list-stack">
+          <div class="loading">Carregando calendário econômico...</div>
+        </div>
+      </section>
 
-    <section class="section no-pad-top">
-      <div class="grid-3">
-        <article class="card highlight-card">
-          <span class="card-label">JUROS</span>
-          <h3>Política monetária</h3>
-          <p>
-            Decisões de juros influenciam bolsa, câmbio, renda fixa e apetite a risco.
-          </p>
-        </article>
-
-        <article class="card highlight-card">
-          <span class="card-label">INFLAÇÃO</span>
-          <h3>Pressão de preços</h3>
-          <p>
-            Dados de inflação ajudam o mercado a reprecificar expectativa de juros.
-          </p>
-        </article>
-
-        <article class="card highlight-card">
-          <span class="card-label">EMPREGO</span>
-          <h3>Força econômica</h3>
-          <p>
-            Payroll e desemprego são eventos-chave para leitura da atividade.
-          </p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section no-pad-top">
-      <div class="grid-2">
-        <article class="card market-side-card">
-          <span class="card-label">LEITURA PRONUX</span>
-          <h3>Por que acompanhar</h3>
-          <p>
-            O calendário econômico dá contexto para movimentos de curto prazo e
-            ajuda a entender por que o mercado acelera ou desacelera.
-          </p>
-        </article>
-
-        <article class="card market-side-card">
-          <span class="card-label">EVENTOS-CHAVE</span>
-          <div class="mini-insights">
-            <div class="mini-insight">
-              <strong>Juros</strong>
-              <span class="neutral">Banco Central / Fed</span>
-            </div>
-
-            <div class="mini-insight">
-              <strong>Inflação</strong>
-              <span class="neutral">IPCA / CPI</span>
-            </div>
-
-            <div class="mini-insight">
-              <strong>Emprego</strong>
-              <span class="neutral">Payroll / Desemprego</span>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
+    </div>
   </main>
 
   <footer class="footer">
-    <p>© 2026 Pronuxfin — Inteligência Financeira</p>
+    <div class="container footer-content">
+      <div>
+        <strong>Pronuxfin</strong>
+        <p>Onde entendimento vira vantagem.</p>
+      </div>
+
+      <div>
+        <small>© <span data-current-year></span> Pronuxfin</small>
+      </div>
+    </div>
   </footer>
 
-  <script src="js/app.js" defer></script>
-  <script src="js/calendar.js" defer></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/calendar.js"></script>
+
 </body>
 </html>
