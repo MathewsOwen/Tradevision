@@ -3,218 +3,99 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Ações | Pronuxfin</title>
   <meta
     name="description"
-    content="Acompanhe ações da bolsa com ranking, destaques e leitura profissional na Pronuxfin."
+    content="Acompanhe ações da B3 com dados atualizados, variação, preço, volume e visão estratégica na Pronuxfin."
   />
-  <meta name="theme-color" content="#0b1220" />
+
   <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <noscript>
-    <div class="noscript-alert">
-      A Pronuxfin precisa do JavaScript ativado para carregar dados e atualizações desta página.
-    </div>
-  </noscript>
 
+  <!-- ================= HEADER ================= -->
   <header class="header">
-    <a href="index.html" class="logo" aria-label="Ir para a página inicial da Pronuxfin">PRONUXFIN</a>
-
-    <div class="header-right">
-      <div class="search-wrap">
-        <input
-          type="text"
-          id="globalSearch"
-          class="search-input"
-          placeholder="Buscar ativo... Ex: PETR4, VALE3, BTC, ETH"
-          autocomplete="off"
-          aria-label="Buscar ativo"
-        />
-        <div
-          id="searchResults"
-          class="search-results"
-          role="listbox"
-          aria-label="Resultados da busca"
-        ></div>
+    <div class="container header-content">
+      <div class="logo">
+        PRONUX<span>FIN</span>
       </div>
 
-      <nav class="nav" aria-label="Navegação principal">
-        <a href="index.html">Home</a>
-        <a href="mercados.html">Mercados</a>
-        <a href="acoes.html" class="active" aria-current="page">Ações</a>
-        <a href="cripto.html">Cripto</a>
-        <a href="noticias.html">Notícias</a>
-        <a href="radar.html">Radar</a>
-        <a href="heatmap.html">Heatmap</a>
-        <a href="ranking.html">Ranking</a>
-        <a href="calendario.html">Calendário</a>
+      <nav class="nav">
+        <a href="index.html" data-nav-link>Home</a>
+        <a href="acoes.html" data-nav-link>Ações</a>
+        <a href="cripto.html" data-nav-link>Cripto</a>
+        <a href="mercados.html" data-nav-link>Mercados</a>
+        <a href="noticias.html" data-nav-link>Notícias</a>
+        <a href="ranking.html" data-nav-link>Ranking</a>
+        <a href="heatmap.html" data-nav-link>Heatmap</a>
+        <a href="radar.html" data-nav-link>Radar</a>
+        <a href="calendario.html" data-nav-link>Calendário</a>
       </nav>
+
+      <form class="search" data-search-form>
+        <input type="text" placeholder="Buscar ativo..." data-search-input />
+        <div class="search-results" data-search-results></div>
+      </form>
     </div>
   </header>
 
-  <div class="ticker" aria-label="Ticker de ações">
-    <div class="ticker-track" id="stocksTickerTrack"></div>
-  </div>
+  <!-- ================= CONTEÚDO ================= -->
+  <main class="section">
+    <div class="container">
 
-  <main class="page">
-    <div class="section-head">
-      <h1>Ações da Bolsa</h1>
-      <p>
-        Ranking, visão rápida e leitura profissional dos principais papéis monitorados
-        pela Pronuxfin dentro da base atual disponível na plataforma.
-      </p>
+      <div class="page-title">
+        <h1>Mercado de Ações</h1>
+        <p>
+          Acompanhe os principais ativos da B3 com visual profissional, dados atualizados
+          e acesso rápido às páginas individuais de cada ativo.
+        </p>
+      </div>
+
+      <div class="filters-bar">
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <input
+            type="text"
+            id="stocks-filter-input"
+            placeholder="Filtrar por ticker ou nome..."
+          />
+          <button type="button" id="stocks-refresh-btn">Atualizar</button>
+        </div>
+      </div>
+
+      <section class="panel">
+        <div class="section-header">
+          <h2>Lista de Ações</h2>
+          <a href="index.html">Voltar para Home →</a>
+        </div>
+
+        <div id="stocks-table">
+          <div class="loading">Carregando ações...</div>
+        </div>
+      </section>
+
     </div>
-
-    <section class="stats market-stats">
-      <article class="stat-card">
-        <span class="card-label">TOP ALTA</span>
-        <div class="stat-value" id="topGainerStat">--</div>
-      </article>
-
-      <article class="stat-card">
-        <span class="card-label">TOP QUEDA</span>
-        <div class="stat-value" id="topLoserStat">--</div>
-      </article>
-
-      <article class="stat-card">
-        <span class="card-label">SETOR FORTE</span>
-        <div class="stat-value">Bancos</div>
-      </article>
-
-      <article class="stat-card">
-        <span class="card-label">FLUXO</span>
-        <div class="stat-value">Ativo</div>
-      </article>
-    </section>
-
-    <section class="section no-pad-top">
-      <div class="grid-2">
-        <div class="table-card">
-          <div class="card-top">
-            <h3>Top Altas</h3>
-            <span class="mini-tag">UP</span>
-          </div>
-
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Ticker</th>
-                <th>Preço</th>
-                <th>Variação</th>
-              </tr>
-            </thead>
-            <tbody id="topGainersTable"></tbody>
-          </table>
-        </div>
-
-        <div class="table-card">
-          <div class="card-top">
-            <h3>Top Baixas</h3>
-            <span class="mini-tag">DOWN</span>
-          </div>
-
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Ticker</th>
-                <th>Preço</th>
-                <th>Variação</th>
-              </tr>
-            </thead>
-            <tbody id="topLosersTable"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <section class="section no-pad-top">
-      <div class="grid-2">
-        <div class="table-card">
-          <div class="card-top">
-            <h3>Lista principal</h3>
-            <span class="mini-tag">B3</span>
-          </div>
-
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Ticker</th>
-                <th>Preço</th>
-                <th>Variação</th>
-                <th>Direção</th>
-              </tr>
-            </thead>
-            <tbody id="stocksTable"></tbody>
-          </table>
-        </div>
-
-        <div class="card market-side-card">
-          <span class="card-label">LEITURA INSTITUCIONAL</span>
-          <h3>Panorama das ações</h3>
-          <p>
-            O monitoramento atual da Pronuxfin prioriza nomes relevantes da bolsa
-            brasileira, com foco em liquidez, leitura rápida e consistência visual
-            dentro da estrutura premium da plataforma.
-          </p>
-
-          <div class="mini-insights">
-            <div class="mini-insight">
-              <strong>Setor em destaque</strong>
-              <span class="positive">Financeiro</span>
-            </div>
-
-            <div class="mini-insight">
-              <strong>Risco</strong>
-              <span class="neutral">Moderado</span>
-            </div>
-
-            <div class="mini-insight">
-              <strong>Ativos no radar</strong>
-              <span class="positive">PETR4, VALE3, ITUB4</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section no-pad-top">
-      <div class="grid-3">
-        <article class="card highlight-card">
-          <span class="card-label">MOMENTUM</span>
-          <h3>Papéis com força</h3>
-          <p>
-            Ativos com melhor sustentação de movimento e maior atenção do mercado.
-          </p>
-        </article>
-
-        <article class="card highlight-card">
-          <span class="card-label">VALOR</span>
-          <h3>Liquidez e relevância</h3>
-          <p>
-            A seleção atual prioriza papéis conhecidos, relevantes e com leitura clara
-            para uma experiência institucional mais consistente.
-          </p>
-        </article>
-
-        <article class="card highlight-card">
-          <span class="card-label">PRONUX VIEW</span>
-          <h3>Leitura objetiva</h3>
-          <p>
-            A página de ações foi desenhada para funcionar como uma central premium de
-            acompanhamento dentro da evolução da Pronuxfin.
-          </p>
-        </article>
-      </div>
-    </section>
   </main>
 
+  <!-- ================= FOOTER ================= -->
   <footer class="footer">
-    <p>© 2026 Pronuxfin — Inteligência Financeira</p>
+    <div class="container footer-content">
+      <div>
+        <strong>Pronuxfin</strong>
+        <p>Onde entendimento vira vantagem.</p>
+      </div>
+
+      <div>
+        <small>© <span data-current-year></span> Pronuxfin</small>
+      </div>
+    </div>
   </footer>
 
-  <script src="js/api.js" defer></script>
-  <script src="js/app.js" defer></script>
-  <script src="js/stocks.js" defer></script>
+  <!-- ================= SCRIPTS ================= -->
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/stocks.js"></script>
+
 </body>
 </html>
