@@ -1,186 +1,130 @@
-let marketsRenderInProgress = false;
-let marketChartInitialized = false;
+// ===============================
+// MERCADOS GLOBAIS - PRONUXFIN
+// ===============================
 
-const MARKET_OVERVIEW_DATA = [
-  { symbol: "IBOVESPA", price: "128.450", change: "+0,84%" },
-  { symbol: "S&P 500", price: "5.210", change: "+0,42%" },
-  { symbol: "NASDAQ", price: "18.200", change: "+0,67%" },
-  { symbol: "USD/BRL", price: "5,02", change: "-0,11%" },
-  { symbol: "OURO", price: "2.150", change: "+0,23%" },
-  { symbol: "PETRÓLEO", price: "78,40", change: "+0,31%" }
-];
+let MARKETS_STATE = {
+  all: [],
+  filtered: []
+};
 
-const FOREX_DATA = [
-  { pair: "USD/BRL", price: "5,02", change: "-0,11%" },
-  { pair: "EUR/USD", price: "1,09", change: "+0,08%" },
-  { pair: "GBP/USD", price: "1,27", change: "+0,05%" },
-  { pair: "USD/JPY", price: "148,20", change: "-0,14%" }
-];
+// ===============================
+// INIT
+// ===============================
+document.addEventListener('DOMContentLoaded', () => {
+  const tableContainer = document.querySelector('#markets-table');
+  const filterInput = document.querySelector('#markets-filter-input');
+  const refreshButton = document.querySelector('#markets-refresh-btn');
 
-const COMMODITIES_DATA = [
-  { asset: "OURO", price: "2.150", change: "+0,23%" },
-  { asset: "PRATA", price: "24,80", change: "+0,18%" },
-  { asset: "PETRÓLEO WTI", price: "78,40", change: "+0,31%" },
-  { asset: "GÁS NATURAL", price: "2,10", change: "-0,26%" }
-];
-
-function getDirectionLabel(change) {
-  const normalized = normalizeChangeValue(change);
-
-  if (normalized === "+") return "Alta";
-  if (normalized === "-") return "Baixa";
-  return "Neutro";
-}
-
-function renderMarketOverviewRows(list) {
-  if (!Array.isArray(list) || list.length === 0) {
-    return createEmptyRow(4, "Nenhum dado de mercado disponível.");
+  if (!tableContainer || !window.api) {
+    return;
   }
 
-  return list
-    .map(
-      (item) => `
-        <tr>
-          <td>${escapeHtml(item.symbol)}</td>
-          <td>${escapeHtml(item.price)}</td>
-          <td class="${getChangeClass(item.change)}">${escapeHtml(item.change)}</td>
-          <td>
-            <span class="status">
-              <span class="dot ${getDotClassByChange(item.change)}"></span>
-              ${getDirectionLabel(item.change)}
-            </span>
-          </td>
-        </tr>
-      `
-    )
-    .join("");
-}
+  loadMarkets(tableContainer);
 
-function renderSimpleRows(list, nameKey) {
-  if (!Array.isArray(list) || list.length === 0) {
-    return createEmptyRow(3, "Nenhum dado disponível.");
+  if (filterInput) {
+    filterInput.addEventListener('input', () => {
+      applyMarketsFilter(filterInput.value, tableContainer);
+    });
   }
 
-  return list
-    .map(
-      (item) => `
-        <tr>
-          <td>${escapeHtml(item[nameKey])}</td>
-          <td>${escapeHtml(item.price)}</td>
-          <td class="${getChangeClass(item.change)}">${escapeHtml(item.change)}</td>
-        </tr>
-      `
-    )
-    .join("");
-}
-
-function renderMarketTicker(list) {
-  if (!Array.isArray(list) || list.length === 0) {
-    return `
-      <span class="ticker-item">
-        <strong>Mercados</strong>
-        <span>Sem dados no momento</span>
-      </span>
-    `;
+  if (refreshButton) {
+    refreshButton.addEventListener('click', () => {
+      loadMarkets(tableContainer, true);
+    });
   }
-
-  const tickerItems = list
-    .map(
-      (item) => `
-        <span class="ticker-item">
-          <strong>${escapeHtml(item.symbol)}</strong>
-          <span>${escapeHtml(item.price)}</span>
-          <span class="${getChangeClass(item.change)}">${escapeHtml(item.change)}</span>
-        </span>
-      `
-    )
-    .join("");
-
-  return tickerItems + tickerItems;
-}
-
-async function renderMarkets() {
-  if (marketsRenderInProgress) return;
-  marketsRenderInProgress = true;
-
-  const marketTable = document.getElementById("marketTable");
-  const tickerTrack = document.getElementById("tickerTrack");
-  const forexTable = document.getElementById("forexTable");
-  const commoditiesTable = document.getElementById("commoditiesTable");
-  const marketChart = document.getElementById("tradingview_market");
-
-  try {
-    if (marketTable) {
-      marketTable.innerHTML = renderMarketOverviewRows(MARKET_OVERVIEW_DATA);
-    }
-
-    if (tickerTrack) {
-      tickerTrack.innerHTML = renderMarketTicker(MARKET_OVERVIEW_DATA);
-    }
-
-    if (forexTable) {
-      forexTable.innerHTML = renderSimpleRows(FOREX_DATA, "pair");
-    }
-
-    if (commoditiesTable) {
-      commoditiesTable.innerHTML = renderSimpleRows(COMMODITIES_DATA, "asset");
-    }
-
-    safeSetText("statIbov", "128.450");
-    safeSetText("statUsd", "5,02");
-    safeSetText("statSp500", "5.210");
-    safeSetText("statBtc", "--");
-
-    if (marketChart && !marketChartInitialized) {
-      createAdvancedChart("tradingview_market", "BMFBOVESPA:IBOV");
-      marketChartInitialized = true;
-    }
-  } catch (error) {
-    if (marketTable) {
-      marketTable.innerHTML = createEmptyRow(
-        4,
-        "Não foi possível carregar os dados do mercado."
-      );
-    }
-
-    if (forexTable) {
-      forexTable.innerHTML = createEmptyRow(
-        3,
-        "Não foi possível carregar o câmbio."
-      );
-    }
-
-    if (commoditiesTable) {
-      commoditiesTable.innerHTML = createEmptyRow(
-        3,
-        "Não foi possível carregar as commodities."
-      );
-    }
-
-    if (tickerTrack) {
-      tickerTrack.innerHTML = `
-        <span class="ticker-item">
-          <strong>Mercados</strong>
-          <span>Falha na atualização</span>
-        </span>
-      `;
-    }
-
-    safeSetText("statIbov", "--");
-    safeSetText("statUsd", "--");
-    safeSetText("statSp500", "--");
-    safeSetText("statBtc", "--");
-
-    console.error("[Pronuxfin] Erro em renderMarkets:", error);
-  } finally {
-    marketsRenderInProgress = false;
-  }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  renderMarkets();
-
-  setInterval(() => {
-    renderMarkets();
-  }, REFRESH_INTERVALS.markets);
 });
+
+// ===============================
+// CARREGAR MERCADOS
+// ===============================
+async function loadMarkets(container, forceReload = false) {
+  try {
+    setLoading(container, 'Atualizando mercados globais...');
+
+    const response = await window.api.getGlobalMarkets();
+    const rows = response.items || response.data || [];
+
+    if (!Array.isArray(rows) || rows.length === 0) {
+      setEmpty(container, 'Nenhum dado global encontrado.');
+      return;
+    }
+
+    MARKETS_STATE.all = rows;
+    MARKETS_STATE.filtered = rows;
+
+    renderMarketsTable(container, rows);
+  } catch (error) {
+    console.error('[MARKETS ERROR]', error);
+    setError(container, 'Erro ao carregar mercados globais.');
+  }
+}
+
+// ===============================
+// FILTRO
+// ===============================
+function applyMarketsFilter(term, container) {
+  const value = term.toLowerCase().trim();
+
+  if (!value) {
+    MARKETS_STATE.filtered = MARKETS_STATE.all;
+  } else {
+    MARKETS_STATE.filtered = MARKETS_STATE.all.filter((item) => {
+      const symbol = (item.symbol || '').toLowerCase();
+      const name = (item.name || '').toLowerCase();
+      const category = (item.category || '').toLowerCase();
+
+      return (
+        symbol.includes(value) ||
+        name.includes(value) ||
+        category.includes(value)
+      );
+    });
+  }
+
+  renderMarketsTable(container, MARKETS_STATE.filtered);
+}
+
+// ===============================
+// RENDER TABELA
+// ===============================
+function renderMarketsTable(container, rows) {
+  renderTable(
+    container,
+    [
+      {
+        label: 'Ativo',
+        key: 'symbol',
+        render: (row) => row.symbol || '--'
+      },
+      {
+        label: 'Nome',
+        key: 'name',
+        render: (row) => row.name || '--'
+      },
+      {
+        label: 'Categoria',
+        key: 'category',
+        render: (row) => row.category || '--'
+      },
+      {
+        label: 'Preço',
+        key: 'price',
+        render: (row) => {
+          const currency = row.currency || 'USD';
+          return formatCurrency(row.price, currency);
+        }
+      },
+      {
+        label: 'Variação',
+        key: 'changePercent',
+        render: (row) => formatDeltaHTML(row.changePercent)
+      },
+      {
+        label: 'Última atualização',
+        key: 'updatedAt',
+        render: (row) => row.updatedAt || row.lastUpdate || '--'
+      }
+    ],
+    rows
+  );
+}
