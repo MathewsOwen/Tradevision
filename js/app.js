@@ -1,177 +1,339 @@
-const BACKEND_URL = "https://shiny-fortnight-q7rrv67jqqpg35w-3000.app.github.dev";
+// ===============================
+// FORMATADORES GLOBAIS
+// ===============================
+function formatNumber(value, options = {}) {
+  const number = Number(value);
 
-function formatCurrencyBRL(value) {
-  if (value === null || value === undefined || Number.isNaN(Number(value))) {
-    return "--";
+  if (value === null || value === undefined || Number.isNaN(number)) {
+    return '--';
   }
 
-  return Number(value).toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL"
-  });
+  return new Intl.NumberFormat('pt-BR', options).format(number);
 }
 
-function formatCurrencyUSD(value) {
-  if (value === null || value === undefined || Number.isNaN(Number(value))) {
-    return "--";
+function formatCurrency(value, currency = 'BRL') {
+  const number = Number(value);
+
+  if (value === null || value === undefined || Number.isNaN(number)) {
+    return '--';
   }
 
-  return Number(value).toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD"
-  });
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(number);
 }
 
 function formatPercent(value) {
-  if (value === null || value === undefined || Number.isNaN(Number(value))) {
-    return "--";
+  const number = Number(value);
+
+  if (value === null || value === undefined || Number.isNaN(number)) {
+    return '--';
   }
 
-  const number = Number(value);
-  const signal = number > 0 ? "+" : "";
-  return `${signal}${number.toFixed(2)}%`;
+  return `${number >= 0 ? '+' : ''}${number.toFixed(2)}%`;
 }
 
-function setVariationColor(element, value) {
-  if (!element) return;
+function formatCompact(value) {
+  const number = Number(value);
 
+  if (value === null || value === undefined || Number.isNaN(number)) {
+    return '--';
+  }
+
+  return new Intl.NumberFormat('pt-BR', {
+    notation: 'compact',
+    maximumFractionDigits: 2
+  }).format(number);
+}
+
+// ===============================
+// HELPERS DE VARIAÇÃO
+// ===============================
+function getDeltaClass(value) {
   const number = Number(value);
 
   if (Number.isNaN(number)) {
-    element.style.color = "#94a3b8";
+    return 'flat';
+  }
+
+  if (number > 0) {
+    return 'up';
+  }
+
+  if (number < 0) {
+    return 'down';
+  }
+
+  return 'flat';
+}
+
+function formatDeltaHTML(value) {
+  return `<span class="delta ${getDeltaClass(value)}">${formatPercent(value)}</span>`;
+}
+
+// ===============================
+// ESTADOS DE TELA
+// ===============================
+function setState(element, type, message) {
+  if (!element) {
     return;
   }
 
-  element.style.color = number >= 0 ? "#22c55e" : "#ef4444";
+  element.innerHTML = `<div class="${type}">${message}</div>`;
 }
 
-function renderTopCards(crypto, stocks) {
-  const bitcoin = crypto.find((item) => item.symbol === "BTC");
-  const petr4 = stocks.find((item) => item.symbol === "PETR4");
-  const vale3 = stocks.find((item) => item.symbol === "VALE3");
-
-  const btcPrice = document.getElementById("btc-price");
-  const btcChange = document.getElementById("btc-change");
-
-  if (bitcoin && btcPrice && btcChange) {
-    btcPrice.textContent = formatCurrencyBRL(bitcoin.priceBRL);
-    btcChange.textContent = formatPercent(bitcoin.change24h);
-    setVariationColor(btcChange, bitcoin.change24h);
-  }
-
-  const ibovPrice = document.getElementById("ibov-price");
-  const ibovChange = document.getElementById("ibov-change");
-
-  if (petr4 && ibovPrice && ibovChange) {
-    ibovPrice.textContent = formatCurrencyBRL(petr4.price);
-    ibovChange.textContent = formatPercent(petr4.changePercent);
-    setVariationColor(ibovChange, petr4.changePercent);
-  }
-
-  const usdbrlPrice = document.getElementById("usdbrl-price");
-  const usdbrlChange = document.getElementById("usdbrl-change");
-
-  if (vale3 && usdbrlPrice && usdbrlChange) {
-    usdbrlPrice.textContent = formatCurrencyBRL(vale3.price);
-    usdbrlChange.textContent = formatPercent(vale3.changePercent);
-    setVariationColor(usdbrlChange, vale3.changePercent);
-  }
-
-  const sp500Price = document.getElementById("sp500-price");
-  const sp500Change = document.getElementById("sp500-change");
-
-  if (sp500Price && sp500Change) {
-    sp500Price.textContent = "Em breve";
-    sp500Change.textContent = "Integração global";
-    sp500Change.style.color = "#94a3b8";
-  }
+function setLoading(element, message = 'Carregando dados...') {
+  setState(element, 'loading', message);
 }
 
-function renderCryptoCards(crypto) {
-  const container = document.getElementById("crypto-cards");
-  if (!container) return;
-
-  container.innerHTML = "";
-
-  crypto.forEach((item) => {
-    const card = document.createElement("article");
-    card.className = "crypto-card";
-
-    const variationClass = Number(item.change24h) >= 0 ? "positive" : "negative";
-
-    card.innerHTML = `
-      <div class="crypto-card-top">
-        <strong>${item.symbol}</strong>
-        <span>${item.name}</span>
-      </div>
-
-      <div class="crypto-card-price">
-        ${formatCurrencyBRL(item.priceBRL)}
-      </div>
-
-      <div class="crypto-card-usd">
-        ${formatCurrencyUSD(item.priceUSD)}
-      </div>
-
-      <div class="crypto-card-change ${variationClass}">
-        ${formatPercent(item.change24h)}
-      </div>
-    `;
-
-    container.appendChild(card);
-  });
+function setError(element, message = 'Não foi possível carregar os dados.') {
+  setState(element, 'error', message);
 }
 
-function renderStocksTable(stocks) {
-  const tbody = document.getElementById("stocks-table-body");
-  if (!tbody) return;
-
-  tbody.innerHTML = "";
-
-  stocks.forEach((stock) => {
-    const row = document.createElement("tr");
-    const variationClass = Number(stock.changePercent) >= 0 ? "positive" : "negative";
-
-    row.innerHTML = `
-      <td>
-        <div class="stock-symbol-cell">
-          <img src="${stock.logo || ""}" alt="${stock.symbol}" class="stock-logo" />
-          <div>
-            <strong>${stock.symbol}</strong>
-            <span>${stock.shortName || stock.name || "--"}</span>
-          </div>
-        </div>
-      </td>
-      <td>${formatCurrencyBRL(stock.price)}</td>
-      <td class="${variationClass}">${formatPercent(stock.changePercent)}</td>
-      <td>${formatCurrencyBRL(stock.high)}</td>
-      <td>${formatCurrencyBRL(stock.low)}</td>
-    `;
-
-    tbody.appendChild(row);
-  });
+function setEmpty(element, message = 'Nenhum dado disponível.') {
+  setState(element, 'empty-state', message);
 }
 
-async function loadDashboard() {
-  try {
-    const response = await fetch(`${BACKEND_URL}/api/dashboard`);
-    const data = await response.json();
+// ===============================
+// RENDER DE TABELAS
+// ===============================
+function renderTable(container, columns, rows) {
+  if (!container) {
+    return;
+  }
 
-    if (!data?.success) {
-      throw new Error("Resposta inválida do dashboard");
+  if (!Array.isArray(rows) || rows.length === 0) {
+    setEmpty(container, 'Nenhum dado disponível no momento.');
+    return;
+  }
+
+  const thead = columns
+    .map((column) => `<th>${column.label}</th>`)
+    .join('');
+
+  const tbody = rows
+    .map((row) => {
+      const cells = columns
+        .map((column) => {
+          const value = typeof column.render === 'function'
+            ? column.render(row)
+            : (row[column.key] ?? '--');
+
+          return `<td>${value}</td>`;
+        })
+        .join('');
+
+      return `<tr>${cells}</tr>`;
+    })
+    .join('');
+
+  container.innerHTML = `
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>${thead}</tr>
+        </thead>
+        <tbody>
+          ${tbody}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+// ===============================
+// COMPONENTES REUTILIZÁVEIS
+// ===============================
+function createNewsItem(item) {
+  const source = item.source || item.site || 'Mercado';
+  const date = item.publishedAt || item.date || item.time || 'Agora';
+  const title = item.title || 'Sem título';
+  const description = item.summary || item.description || 'Clique para ler a matéria completa.';
+  const url = item.url || '#';
+
+  return `
+    <a class="news-item" href="${url}" target="_blank" rel="noopener noreferrer">
+      <small>${source} • ${date}</small>
+      <strong>${title}</strong>
+      <span class="card-subtitle">${description}</span>
+    </a>
+  `;
+}
+
+function createEventItem(item) {
+  const date = item.date || '--';
+  const country = item.country || '--';
+  const title = item.title || item.event || 'Evento';
+  const impact = item.impact || 'Moderado';
+  const actual = item.actual ? ` • Atual: ${item.actual}` : '';
+  const forecast = item.forecast ? ` • Projeção: ${item.forecast}` : '';
+
+  return `
+    <div class="event-item">
+      <small>${date} • ${country}</small>
+      <strong>${title}</strong>
+      <span class="card-subtitle">Impacto: ${impact}${actual}${forecast}</span>
+    </div>
+  `;
+}
+
+function createStatCard(item) {
+  const title = item.title || item.name || item.label || 'Indicador';
+  const value = item.value ?? item.price ?? '--';
+  const delta = item.changePercent ?? item.variation ?? 0;
+  const subtitle = item.subtitle || item.symbol || 'Atualização em tempo real';
+
+  return `
+    <div class="stat-card">
+      <span class="stat-label">${title}</span>
+      <strong class="stat-value">${value}</strong>
+      <span class="delta ${getDeltaClass(delta)}">${formatPercent(delta)}</span>
+      <small class="stat-subtitle">${subtitle}</small>
+    </div>
+  `;
+}
+
+// ===============================
+// LINKS DE ATIVOS
+// ===============================
+function getAssetHref(symbol, type = 'stock') {
+  const isInsideAssetsFolder = window.location.pathname.includes('/ativos/');
+  const basePath = isInsideAssetsFolder ? '../ativos/ativo.html' : 'ativos/ativo.html';
+
+  return `${basePath}?symbol=${encodeURIComponent(symbol)}&type=${encodeURIComponent(type)}`;
+}
+
+function createAssetRowLink(symbol, type = 'stock') {
+  if (!symbol) {
+    return '--';
+  }
+
+  return `<a href="${getAssetHref(symbol, type)}" class="asset-link"><strong>${symbol}</strong></a>`;
+}
+
+// ===============================
+// BUSCA GLOBAL
+// ===============================
+async function initSearch() {
+  const form = document.querySelector('[data-search-form]');
+  const input = document.querySelector('[data-search-input]');
+  const results = document.querySelector('[data-search-results]');
+
+  if (!form || !input || !results || !window.api) {
+    return;
+  }
+
+  const closeResults = () => {
+    results.classList.remove('show');
+  };
+
+  const openResults = () => {
+    results.classList.add('show');
+  };
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const term = input.value.trim();
+
+    if (!term) {
+      results.innerHTML = '';
+      closeResults();
+      return;
     }
 
-    const crypto = data.marketSummary?.crypto || [];
-    const stocks = data.marketSummary?.stocks || [];
+    try {
+      results.innerHTML = '<div class="loading">Buscando ativos...</div>';
+      openResults();
 
-    renderTopCards(crypto, stocks);
-    renderCryptoCards(crypto);
-    renderStocksTable(stocks);
-  } catch (error) {
-    console.error("Erro ao carregar dashboard:", error);
-  }
+      const response = await window.api.search(term);
+      const items = response.items || response.results || response.data || [];
+
+      if (!items.length) {
+        results.innerHTML = '<div class="empty-state">Nenhum ativo encontrado.</div>';
+        return;
+      }
+
+      results.innerHTML = items
+        .slice(0, 8)
+        .map((item) => {
+          const symbol = item.symbol || '--';
+          const type = item.type || 'stock';
+          const name = item.name || item.description || 'Ativo monitorado';
+
+          return `
+            <a class="search-item" href="${getAssetHref(symbol, type)}">
+              <div>
+                <strong>${symbol}</strong>
+                <div class="card-subtitle">${name}</div>
+              </div>
+              <span class="badge">${type.toUpperCase()}</span>
+            </a>
+          `;
+        })
+        .join('');
+    } catch (error) {
+      results.innerHTML = '<div class="error">Não foi possível buscar agora.</div>';
+    }
+  });
+
+  input.addEventListener('input', () => {
+    if (!input.value.trim()) {
+      results.innerHTML = '';
+      closeResults();
+    }
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!form.contains(event.target) && !results.contains(event.target)) {
+      closeResults();
+    }
+  });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadDashboard();
-});
+// ===============================
+// MENU ATIVO
+// ===============================
+function markActiveNav() {
+  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+
+  document.querySelectorAll('[data-nav-link]').forEach((link) => {
+    const href = link.getAttribute('href');
+
+    if (!href) {
+      return;
+    }
+
+    const normalizedHref = href.split('/').pop();
+
+    if (normalizedHref === currentPage) {
+      link.classList.add('active');
+    }
+  });
+}
+
+// ===============================
+// ANO AUTOMÁTICO NO FOOTER
+// ===============================
+function setCurrentYear() {
+  const yearElements = document.querySelectorAll('[data-current-year]');
+  const currentYear = new Date().getFullYear();
+
+  yearElements.forEach((element) => {
+    element.textContent = currentYear;
+  });
+}
+
+// ===============================
+// INIT GLOBAL
+// ===============================
+function boot() {
+  markActiveNav();
+  setCurrentYear();
+  initSearch();
+}
+
+document.addEventListener('DOMContentLoaded', boot);
