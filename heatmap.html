@@ -3,128 +3,95 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Heatmap do Mercado | Pronuxfin</title>
+
+  <title>Heatmap | Pronuxfin</title>
   <meta
     name="description"
-    content="Heatmap do mercado da Pronuxfin com visualização rápida de ativos em alta e em baixa, com leitura premium do cenário."
+    content="Visualize o heatmap do mercado com leitura rápida de variação, destaque de ativos e visão estratégica na Pronuxfin."
   />
-  <meta name="theme-color" content="#0b1220" />
+
   <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <noscript>
-    <div class="noscript-alert">
-      A Pronuxfin precisa do JavaScript ativado para carregar dados e atualizações desta página.
-    </div>
-  </noscript>
 
   <header class="header">
-    <a href="index.html" class="logo" aria-label="Ir para a página inicial da Pronuxfin">PRONUXFIN</a>
-
-    <div class="header-right">
-      <div class="search-wrap">
-        <input
-          type="text"
-          id="globalSearch"
-          class="search-input"
-          placeholder="Buscar ativo... Ex: PETR4, VALE3, BTC, ETH"
-          autocomplete="off"
-          aria-label="Buscar ativo"
-        />
-        <div
-          id="searchResults"
-          class="search-results"
-          role="listbox"
-          aria-label="Resultados da busca"
-        ></div>
+    <div class="container header-content">
+      <div class="logo">
+        PRONUX<span>FIN</span>
       </div>
 
-      <nav class="nav" aria-label="Navegação principal">
-        <a href="index.html">Home</a>
-        <a href="mercados.html">Mercados</a>
-        <a href="acoes.html">Ações</a>
-        <a href="cripto.html">Cripto</a>
-        <a href="noticias.html">Notícias</a>
-        <a href="radar.html">Radar</a>
-        <a href="heatmap.html" class="active" aria-current="page">Heatmap</a>
-        <a href="ranking.html">Ranking</a>
-        <a href="calendario.html">Calendário</a>
+      <nav class="nav">
+        <a href="index.html" data-nav-link>Home</a>
+        <a href="acoes.html" data-nav-link>Ações</a>
+        <a href="cripto.html" data-nav-link>Cripto</a>
+        <a href="mercados.html" data-nav-link>Mercados</a>
+        <a href="noticias.html" data-nav-link>Notícias</a>
+        <a href="ranking.html" data-nav-link>Ranking</a>
+        <a href="heatmap.html" data-nav-link>Heatmap</a>
+        <a href="radar.html" data-nav-link>Radar</a>
+        <a href="calendario.html" data-nav-link>Calendário</a>
       </nav>
+
+      <form class="search" data-search-form>
+        <input type="text" placeholder="Buscar ativo..." data-search-input />
+        <div class="search-results" data-search-results></div>
+      </form>
     </div>
   </header>
 
-  <main class="page">
-    <div class="section-head">
-      <h1>Heatmap do Mercado</h1>
-      <p>
-        Visualização rápida dos ativos monitorados pela Pronuxfin para identificar
-        força, fraqueza e direção do mercado em segundos.
-      </p>
-    </div>
+  <main class="section">
+    <div class="container">
 
-    <section class="stats market-stats">
-      <article class="stat-card">
-        <span class="card-label">MERCADO</span>
-        <div class="stat-value positive">Positivo</div>
-      </article>
-
-      <article class="stat-card">
-        <span class="card-label">SETOR / FOCO</span>
-        <div class="stat-value">Líquidos</div>
-      </article>
-
-      <article class="stat-card">
-        <span class="card-label">TOP ALTA</span>
-        <div class="stat-value" id="heatmapTopGainer">--</div>
-      </article>
-
-      <article class="stat-card">
-        <span class="card-label">TOP QUEDA</span>
-        <div class="stat-value" id="heatmapTopLoser">--</div>
-      </article>
-    </section>
-
-    <section class="section no-pad-top">
-      <div class="heatmap-grid" id="heatmapGrid"></div>
-    </section>
-
-    <section class="section no-pad-top">
-      <div class="grid-3">
-        <article class="card highlight-card">
-          <span class="card-label">LEITURA</span>
-          <h3>Força relativa</h3>
-          <p>
-            O heatmap ajuda a enxergar rapidamente onde o fluxo está mais forte
-            e quais ativos estão puxando a atenção do mercado.
-          </p>
-        </article>
-
-        <article class="card highlight-card">
-          <span class="card-label">VELOCIDADE</span>
-          <h3>Visual instantâneo</h3>
-          <p>
-            Em vez de analisar linha por linha, o mapa de calor resume o cenário
-            de forma muito mais rápida e intuitiva.
-          </p>
-        </article>
-
-        <article class="card highlight-card">
-          <span class="card-label">PRONUX VIEW</span>
-          <h3>Camada institucional</h3>
-          <p>
-            Esse tipo de leitura aproxima a Pronuxfin de uma experiência de
-            plataforma financeira premium e mais estratégica.
-          </p>
-        </article>
+      <div class="page-title">
+        <h1>Heatmap do Mercado</h1>
+        <p>
+          Visualize rapidamente a temperatura do mercado com blocos proporcionais,
+          variações em destaque e leitura visual de força compradora e vendedora.
+        </p>
       </div>
-    </section>
+
+      <div class="filters-bar">
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <input
+            type="text"
+            id="heatmap-filter-input"
+            placeholder="Filtrar por ativo ou nome..."
+          />
+          <button type="button" id="heatmap-refresh-btn">Atualizar</button>
+        </div>
+      </div>
+
+      <section class="panel">
+        <div class="section-header">
+          <h2>Painel de Heatmap</h2>
+          <a href="index.html">Voltar para Home →</a>
+        </div>
+
+        <div id="heatmap-grid" class="heatmap-grid">
+          <div class="loading">Carregando heatmap...</div>
+        </div>
+      </section>
+
+    </div>
   </main>
 
   <footer class="footer">
-    <p>© 2026 Pronuxfin — Inteligência Financeira</p>
+    <div class="container footer-content">
+      <div>
+        <strong>Pronuxfin</strong>
+        <p>Onde entendimento vira vantagem.</p>
+      </div>
+
+      <div>
+        <small>© <span data-current-year></span> Pronuxfin</small>
+      </div>
+    </div>
   </footer>
 
-  <script src="js/app.js" defer></script>
-  <script src="js/heatmap.js" defer></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/heatmap.js"></script>
+
 </body>
 </html>
