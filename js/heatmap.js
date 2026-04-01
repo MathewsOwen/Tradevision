@@ -1,79 +1,126 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const heatmapGrid = document.getElementById("heatmapGrid");
-  const topGainer = document.getElementById("heatmapTopGainer");
-  const topLoser = document.getElementById("heatmapTopLoser");
+// ===============================
+// HEATMAP - PRONUXFIN
+// ===============================
 
-  if (!heatmapGrid) return;
+let HEATMAP_STATE = {
+  all: [],
+  filtered: []
+};
 
-  const assetBase = getAssetPageBase();
+// ===============================
+// INIT
+// ===============================
+document.addEventListener('DOMContentLoaded', () => {
+  const gridContainer = document.querySelector('#heatmap-grid');
+  const filterInput = document.querySelector('#heatmap-filter-input');
+  const refreshButton = document.querySelector('#heatmap-refresh-btn');
 
-  const assets = [
-    { symbol: "PETR4", name: "Petrobras", change: 1.82, size: "large" },
-    { symbol: "VALE3", name: "Vale", change: -0.95, size: "large" },
-    { symbol: "ITUB4", name: "Itaú Unibanco", change: 0.74, size: "medium" },
-    { symbol: "MGLU3", name: "Magazine Luiza", change: 2.14, size: "medium" },
-    { symbol: "BTC", name: "Bitcoin", change: 1.26, size: "medium" },
-    { symbol: "ETH", name: "Ethereum", change: -0.38, size: "medium" },
-    { symbol: "SOL", name: "Solana", change: 2.42, size: "small" },
-    { symbol: "BNB", name: "BNB", change: 0.19, size: "small" },
-    { symbol: "XRP", name: "XRP", change: -0.61, size: "small" }
-  ];
-
-  if (!Array.isArray(assets) || assets.length === 0) {
-    heatmapGrid.innerHTML = `
-      <div class="card">
-        <span class="card-label">HEATMAP</span>
-        <h3>Sem dados disponíveis</h3>
-        <p>Não foi possível montar o mapa de calor no momento.</p>
-      </div>
-    `;
-
-    if (topGainer) topGainer.textContent = "--";
-    if (topLoser) topLoser.textContent = "--";
+  if (!gridContainer || !window.api) {
     return;
   }
 
-  const sortedPositive = [...assets].sort((a, b) => b.change - a.change);
-  const sortedNegative = [...assets].sort((a, b) => a.change - b.change);
+  loadHeatmap(gridContainer);
 
-  if (topGainer) {
-    topGainer.textContent = sortedPositive.length ? sortedPositive[0].symbol : "--";
+  if (filterInput) {
+    filterInput.addEventListener('input', () => {
+      applyHeatmapFilter(filterInput.value, gridContainer);
+    });
   }
 
-  if (topLoser) {
-    topLoser.textContent = sortedNegative.length ? sortedNegative[0].symbol : "--";
+  if (refreshButton) {
+    refreshButton.addEventListener('click', () => {
+      loadHeatmap(gridContainer, true);
+    });
+  }
+});
+
+// ===============================
+// CARREGAR HEATMAP
+// ===============================
+async function loadHeatmap(container, forceReload = false) {
+  try {
+    container.innerHTML = '<div class="loading">Atualizando heatmap...</div>';
+
+    const response = await window.api.getHeatmap();
+    const items = response.items || response.data || [];
+
+    if (!Array.isArray(items) || items.length === 0) {
+      setEmpty(container, 'Nenhum dado de heatmap encontrado.');
+      return;
+    }
+
+    HEATMAP_STATE.all = items;
+    HEATMAP_STATE.filtered = items;
+
+    renderHeatmap(container, items);
+  } catch (error) {
+    console.error('[HEATMAP ERROR]', error);
+    setError(container, 'Erro ao carregar heatmap.');
+  }
+}
+
+// ===============================
+// FILTRO
+// ===============================
+function applyHeatmapFilter(term, container) {
+  const value = term.toLowerCase().trim();
+
+  if (!value) {
+    HEATMAP_STATE.filtered = HEATMAP_STATE.all;
+  } else {
+    HEATMAP_STATE.filtered = HEATMAP_STATE.all.filter((item) => {
+      const symbol = (item.symbol || '').toLowerCase();
+      const name = (item.name || '').toLowerCase();
+
+      return symbol.includes(value) || name.includes(value);
+    });
   }
 
-  function getHeatColor(change) {
-    if (change >= 2) return "heat-strong-green";
-    if (change > 0) return "heat-green";
-    if (change <= -1) return "heat-strong-red";
-    return "heat-red";
+  renderHeatmap(container, HEATMAP_STATE.filtered);
+}
+
+// ===============================
+// RENDER HEATMAP
+// ===============================
+function renderHeatmap(container, items) {
+  if (!Array.isArray(items) || items.length === 0) {
+    setEmpty(container, 'Nenhum ativo encontrado para esse filtro.');
+    return;
   }
 
-  function getAssetUrl(symbol) {
-    return `${assetBase}?symbol=${encodeURIComponent(symbol)}`;
-  }
-
-  heatmapGrid.innerHTML = assets
-    .map((asset) => {
-      const symbol = escapeHtml(asset.symbol);
-      const name = escapeHtml(asset.name);
-      const size = escapeHtml(asset.size);
-      const change = Number(asset.change) || 0;
-      const changeText = `${change >= 0 ? "+" : ""}${change.toFixed(2)}%`;
+  container.innerHTML = items
+    .map((item) => {
+      const symbol = item.symbol || '--';
+      const name = item.name || 'Ativo';
+      const price = item.price ?? '--';
+      const changePercent = item.changePercent ?? 0;
+      const size = getHeatmapSizeClass(item.marketCap || item.volume || 0);
+      const deltaClass = getDeltaClass(changePercent);
 
       return `
-        <a
-          href="${getAssetUrl(asset.symbol)}"
-          class="heatmap-card ${size} ${getHeatColor(change)}"
-          aria-label="Abrir página do ativo ${symbol}"
-        >
-          <span class="heatmap-symbol">${symbol}</span>
-          <span class="heatmap-name">${name}</span>
-          <span class="heatmap-change">${changeText}</span>
+        <a href="${getAssetHref(symbol, 'stock')}" class="heatmap-card ${deltaClass} ${size}">
+          <small>${name}</small>
+          <strong>${symbol}</strong>
+          <span>${typeof price === 'number' ? formatCurrency(price, 'BRL') : price}</span>
+          <b>${formatPercent(changePercent)}</b>
         </a>
       `;
     })
-    .join("");
-});
+    .join('');
+}
+
+// ===============================
+// TAMANHO DO BLOCO
+// ===============================
+function getHeatmapSizeClass(value) {
+  const number = Number(value);
+
+  if (Number.isNaN(number) || number <= 0) {
+    return 'size-md';
+  }
+
+  if (number >= 1000000000000) return 'size-xl';
+  if (number >= 100000000000) return 'size-lg';
+  if (number >= 10000000000) return 'size-md';
+  return 'size-sm';
+}
