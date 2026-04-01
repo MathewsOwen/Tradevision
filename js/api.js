@@ -1,109 +1,119 @@
-const NEWS_API_KEY = "36f6190c46284b89876d032af65ecbf8";
-
-const API_ENDPOINTS = {
-  crypto:
-    "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin,ripple&vs_currencies=usd",
-  stocks:
-    "https://brapi.dev/api/quote/PETR4,VALE3,MGLU3,ITUB4",
-  newsQuery: "bolsa OR bitcoin OR mercado financeiro OR ibovespa OR ações"
+// ===============================
+// CONFIGURAÇÃO DA API
+// ===============================
+const API_CONFIG = {
+  baseURL: window.PRONUXFIN_API_BASE || 'http://localhost:3000/api',
+  timeout: 10000
 };
 
-const REQUEST_TIMEOUT = 12000;
-
-function createTimeoutSignal(timeout = REQUEST_TIMEOUT) {
+// ===============================
+// FUNÇÃO BASE DE REQUEST
+// ===============================
+async function request(path, options = {}) {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeout);
+  const timeout = setTimeout(() => controller.abort(), API_CONFIG.timeout);
 
-  return {
-    signal: controller.signal,
-    clear: () => clearTimeout(timeoutId)
-  };
-}
-
-async function fetchJson(url, options = {}) {
-  const { timeout = REQUEST_TIMEOUT, ...fetchOptions } = options;
-  const { signal, clear } = createTimeoutSignal(timeout);
+  const url = `${API_CONFIG.baseURL}${path}`;
 
   try {
     const response = await fetch(url, {
-      cache: "no-store",
-      ...fetchOptions,
-      signal
+      method: options.method || 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options.headers || {})
+      },
+      body: options.body ? JSON.stringify(options.body) : undefined,
+      signal: controller.signal
     });
 
+    clearTimeout(timeout);
+
     if (!response.ok) {
-      throw new Error(`Falha HTTP ${response.status} em ${url}`);
-    }
-
-    const contentType = response.headers.get("content-type") || "";
-
-    if (!contentType.includes("application/json")) {
-      throw new Error(`Resposta inválida (não JSON) em ${url}`);
+      const text = await response.text();
+      throw new Error(`Erro ${response.status}: ${text}`);
     }
 
     return await response.json();
+
   } catch (error) {
-    if (error.name === "AbortError") {
-      throw new Error(`Tempo limite excedido ao carregar ${url}`);
+    clearTimeout(timeout);
+
+    if (error.name === 'AbortError') {
+      console.error('[API TIMEOUT]', path);
+      throw new Error('Tempo de resposta excedido.');
     }
 
+    console.error('[API ERROR]', path, error);
     throw error;
-  } finally {
-    clear();
   }
 }
 
-async function fetchCryptoPrices() {
-  try {
-    const data = await fetchJson(API_ENDPOINTS.crypto);
+// ===============================
+// ENDPOINTS CENTRALIZADOS
+// ===============================
+const api = {
 
-    if (!data || typeof data !== "object") {
-      throw new Error("Estrutura inválida na resposta de criptomoedas.");
-    }
+  // 🔍 Busca global
+  search(query) {
+    return request(`/search?q=${encodeURIComponent(query)}`);
+  },
 
-    return data;
-  } catch (error) {
-    console.error("[Pronuxfin] Erro ao buscar criptomoedas:", error);
-    throw new Error("Não foi possível carregar os preços das criptomoedas no momento.");
+  // 📊 Visão geral
+  getOverview() {
+    return request('/markets/overview');
+  },
+
+  // 🇧🇷 AÇÕES B3
+  getStocks(symbols = 'PETR4,VALE3,ITUB4,BBAS3,WEGE3') {
+    return request(`/stocks/quote?symbols=${encodeURIComponent(symbols)}`);
+  },
+
+  getStocksList(page = 1, limit = 20) {
+    return request(`/stocks/list?page=${page}&limit=${limit}`);
+  },
+
+  // 🪙 CRIPTO
+  getCryptos(limit = 20) {
+    return request(`/crypto/markets?limit=${limit}`);
+  },
+
+  // 🌎 MERCADOS GLOBAIS
+  getGlobalMarkets() {
+    return request('/markets/global');
+  },
+
+  // 📰 NOTÍCIAS
+  getNews(limit = 12) {
+    return request(`/news/latest?limit=${limit}`);
+  },
+
+  // 🏆 RANKING
+  getRanking(limit = 20) {
+    return request(`/ranking/assets?limit=${limit}`);
+  },
+
+  // 🔥 HEATMAP
+  getHeatmap() {
+    return request('/heatmap/b3');
+  },
+
+  // 🎯 RADAR
+  getRadar() {
+    return request('/radar/events');
+  },
+
+  // 📅 CALENDÁRIO ECONÔMICO
+  getCalendar(country = 'BR', limit = 20) {
+    return request(`/calendar/economic?country=${encodeURIComponent(country)}&limit=${limit}`);
+  },
+
+  // 📈 DETALHE DE ATIVO
+  getAssetDetails(symbol, type = 'stock') {
+    return request(`/asset/${encodeURIComponent(symbol)}?type=${encodeURIComponent(type)}`);
   }
-}
+};
 
-/*
-  IMPORTANTE:
-  Sem token na brapi, use apenas os papéis liberados:
-  PETR4, VALE3, MGLU3, ITUB4
-*/
-async function fetchStocks() {
-  try {
-    const data = await fetchJson(API_ENDPOINTS.stocks);
-
-    if (!data || !Array.isArray(data.results)) {
-      throw new Error("Estrutura inválida na resposta de ações.");
-    }
-
-    return data.results.filter(Boolean);
-  } catch (error) {
-    console.error("[Pronuxfin] Erro ao buscar ações:", error);
-    throw new Error("Não foi possível carregar os dados das ações no momento.");
-  }
-}
-
-async function fetchMarketNews() {
-  const query = encodeURIComponent(API_ENDPOINTS.newsQuery);
-  const url =
-    `https://newsapi.org/v2/everything?q=${query}` +
-    `&language=pt&sortBy=publishedAt&pageSize=8&apiKey=${NEWS_API_KEY}`;
-
-  try {
-    const data = await fetchJson(url);
-
-    if (!data || !Array.isArray(data.articles)) {
-      throw new Error("Estrutura inválida na resposta de notícias.");
-    }
-
-    return data;
-  } catch (error) {
-    console.error("[Pronuxfin] Erro ao buscar notícias:", error);
-    throw new Error("Não foi possível carregar as notícias do mercado no momento.");
-  }
-}
+// ===============================
+// DISPONIBILIZA GLOBALMENTE
+// ===============================
+window.api = api;
