@@ -1,130 +1,97 @@
-// ===============================
-// RANKING - PRONUXFIN
-// ===============================
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-let RANKING_STATE = {
-  all: [],
-  filtered: []
-};
+  <title>Ranking de Ativos | Pronuxfin</title>
+  <meta
+    name="description"
+    content="Veja o ranking de ativos da Pronuxfin com melhor desempenho, variação, categoria e visão rápida de mercado."
+  />
 
-// ===============================
-// INIT
-// ===============================
-document.addEventListener('DOMContentLoaded', () => {
-  const tableContainer = document.querySelector('#ranking-table');
-  const filterInput = document.querySelector('#ranking-filter-input');
-  const refreshButton = document.querySelector('#ranking-refresh-btn');
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
 
-  if (!tableContainer || !window.api) {
-    return;
-  }
+  <header class="header">
+    <div class="container header-content">
+      <div class="logo">
+        PRONUX<span>FIN</span>
+      </div>
 
-  loadRanking(tableContainer);
+      <nav class="nav">
+        <a href="index.html" data-nav-link>Home</a>
+        <a href="acoes.html" data-nav-link>Ações</a>
+        <a href="cripto.html" data-nav-link>Cripto</a>
+        <a href="mercados.html" data-nav-link>Mercados</a>
+        <a href="noticias.html" data-nav-link>Notícias</a>
+        <a href="ranking.html" data-nav-link>Ranking</a>
+        <a href="heatmap.html" data-nav-link>Heatmap</a>
+        <a href="radar.html" data-nav-link>Radar</a>
+        <a href="calendario.html" data-nav-link>Calendário</a>
+      </nav>
 
-  if (filterInput) {
-    filterInput.addEventListener('input', () => {
-      applyRankingFilter(filterInput.value, tableContainer);
-    });
-  }
+      <form class="search" data-search-form>
+        <input type="text" placeholder="Buscar ativo..." data-search-input />
+        <div class="search-results" data-search-results></div>
+      </form>
+    </div>
+  </header>
 
-  if (refreshButton) {
-    refreshButton.addEventListener('click', () => {
-      loadRanking(tableContainer, true);
-    });
-  }
-});
+  <main class="section">
+    <div class="container">
 
-// ===============================
-// CARREGAR RANKING
-// ===============================
-async function loadRanking(container, forceReload = false) {
-  try {
-    setLoading(container, 'Atualizando ranking...');
+      <div class="page-title">
+        <h1>Ranking de Ativos</h1>
+        <p>
+          Visualize rapidamente os ativos com melhor desempenho, compare categorias
+          e identifique movimentos relevantes do mercado.
+        </p>
+      </div>
 
-    const response = await window.api.getRanking(50);
-    const rows = response.items || response.data || [];
+      <div class="filters-bar">
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <input
+            type="text"
+            id="ranking-filter-input"
+            placeholder="Filtrar por ativo, nome ou categoria..."
+          />
+          <button type="button" id="ranking-refresh-btn">Atualizar</button>
+        </div>
+      </div>
 
-    if (!Array.isArray(rows) || rows.length === 0) {
-      setEmpty(container, 'Nenhum ranking disponível.');
-      return;
-    }
+      <section class="panel">
+        <div class="section-header">
+          <h2>Ranking Geral</h2>
+          <a href="index.html">Voltar para Home →</a>
+        </div>
 
-    RANKING_STATE.all = rows;
-    RANKING_STATE.filtered = rows;
+        <div id="ranking-table">
+          <div class="loading">Carregando ranking...</div>
+        </div>
+      </section>
 
-    renderRankingTable(container, rows);
-  } catch (error) {
-    console.error('[RANKING ERROR]', error);
-    setError(container, 'Erro ao carregar ranking.');
-  }
-}
+    </div>
+  </main>
 
-// ===============================
-// FILTRO
-// ===============================
-function applyRankingFilter(term, container) {
-  const value = term.toLowerCase().trim();
+  <footer class="footer">
+    <div class="container footer-content">
+      <div>
+        <strong>Pronuxfin</strong>
+        <p>Onde entendimento vira vantagem.</p>
+      </div>
 
-  if (!value) {
-    RANKING_STATE.filtered = RANKING_STATE.all;
-  } else {
-    RANKING_STATE.filtered = RANKING_STATE.all.filter((item) => {
-      const symbol = (item.symbol || '').toLowerCase();
-      const name = (item.name || '').toLowerCase();
-      const type = (item.type || '').toLowerCase();
+      <div>
+        <small>© <span data-current-year></span> Pronuxfin</small>
+      </div>
+    </div>
+  </footer>
 
-      return (
-        symbol.includes(value) ||
-        name.includes(value) ||
-        type.includes(value)
-      );
-    });
-  }
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/ranking.js"></script>
 
-  renderRankingTable(container, RANKING_STATE.filtered);
-}
-
-// ===============================
-// RENDER TABELA
-// ===============================
-function renderRankingTable(container, rows) {
-  renderTable(
-    container,
-    [
-      {
-        label: '#',
-        key: 'rank',
-        render: (_, index) => `<strong>${index + 1}</strong>`
-      },
-      {
-        label: 'Ativo',
-        key: 'symbol',
-        render: (row) => createAssetRowLink(row.symbol, row.type || 'stock')
-      },
-      {
-        label: 'Nome',
-        key: 'name',
-        render: (row) => row.name || '--'
-      },
-      {
-        label: 'Tipo',
-        key: 'type',
-        render: (row) => `<span class="badge">${(row.type || 'ativo').toUpperCase()}</span>`
-      },
-      {
-        label: 'Preço',
-        key: 'price',
-        render: (row) => {
-          const currency = row.currency || 'USD';
-          return formatCurrency(row.price, currency);
-        }
-      },
-      {
-        label: 'Variação',
-        key: 'changePercent',
-        render: (row) => formatDeltaHTML(row.changePercent)
-      }
-    ],
-    rows
-  );
-}
+</body>
+</html>
