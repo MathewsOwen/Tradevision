@@ -3,7 +3,6 @@
 // ===============================
 function formatNumber(value, options = {}) {
   const number = Number(value);
-
   if (value === null || value === undefined || Number.isNaN(number)) {
     return '--';
   }
@@ -13,7 +12,6 @@ function formatNumber(value, options = {}) {
 
 function formatCurrency(value, currency = 'BRL') {
   const number = Number(value);
-
   if (value === null || value === undefined || Number.isNaN(number)) {
     return '--';
   }
@@ -28,7 +26,6 @@ function formatCurrency(value, currency = 'BRL') {
 
 function formatPercent(value) {
   const number = Number(value);
-
   if (value === null || value === undefined || Number.isNaN(number)) {
     return '--';
   }
@@ -38,7 +35,6 @@ function formatPercent(value) {
 
 function formatCompact(value) {
   const number = Number(value);
-
   if (value === null || value === undefined || Number.isNaN(number)) {
     return '--';
   }
@@ -47,6 +43,50 @@ function formatCompact(value) {
     notation: 'compact',
     maximumFractionDigits: 2
   }).format(number);
+}
+
+function formatSmartValue(value) {
+  const number = Number(
+    typeof value === 'string'
+      ? value
+          .trim()
+          .replace(/\.(?=\d{3}(\D|$))/g, '')
+          .replace(',', '.')
+          .replace(/[^\d.-]/g, '')
+      : value
+  );
+
+  if (value === null || value === undefined || Number.isNaN(number)) {
+    return '--';
+  }
+
+  if (Math.abs(number) >= 1000000) {
+    return formatCompact(number);
+  }
+
+  if (Math.abs(number) >= 1000) {
+    return formatNumber(number, {
+      maximumFractionDigits: 2
+    });
+  }
+
+  return formatNumber(number, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+function escapeHTML(value) {
+  if (value === null || value === undefined) {
+    return '';
+  }
+
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 // ===============================
@@ -60,18 +100,19 @@ function getDeltaClass(value) {
   }
 
   if (number > 0) {
-    return 'up';
+    return 'positive';
   }
 
   if (number < 0) {
-    return 'down';
+    return 'negative';
   }
 
   return 'flat';
 }
 
 function formatDeltaHTML(value) {
-  return `<span class="delta ${getDeltaClass(value)}">${formatPercent(value)}</span>`;
+  const deltaClass = getDeltaClass(value);
+  return `<span class="delta ${deltaClass}">${formatPercent(value)}</span>`;
 }
 
 // ===============================
@@ -82,7 +123,11 @@ function setState(element, type, message) {
     return;
   }
 
-  element.innerHTML = `<div class="${type}">${message}</div>`;
+  element.innerHTML = `
+    <div class="${type}">
+      ${escapeHTML(message)}
+    </div>
+  `;
 }
 
 function setLoading(element, message = 'Carregando dados...') {
@@ -94,7 +139,7 @@ function setError(element, message = 'Não foi possível carregar os dados.') {
 }
 
 function setEmpty(element, message = 'Nenhum dado disponível.') {
-  setState(element, 'empty-state', message);
+  setState(element, 'empty', message);
 }
 
 // ===============================
@@ -111,16 +156,17 @@ function renderTable(container, columns, rows) {
   }
 
   const thead = columns
-    .map((column) => `<th>${column.label}</th>`)
+    .map((column) => `<th>${escapeHTML(column.label)}</th>`)
     .join('');
 
   const tbody = rows
     .map((row) => {
       const cells = columns
         .map((column) => {
-          const value = typeof column.render === 'function'
-            ? column.render(row)
-            : (row[column.key] ?? '--');
+          const value =
+            typeof column.render === 'function'
+              ? column.render(row)
+              : escapeHTML(row[column.key] ?? '--');
 
           return `<td>${value}</td>`;
         })
@@ -132,13 +178,11 @@ function renderTable(container, columns, rows) {
 
   container.innerHTML = `
     <div class="table-wrap">
-      <table class="table">
+      <table>
         <thead>
           <tr>${thead}</tr>
         </thead>
-        <tbody>
-          ${tbody}
-        </tbody>
+        <tbody>${tbody}</tbody>
       </table>
     </div>
   `;
@@ -151,14 +195,15 @@ function createNewsItem(item) {
   const source = item.source || item.site || 'Mercado';
   const date = item.publishedAt || item.date || item.time || 'Agora';
   const title = item.title || 'Sem título';
-  const description = item.summary || item.description || 'Clique para ler a matéria completa.';
+  const description =
+    item.summary || item.description || 'Clique para ler a matéria completa.';
   const url = item.url || '#';
 
   return `
-    <a class="news-item" href="${url}" target="_blank" rel="noopener noreferrer">
-      <small>${source} • ${date}</small>
-      <strong>${title}</strong>
-      <span class="card-subtitle">${description}</span>
+    <a class="news-card" href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer">
+      <small>${escapeHTML(source)} • ${escapeHTML(date)}</small>
+      <h3>${escapeHTML(title)}</h3>
+      <p>${escapeHTML(description)}</p>
     </a>
   `;
 }
@@ -168,14 +213,14 @@ function createEventItem(item) {
   const country = item.country || '--';
   const title = item.title || item.event || 'Evento';
   const impact = item.impact || 'Moderado';
-  const actual = item.actual ? ` • Atual: ${item.actual}` : '';
-  const forecast = item.forecast ? ` • Projeção: ${item.forecast}` : '';
+  const actual = item.actual ? ` • Atual: ${escapeHTML(item.actual)}` : '';
+  const forecast = item.forecast ? ` • Projeção: ${escapeHTML(item.forecast)}` : '';
 
   return `
-    <div class="event-item">
-      <small>${date} • ${country}</small>
-      <strong>${title}</strong>
-      <span class="card-subtitle">Impacto: ${impact}${actual}${forecast}</span>
+    <div class="event-card">
+      <strong>${escapeHTML(date)} • ${escapeHTML(country)}</strong>
+      <p>${escapeHTML(title)}</p>
+      <small>Impacto: ${escapeHTML(impact)}${actual}${forecast}</small>
     </div>
   `;
 }
@@ -183,15 +228,15 @@ function createEventItem(item) {
 function createStatCard(item) {
   const title = item.title || item.name || item.label || 'Indicador';
   const value = item.value ?? item.price ?? '--';
-  const delta = item.changePercent ?? item.variation ?? 0;
+  const delta = item.changePercent ?? item.variation ?? item.change ?? 0;
   const subtitle = item.subtitle || item.symbol || 'Atualização em tempo real';
 
   return `
-    <div class="stat-card">
-      <span class="stat-label">${title}</span>
-      <strong class="stat-value">${value}</strong>
-      <span class="delta ${getDeltaClass(delta)}">${formatPercent(delta)}</span>
-      <small class="stat-subtitle">${subtitle}</small>
+    <div class="quote-item">
+      <h4>${escapeHTML(title)}</h4>
+      <div class="value">${formatSmartValue(value)}</div>
+      <p class="delta ${getDeltaClass(delta)}">${formatPercent(delta)}</p>
+      <small>${escapeHTML(subtitle)}</small>
     </div>
   `;
 }
@@ -211,7 +256,7 @@ function createAssetRowLink(symbol, type = 'stock') {
     return '--';
   }
 
-  return `<a href="${getAssetHref(symbol, type)}" class="asset-link"><strong>${symbol}</strong></a>`;
+  return `<a href="${getAssetHref(symbol, type)}" class="asset-link">${escapeHTML(symbol)}</a>`;
 }
 
 // ===============================
@@ -246,14 +291,14 @@ async function initSearch() {
     }
 
     try {
-      results.innerHTML = '<div class="loading">Buscando ativos...</div>';
+      results.innerHTML = `<div class="loading">Buscando ativos...</div>`;
       openResults();
 
       const response = await window.api.search(term);
       const items = response.items || response.results || response.data || [];
 
       if (!items.length) {
-        results.innerHTML = '<div class="empty-state">Nenhum ativo encontrado.</div>';
+        results.innerHTML = `<div class="empty">Nenhum ativo encontrado.</div>`;
         return;
       }
 
@@ -265,18 +310,16 @@ async function initSearch() {
           const name = item.name || item.description || 'Ativo monitorado';
 
           return `
-            <a class="search-item" href="${getAssetHref(symbol, type)}">
-              <div>
-                <strong>${symbol}</strong>
-                <div class="card-subtitle">${name}</div>
-              </div>
-              <span class="badge">${type.toUpperCase()}</span>
+            <a href="${getAssetHref(symbol, type)}" class="search-result-item">
+              <strong>${escapeHTML(symbol)}</strong>
+              <span>${escapeHTML(name)}</span>
+              <small>${escapeHTML(type.toUpperCase())}</small>
             </a>
           `;
         })
         .join('');
     } catch (error) {
-      results.innerHTML = '<div class="error">Não foi possível buscar agora.</div>';
+      results.innerHTML = `<div class="error">Não foi possível buscar agora.</div>`;
     }
   });
 
