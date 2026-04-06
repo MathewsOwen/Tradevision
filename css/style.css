@@ -1,311 +1,108 @@
-/* ===============================
-   RESET
-=============================== */
+:root {
+  --bg: #0a0a0a;
+  --panel: #111111;
+  --border: #1f1f1f;
+  --text: #e5e5e5;
+  --sub: #888;
+  --gold: #d4af37;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
 }
 
-/* ===============================
-   VARIÁVEIS (TEMA)
-=============================== */
-:root {
-  --bg: #0b1728;
-  --panel: #0f223a;
-  --panel-2: #122945;
-
-  --text: #ffffff;
-  --text-soft: #9fb3c8;
-
-  --border: rgba(255, 255, 255, 0.08);
-
-  --green: #22c55e;
-  --red: #ef4444;
-  --yellow: #facc15;
-
-  --shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
-}
-
-/* ===============================
-   BASE
-=============================== */
 body {
-  font-family: 'Inter', sans-serif;
-  background: linear-gradient(180deg, #071321, #0b1728);
+  background: var(--bg);
   color: var(--text);
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+/* HEADER */
 
-.container {
-  max-width: 1250px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-.section {
-  padding: 40px 0;
-}
-
-/* ===============================
-   HEADER
-=============================== */
 .header {
-  border-bottom: 1px solid var(--border);
-  background: rgba(10, 20, 35, 0.7);
-  backdrop-filter: blur(12px);
-}
-
-.header-content {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  padding: 16px 0;
+  padding: 20px 40px;
+  border-bottom: 1px solid var(--border);
 }
 
 .logo {
-  font-weight: 800;
-  font-size: 1.3rem;
-  letter-spacing: -0.5px;
+  color: var(--gold);
+  font-weight: bold;
+  font-size: 20px;
 }
 
-.logo span {
-  color: var(--yellow);
+nav a {
+  margin-left: 20px;
+  color: var(--text);
+  text-decoration: none;
+  opacity: 0.8;
 }
 
-.nav {
-  display: flex;
-  gap: 16px;
+nav a:hover {
+  opacity: 1;
 }
 
-.nav a {
-  color: var(--text-soft);
-  font-size: 0.9rem;
-  transition: 0.2s;
+/* HERO */
+
+.hero {
+  padding: 60px 40px;
 }
 
-.nav a:hover {
-  color: #fff;
+.hero h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
 }
 
-/* ===============================
-   SEARCH
-=============================== */
-.search {
-  position: relative;
+.hero p {
+  color: var(--sub);
 }
 
-.search input {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 8px 12px;
-  color: #fff;
+/* GRID */
+
+.container {
+  padding: 20px 40px;
 }
 
-.search-results {
-  position: absolute;
-  top: 40px;
-  left: 0;
-  right: 0;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  display: none;
-}
-
-/* ===============================
-   TITULOS
-=============================== */
-.page-title h1 {
-  font-size: 1.8rem;
-}
-
-.page-title p {
-  color: var(--text-soft);
-  margin-top: 6px;
-}
-
-/* ===============================
-   PANEL
-=============================== */
-.panel {
-  background: var(--panel);
-  border-radius: 18px;
-  padding: 20px;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.section-header h2 {
-  font-size: 1.1rem;
-}
-
-/* ===============================
-   KPI
-=============================== */
-.kpi-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-}
-
-.stat-card {
-  background: var(--panel);
-  border-radius: 16px;
-  padding: 16px;
-  border: 1px solid var(--border);
-}
-
-.stat-label {
-  font-size: 0.8rem;
-  color: var(--text-soft);
-}
-
-.stat-value {
-  font-size: 1.4rem;
-}
-
-.stat-subtitle {
-  font-size: 0.8rem;
-  color: var(--text-soft);
-}
-
-/* ===============================
-   GRID
-=============================== */
 .grid {
   display: grid;
-  gap: 16px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
 }
 
-.grid-2 {
-  grid-template-columns: 1fr 1fr;
+/* CARD */
+
+.card {
+  background: var(--panel);
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
 }
 
-/* ===============================
-   TABELA
-=============================== */
+.card h2 {
+  margin-bottom: 15px;
+  color: var(--gold);
+}
+
+/* TABLE */
+
 table {
   width: 100%;
-  border-collapse: collapse;
 }
 
-th, td {
-  padding: 10px;
+tr {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
   border-bottom: 1px solid var(--border);
 }
 
-th {
-  text-align: left;
-  font-size: 0.8rem;
-  color: var(--text-soft);
+.positive {
+  color: #00ff9d;
 }
 
-/* ===============================
-   BADGE
-=============================== */
-.badge {
-  background: rgba(255,255,255,0.1);
-  padding: 4px 8px;
-  border-radius: 6px;
-}
-
-/* ===============================
-   DELTA
-=============================== */
-.delta.up {
-  color: var(--green);
-}
-
-.delta.down {
-  color: var(--red);
-}
-
-.delta.flat {
-  color: var(--text-soft);
-}
-
-/* ===============================
-   LIST STACK
-=============================== */
-.list-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.event-item {
-  padding: 14px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,0.02);
-}
-
-.card-subtitle {
-  font-size: 0.9rem;
-  color: var(--text-soft);
-}
-
-/* ===============================
-   HEATMAP
-=============================== */
-.heatmap-grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 10px;
-}
-
-.heatmap-card {
-  padding: 12px;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.heatmap-card.up { background: rgba(34,197,94,0.3); }
-.heatmap-card.down { background: rgba(239,68,68,0.3); }
-.heatmap-card.flat { background: rgba(255,255,255,0.05); }
-
-/* ===============================
-   FOOTER
-=============================== */
-.footer {
-  margin-top: 40px;
-  border-top: 1px solid var(--border);
-}
-
-.footer-content {
-  display: flex;
-  justify-content: space-between;
-  padding: 20px 0;
-}
-
-/* ===============================
-   RESPONSIVO
-=============================== */
-@media (max-width: 900px) {
-  .grid-2 {
-    grid-template-columns: 1fr;
-  }
-
-  .kpi-row {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .nav {
-    display: none;
-  }
+.negative {
+  color: #ff4d4d;
 }
