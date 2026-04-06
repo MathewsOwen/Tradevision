@@ -1,155 +1,338 @@
+// ===============================
+// FORMATADORES GLOBAIS
+// ===============================
 function formatNumber(value, options = {}) {
-  if (value === null || value === undefined || Number.isNaN(Number(value))) return '--';
-  return new Intl.NumberFormat('pt-BR', options).format(Number(value));
+  const number = Number(value);
+
+  if (value === null || value === undefined || Number.isNaN(number)) {
+    return '--';
+  }
+
+  return new Intl.NumberFormat('pt-BR', options).format(number);
 }
 
 function formatCurrency(value, currency = 'BRL') {
-  if (value === null || value === undefined || Number.isNaN(Number(value))) return '--';
+  const number = Number(value);
+
+  if (value === null || value === undefined || Number.isNaN(number)) {
+    return '--';
+  }
+
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency,
+    minimumFractionDigits: 2,
     maximumFractionDigits: 2
-  }).format(Number(value));
+  }).format(number);
 }
 
 function formatPercent(value) {
-  if (value === null || value === undefined || Number.isNaN(Number(value))) return '--';
-  const num = Number(value);
-  return `${num >= 0 ? '+' : ''}${num.toFixed(2)}%`;
+  const number = Number(value);
+
+  if (value === null || value === undefined || Number.isNaN(number)) {
+    return '--';
+  }
+
+  return `${number >= 0 ? '+' : ''}${number.toFixed(2)}%`;
 }
 
+function formatCompact(value) {
+  const number = Number(value);
+
+  if (value === null || value === undefined || Number.isNaN(number)) {
+    return '--';
+  }
+
+  return new Intl.NumberFormat('pt-BR', {
+    notation: 'compact',
+    maximumFractionDigits: 2
+  }).format(number);
+}
+
+// ===============================
+// HELPERS DE VARIAÇÃO
+// ===============================
 function getDeltaClass(value) {
-  const num = Number(value);
-  if (Number.isNaN(num)) return 'flat';
-  if (num > 0) return 'up';
-  if (num < 0) return 'down';
+  const number = Number(value);
+
+  if (Number.isNaN(number)) {
+    return 'flat';
+  }
+
+  if (number > 0) {
+    return 'up';
+  }
+
+  if (number < 0) {
+    return 'down';
+  }
+
   return 'flat';
 }
 
-function setState(el, type, message) {
-  if (!el) return;
-  el.innerHTML = `<div class="${type}">${message}</div>`;
+function formatDeltaHTML(value) {
+  return `<span class="delta ${getDeltaClass(value)}">${formatPercent(value)}</span>`;
 }
 
-function renderTable(container, columns, rows) {
-  if (!container) return;
-
-  if (!rows || !rows.length) {
-    container.innerHTML = '<p class="empty-state">Nenhum dado disponível no momento.</p>';
+// ===============================
+// ESTADOS DE TELA
+// ===============================
+function setState(element, type, message) {
+  if (!element) {
     return;
   }
 
-  const head = columns.map((col) => `<th>${col.label}</th>`).join('');
-  const body = rows.map((row) => `
-    <tr>
-      ${columns.map((col) => `<td>${col.render ? col.render(row) : row[col.key] ?? '--'}</td>`).join('')}
-    </tr>
-  `).join('');
+  element.innerHTML = `<div class="${type}">${message}</div>`;
+}
+
+function setLoading(element, message = 'Carregando dados...') {
+  setState(element, 'loading', message);
+}
+
+function setError(element, message = 'Não foi possível carregar os dados.') {
+  setState(element, 'error', message);
+}
+
+function setEmpty(element, message = 'Nenhum dado disponível.') {
+  setState(element, 'empty-state', message);
+}
+
+// ===============================
+// RENDER DE TABELAS
+// ===============================
+function renderTable(container, columns, rows) {
+  if (!container) {
+    return;
+  }
+
+  if (!Array.isArray(rows) || rows.length === 0) {
+    setEmpty(container, 'Nenhum dado disponível no momento.');
+    return;
+  }
+
+  const thead = columns
+    .map((column) => `<th>${column.label}</th>`)
+    .join('');
+
+  const tbody = rows
+    .map((row) => {
+      const cells = columns
+        .map((column) => {
+          const value = typeof column.render === 'function'
+            ? column.render(row)
+            : (row[column.key] ?? '--');
+
+          return `<td>${value}</td>`;
+        })
+        .join('');
+
+      return `<tr>${cells}</tr>`;
+    })
+    .join('');
 
   container.innerHTML = `
     <div class="table-wrap">
       <table class="table">
-        <thead><tr>${head}</tr></thead>
-        <tbody>${body}</tbody>
+        <thead>
+          <tr>${thead}</tr>
+        </thead>
+        <tbody>
+          ${tbody}
+        </tbody>
       </table>
     </div>
   `;
 }
 
+// ===============================
+// COMPONENTES REUTILIZÁVEIS
+// ===============================
 function createNewsItem(item) {
   const source = item.source || item.site || 'Mercado';
   const date = item.publishedAt || item.date || item.time || 'Agora';
-  const link = item.url || '#';
+  const title = item.title || 'Sem título';
+  const description = item.summary || item.description || 'Clique para ler a matéria completa.';
+  const url = item.url || '#';
+
   return `
-    <a class="news-item" href="${link}" target="_blank" rel="noopener noreferrer">
+    <a class="news-item" href="${url}" target="_blank" rel="noopener noreferrer">
       <small>${source} • ${date}</small>
-      <strong>${item.title || 'Sem título'}</strong>
-      <span class="card-subtitle">${item.summary || item.description || 'Clique para ler a matéria completa.'}</span>
+      <strong>${title}</strong>
+      <span class="card-subtitle">${description}</span>
     </a>
   `;
 }
 
 function createEventItem(item) {
+  const date = item.date || '--';
+  const country = item.country || '--';
+  const title = item.title || item.event || 'Evento';
+  const impact = item.impact || 'Moderado';
+  const actual = item.actual ? ` • Atual: ${item.actual}` : '';
+  const forecast = item.forecast ? ` • Projeção: ${item.forecast}` : '';
+
   return `
     <div class="event-item">
-      <small>${item.date || '--'} • ${item.country || '--'}</small>
-      <strong>${item.title || item.event || 'Evento'}</strong>
-      <span class="card-subtitle">Impacto: ${item.impact || 'Moderado'}${item.actual ? ` • Atual: ${item.actual}` : ''}${item.forecast ? ` • Projeção: ${item.forecast}` : ''}</span>
+      <small>${date} • ${country}</small>
+      <strong>${title}</strong>
+      <span class="card-subtitle">Impacto: ${impact}${actual}${forecast}</span>
     </div>
   `;
 }
 
+function createStatCard(item) {
+  const title = item.title || item.name || item.label || 'Indicador';
+  const value = item.value ?? item.price ?? '--';
+  const delta = item.changePercent ?? item.variation ?? 0;
+  const subtitle = item.subtitle || item.symbol || 'Atualização em tempo real';
+
+  return `
+    <div class="stat-card">
+      <span class="stat-label">${title}</span>
+      <strong class="stat-value">${value}</strong>
+      <span class="delta ${getDeltaClass(delta)}">${formatPercent(delta)}</span>
+      <small class="stat-subtitle">${subtitle}</small>
+    </div>
+  `;
+}
+
+// ===============================
+// LINKS DE ATIVOS
+// ===============================
 function getAssetHref(symbol, type = 'stock') {
-  const isAssetPage = window.location.pathname.includes('/ativos/');
-  const base = isAssetPage ? '../ativos/ativo.html' : 'ativos/ativo.html';
-  return `${base}?symbol=${encodeURIComponent(symbol)}&type=${encodeURIComponent(type)}`;
+  const isInsideAssetsFolder = window.location.pathname.includes('/ativos/');
+  const basePath = isInsideAssetsFolder ? '../ativos/ativo.html' : 'ativos/ativo.html';
+
+  return `${basePath}?symbol=${encodeURIComponent(symbol)}&type=${encodeURIComponent(type)}`;
 }
 
 function createAssetRowLink(symbol, type = 'stock') {
-  return `<a href="${getAssetHref(symbol, type)}"><strong>${symbol}</strong></a>`;
+  if (!symbol) {
+    return '--';
+  }
+
+  return `<a href="${getAssetHref(symbol, type)}" class="asset-link"><strong>${symbol}</strong></a>`;
 }
 
+// ===============================
+// BUSCA GLOBAL
+// ===============================
 async function initSearch() {
   const form = document.querySelector('[data-search-form]');
   const input = document.querySelector('[data-search-input]');
   const results = document.querySelector('[data-search-results]');
 
-  if (!form || !input || !results) return;
+  if (!form || !input || !results || !window.api) {
+    return;
+  }
+
+  const closeResults = () => {
+    results.classList.remove('show');
+  };
+
+  const openResults = () => {
+    results.classList.add('show');
+  };
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
+
     const term = input.value.trim();
 
     if (!term) {
-      results.classList.remove('show');
       results.innerHTML = '';
+      closeResults();
       return;
     }
 
     try {
       results.innerHTML = '<div class="loading">Buscando ativos...</div>';
-      results.classList.add('show');
-      const response = await api.search(term);
-      const items = response.items || response.results || [];
+      openResults();
+
+      const response = await window.api.search(term);
+      const items = response.items || response.results || response.data || [];
 
       if (!items.length) {
-        results.innerHTML = '<div class="loading">Nenhum ativo encontrado.</div>';
+        results.innerHTML = '<div class="empty-state">Nenhum ativo encontrado.</div>';
         return;
       }
 
-      results.innerHTML = items.slice(0, 8).map((item) => `
-        <a class="search-item" href="${getAssetHref(item.symbol, item.type || 'stock')}">
-          <div>
-            <strong>${item.symbol}</strong>
-            <div class="card-subtitle">${item.name || item.description || 'Ativo monitorado'}</div>
-          </div>
-          <span class="badge">${(item.type || 'ativo').toUpperCase()}</span>
-        </a>
-      `).join('');
+      results.innerHTML = items
+        .slice(0, 8)
+        .map((item) => {
+          const symbol = item.symbol || '--';
+          const type = item.type || 'stock';
+          const name = item.name || item.description || 'Ativo monitorado';
+
+          return `
+            <a class="search-item" href="${getAssetHref(symbol, type)}">
+              <div>
+                <strong>${symbol}</strong>
+                <div class="card-subtitle">${name}</div>
+              </div>
+              <span class="badge">${type.toUpperCase()}</span>
+            </a>
+          `;
+        })
+        .join('');
     } catch (error) {
       results.innerHTML = '<div class="error">Não foi possível buscar agora.</div>';
     }
   });
 
+  input.addEventListener('input', () => {
+    if (!input.value.trim()) {
+      results.innerHTML = '';
+      closeResults();
+    }
+  });
+
   document.addEventListener('click', (event) => {
-    if (!form.contains(event.target)) {
-      results.classList.remove('show');
+    if (!form.contains(event.target) && !results.contains(event.target)) {
+      closeResults();
     }
   });
 }
 
+// ===============================
+// MENU ATIVO
+// ===============================
 function markActiveNav() {
-  const current = window.location.pathname.split('/').pop() || 'index.html';
+  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+
   document.querySelectorAll('[data-nav-link]').forEach((link) => {
     const href = link.getAttribute('href');
-    if (href === current || href.endsWith(`/${current}`)) {
+
+    if (!href) {
+      return;
+    }
+
+    const normalizedHref = href.split('/').pop();
+
+    if (normalizedHref === currentPage) {
       link.classList.add('active');
     }
   });
 }
 
+// ===============================
+// ANO AUTOMÁTICO NO FOOTER
+// ===============================
+function setCurrentYear() {
+  const yearElements = document.querySelectorAll('[data-current-year]');
+  const currentYear = new Date().getFullYear();
+
+  yearElements.forEach((element) => {
+    element.textContent = currentYear;
+  });
+}
+
+// ===============================
+// INIT GLOBAL
+// ===============================
 function boot() {
   markActiveNav();
+  setCurrentYear();
   initSearch();
 }
 
